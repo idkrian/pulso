@@ -3,6 +3,14 @@ import type {
   CreateTrainingSplitRequestDto,
   UpdateTrainingSplitRequestDto,
 } from "./training-split.scheme.js";
+import type { Locale } from "../../shared/constants/locales.js";
+import { exerciseTranslationInclude } from "../../shared/utils/exercise-translation.js";
+
+const splitExercisesInclude = (locale: Locale) => ({
+  exercises: {
+    include: { exercise: { include: exerciseTranslationInclude(locale) } },
+  },
+});
 
 export const trainingSplitRepository = {
   async createTrainingSplit(
@@ -26,17 +34,21 @@ export const trainingSplitRepository = {
     });
   },
 
-  async getAllUserTrainingSplits(userId: number) {
+  async getAllUserTrainingSplits(userId: number, locale: Locale) {
     return await prisma.training_splits.findMany({
       where: { userId },
-      include: { exercises: { include: { exercise: true } } },
+      include: splitExercisesInclude(locale),
     });
   },
 
-  async getUserTrainingSplitById(userId: number, trainingSplitId: number) {
+  async getUserTrainingSplitById(
+    userId: number,
+    trainingSplitId: number,
+    locale: Locale,
+  ) {
     return await prisma.training_splits.findUnique({
       where: { id: trainingSplitId, userId },
-      include: { exercises: { include: { exercise: true } } },
+      include: splitExercisesInclude(locale),
     });
   },
 
@@ -44,6 +56,7 @@ export const trainingSplitRepository = {
     userId: number,
     trainingSplitId: number,
     data: UpdateTrainingSplitRequestDto,
+    locale: Locale,
   ) {
     return await prisma.training_splits.update({
       where: { id: trainingSplitId, userId },
@@ -61,13 +74,7 @@ export const trainingSplitRepository = {
           },
         }),
       },
-      include: {
-        exercises: {
-          include: {
-            exercise: true,
-          },
-        },
-      },
+      include: splitExercisesInclude(locale),
     });
   },
 

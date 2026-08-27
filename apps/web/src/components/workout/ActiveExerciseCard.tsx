@@ -9,6 +9,7 @@ import type { ExerciseProgress, LoggedSet } from "@/dtos/workout.dto";
 import type { ExercisePerformanceDto } from "@/dtos/exercise.dto";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatWeight, unitLabel } from "@/utils/units";
+import { useT } from "@/i18n";
 import SetRow from "./SetRow";
 
 type Props = {
@@ -39,6 +40,7 @@ const ActiveExerciseCard = ({
   addSet,
 }: Props) => {
   const { unit } = useAuth();
+  const t = useT();
   const completedSets = progress.sets.filter((s) => s.completed).length;
   const lastSets = performance?.lastPerformed?.sets ?? [];
   const topLastSet = lastSets.reduce<(typeof lastSets)[number] | null>(
@@ -59,13 +61,19 @@ const ActiveExerciseCard = ({
 
         <div className="text-center">
           <p className="text-[10px] uppercase tracking-widest text-lightIndigo">
-            Exercise {activeIndex + 1} of {totalExercises}
+            {t("workout.exerciseCounter", {
+              current: activeIndex + 1,
+              total: totalExercises,
+            })}
           </p>
           <h2 className="text-xl font-bold leading-tight">
             {exercise.exercise.title}
           </h2>
           <p className="text-xs text-lightGrey/60">
-            Target: {exercise.sets} × {exercise.reps} reps
+            {t("workout.target", {
+              sets: exercise.sets,
+              reps: exercise.reps,
+            })}
           </p>
         </div>
 
@@ -82,7 +90,7 @@ const ActiveExerciseCard = ({
         <div className="flex items-center justify-center gap-4 shrink-0 text-[11px]">
           {topLastSet && (
             <span className="text-lightGrey/70">
-              Last time max:{" "}
+              {t("workout.lastTimeMax")}{" "}
               <strong className="text-white">
                 {formatWeight(topLastSet.weight, unit)} × {topLastSet.reps}
               </strong>
@@ -90,7 +98,7 @@ const ActiveExerciseCard = ({
           )}
           {performance?.bestWeight != null && (
             <span className="text-lightGrey/70">
-              PR:{" "}
+              {t("workout.personalRecord")}{" "}
               <strong className="text-amber-400">
                 {formatWeight(performance.bestWeight, unit)}
               </strong>
@@ -114,10 +122,10 @@ const ActiveExerciseCard = ({
 
       <div className="flex flex-col gap-2 pr-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
         <div className="hidden shrink-0 grid-cols-[28px_1fr_70px_1.2fr_56px] gap-2 px-2 text-[10px] uppercase tracking-wider text-lightGrey/50 lg:grid">
-          <span>Set</span>
-          <span>Weight ({unitLabel(unit)})</span>
-          <span className="text-center">Reps</span>
-          <span>RPE</span>
+          <span>{t("workout.colSet")}</span>
+          <span>{t("workout.colWeight", { unit: unitLabel(unit) })}</span>
+          <span className="text-center">{t("workout.colReps")}</span>
+          <span>{t("workout.colRpe")}</span>
           <span></span>
         </div>
 
@@ -139,7 +147,7 @@ const ActiveExerciseCard = ({
             size={16}
             className="transition-transform group-hover:rotate-90 duration-300"
           />
-          Add set
+          {t("workout.addSet")}
         </button>
       </div>
 
@@ -147,7 +155,7 @@ const ActiveExerciseCard = ({
         <LuStickyNote size={14} className="mt-1.5 text-lightIndigo shrink-0" />
         <textarea
           value={progress.notes}
-          placeholder="Notes — how did this exercise feel?"
+          placeholder={t("workout.notesPlaceholder")}
           onChange={(e) => onUpdateNotes(e.target.value)}
           className="flex-1 bg-darkGrey/60 rounded-lg px-2 py-1.5 text-xs outline-none focus:bg-darkGrey resize-none"
           rows={1}
@@ -155,7 +163,10 @@ const ActiveExerciseCard = ({
       </div>
 
       <p className="text-[10px] text-lightGrey/40 text-center shrink-0">
-        {completedSets} / {progress.sets.length} sets logged
+        {t("workout.setsLogged", {
+          done: completedSets,
+          total: progress.sets.length,
+        })}
       </p>
     </div>
   );

@@ -8,12 +8,8 @@ import type {
   TrainingSplitDayMap,
 } from "@/dtos/training-split-day.dto";
 import type { WorkoutSessionDto } from "@/dtos/workout-session.dto";
-import {
-  formatWeekRangeLabel,
-  getWeekDays,
-  isSameDay,
-  startOfDay,
-} from "@/utils";
+import { getWeekDays, isSameDay, startOfDay, weekRangeParts } from "@/utils";
+import { useDateLocale, useT } from "@/i18n";
 import {
   computeStreak,
   findSessionOnDate,
@@ -28,6 +24,8 @@ import SwapSplitModal from "@/components/calendar/SwapSplitModal";
 
 const Calendar = () => {
   const navigate = useNavigate();
+  const t = useT();
+  const dateLocale = useDateLocale();
   const [weekOffset, setWeekOffset] = useState(0);
   const [splitsByDay, setSplitsByDay] = useState<TrainingSplitDayMap>({});
   const [sessions, setSessions] = useState<WorkoutSessionDto[]>([]);
@@ -50,7 +48,10 @@ const Calendar = () => {
     return () => window.removeEventListener("focus", onFocus);
   }, []);
 
-  const week = useMemo(() => getWeekDays(weekOffset), [weekOffset]);
+  const week = useMemo(
+    () => getWeekDays(weekOffset, dateLocale),
+    [weekOffset, dateLocale],
+  );
   const today = useMemo(() => startOfDay(new Date()), []);
   const todayDayNumber = new Date().getDay();
   const todayEntry = splitsByDay[todayDayNumber];
@@ -59,7 +60,14 @@ const Calendar = () => {
     [sessions, today],
   );
 
-  const weekRangeLabel = formatWeekRangeLabel(week);
+  const weekRangeLabel = useMemo(() => {
+    const parts = weekRangeParts(week, dateLocale);
+    if (!parts) return "";
+    const { sameMonth, ...values } = parts;
+    return sameMonth
+      ? t("calendar.weekRange", values)
+      : t("calendar.weekRangeCrossMonth", values);
+  }, [week, dateLocale, t]);
 
   const { weekStart, weekEnd } = useMemo(() => {
     const start = startOfDay(week[0].date);

@@ -6,6 +6,11 @@ import type {
 } from "./training-split-day.scheme.js";
 import { AppError } from "../../shared/middlewares/request-error-handler.js";
 import { HttpStatus } from "../../shared/constants/http-status.js";
+import type { Locale } from "../../shared/constants/locales.js";
+import {
+  exerciseTranslationInclude,
+  withTranslatedSplitExercises,
+} from "../../shared/utils/exercise-translation.js";
 
 async function assertSplitOwnership(
   tx: Prisma.TransactionClient,
@@ -35,12 +40,18 @@ export const trainingSplitDaysRepository = {
     });
   },
 
-  async getAllTrainingSplitDays(userId: number) {
+  async getAllTrainingSplitDays(userId: number, locale: Locale) {
     const trainingSplitDays = await prisma.training_split_days.findMany({
       where: { trainingSplit: { userId } },
       include: {
         trainingSplit: {
-          include: { exercises: { include: { exercise: true } } },
+          include: {
+            exercises: {
+              include: {
+                exercise: { include: exerciseTranslationInclude(locale) },
+              },
+            },
+          },
         },
       },
     });
@@ -50,7 +61,7 @@ export const trainingSplitDaysRepository = {
         acc[day.dayOfWeek] = {
           id: day.id,
           restDay: day.restDay,
-          trainingSplit: day.trainingSplit,
+          trainingSplit: withTranslatedSplitExercises(day.trainingSplit),
         };
         return acc;
       },

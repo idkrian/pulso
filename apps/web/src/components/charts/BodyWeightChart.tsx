@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   Card,
@@ -15,14 +16,7 @@ import {
 import type { BodyWeightDto } from "@/dtos/body-weight.dto";
 import { useAuth } from "@/contexts/AuthContext";
 import { toDisplayWeight, unitLabel } from "@/utils/units";
-import { formatDate } from "@/utils/date";
-
-const chartConfig = {
-  weight: {
-    label: "Body weight",
-    color: "#7c3aed",
-  },
-} satisfies ChartConfig;
+import { useFormatDate, useT } from "@/i18n";
 
 type Props = {
   entries: BodyWeightDto[];
@@ -30,10 +24,23 @@ type Props = {
 
 const BodyWeightChart = ({ entries }: Props) => {
   const { unit } = useAuth();
+  const t = useT();
+  const formatDate = useFormatDate();
+
+  const chartConfig = useMemo(
+    () =>
+      ({
+        weight: {
+          label: t("charts.bodyWeightSeries"),
+          color: "#7c3aed",
+        },
+      }) satisfies ChartConfig,
+    [t],
+  );
 
   // Stored in kg; charted in whatever unit the user reads in.
   const data = entries.map((entry) => ({
-    date: formatDate(entry.createdAt, { month: "short", day: "numeric" }, "en-US"),
+    date: formatDate(entry.createdAt, { month: "short", day: "numeric" }),
     weight: toDisplayWeight(entry.weight, unit),
   }));
 
@@ -41,11 +48,11 @@ const BodyWeightChart = ({ entries }: Props) => {
     return (
       <Card className="bg-mediumGrey border-none min-w-0 flex-1">
         <CardHeader>
-          <CardTitle className="text-white">Body Weight</CardTitle>
+          <CardTitle className="text-white">{t("charts.bodyWeight")}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-lightGrey/60 text-sm">
-            No entries yet — log your weight to start tracking.
+            {t("charts.bodyWeightEmpty")}
           </p>
         </CardContent>
       </Card>
@@ -55,8 +62,10 @@ const BodyWeightChart = ({ entries }: Props) => {
   return (
     <Card className="bg-mediumGrey border-none flex min-w-0 flex-col lg:flex-1 lg:min-h-0">
       <CardHeader className="pb-0">
-        <CardTitle className="text-white">Body Weight</CardTitle>
-        <CardDescription>Progress over time ({unitLabel(unit)})</CardDescription>
+        <CardTitle className="text-white">{t("charts.bodyWeight")}</CardTitle>
+        <CardDescription>
+          {t("charts.bodyWeightDescription", { unit: unitLabel(unit) })}
+        </CardDescription>
       </CardHeader>
       <CardContent className="min-w-0 pb-2 lg:flex-1 lg:min-h-0">
         <ChartContainer config={chartConfig} className="h-56 w-full lg:h-full">

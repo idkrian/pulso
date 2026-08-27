@@ -6,6 +6,7 @@ import type {
 import type { Locale } from "../../shared/constants/locales.js";
 import { AppError } from "../../shared/middlewares/request-error-handler.js";
 import { HttpStatus } from "../../shared/constants/http-status.js";
+import { exerciseTranslationInclude } from "../../shared/utils/exercise-translation.js";
 
 export const exerciseRepository = {
   async createExercise(userId: number, data: CreateExerciseRequestDto) {
@@ -23,12 +24,7 @@ export const exerciseRepository = {
   async getAllExercises(userId: number, locale: Locale) {
     return await prisma.exercises.findMany({
       where: { OR: [{ userId: null }, { userId }] },
-      include: {
-        translations: {
-          where: { locale },
-          select: { title: true, description: true },
-        },
-      },
+      include: exerciseTranslationInclude(locale),
     });
   },
 

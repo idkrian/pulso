@@ -30,7 +30,7 @@ export const trainingSplitController = {
     try {
       const userId = Number(req.userId);
       const trainingSplits =
-        await trainingSplitService.getAllUserTrainingSplits(userId);
+        await trainingSplitService.getAllUserTrainingSplits(userId, req.locale);
 
       requestSuccessHandler(
         res,
@@ -53,6 +53,7 @@ export const trainingSplitController = {
       const trainingSplit = await trainingSplitService.getUserTrainingSplitById(
         userId,
         trainingSplitId,
+        req.locale,
       );
 
       requestSuccessHandler(
@@ -78,6 +79,7 @@ export const trainingSplitController = {
         trainingSplitId,
         req.body,
         res,
+        req.locale,
       );
 
       requestSuccessHandler(

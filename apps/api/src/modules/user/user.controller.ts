@@ -5,7 +5,7 @@ import { requestSuccessHandler } from "../../shared/utils/requestHandlers.js";
 export const userController = {
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const user = await userService.createUser(req.body);
+      const user = await userService.createUser(req.body, req.locale);
       requestSuccessHandler(res, user, "User created successfully!");
     } catch (error) {
       next(error);

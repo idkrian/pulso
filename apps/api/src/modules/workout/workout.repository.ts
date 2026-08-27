@@ -1,15 +1,17 @@
 import { prisma } from "../../../database/prisma/prisma.js";
 import type { CreateWorkoutRequestDto } from "./workout.scheme.js";
+import type { Locale } from "../../shared/constants/locales.js";
+import { exerciseTranslationInclude } from "../../shared/utils/exercise-translation.js";
 
-const workoutWithDetails = {
+const workoutWithDetails = (locale: Locale) => ({
   workoutExerciseLogs: {
     include: {
-      exercise: true,
+      exercise: { include: exerciseTranslationInclude(locale) },
       workoutSets: { orderBy: { setNumber: "asc" as const } },
     },
   },
   trainingSplit: true,
-};
+});
 
 export const workoutRepository = {
   async createWorkout(userId: number, data: CreateWorkoutRequestDto) {
@@ -36,18 +38,18 @@ export const workoutRepository = {
     });
   },
 
-  async getAllWorkouts(userId: number) {
+  async getAllWorkouts(userId: number, locale: Locale) {
     return await prisma.workout_sessions.findMany({
       where: { userId },
       orderBy: { createdAt: "desc" },
-      include: workoutWithDetails,
+      include: workoutWithDetails(locale),
     });
   },
 
-  async getWorkoutById(userId: number, id: number) {
+  async getWorkoutById(userId: number, id: number, locale: Locale) {
     return await prisma.workout_sessions.findUnique({
       where: { id, userId },
-      include: workoutWithDetails,
+      include: workoutWithDetails(locale),
     });
   },
 

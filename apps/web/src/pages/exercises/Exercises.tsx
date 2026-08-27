@@ -4,12 +4,11 @@ import { LuSearch } from "react-icons/lu";
 import { deleteExercise, getMuscleGroups } from "@/api/exercise";
 import {
   MuscleGroup,
-  MuscleGroupLabel,
-  MuscleLabel,
   type ExerciseFilter,
   type MuscleGroupItemsDto,
   type MuscleGroupType,
 } from "@/dtos/muscle.dto";
+import { useMuscleGroupLabel, useMuscleLabel, useT } from "@/i18n";
 import type { ExerciseDto } from "@/dtos/exercise.dto";
 import { getApiErrorMessage } from "@/utils/error";
 import ExerciseModal from "@/components/modals/ExerciseModal";
@@ -20,6 +19,9 @@ import ExercisesEmptyState from "@/components/exercises/ExercisesEmptyState";
 import ExerciseDrawer from "@/components/exercises/ExerciseDrawer";
 
 const Exercises = () => {
+  const t = useT();
+  const muscleLabel = useMuscleLabel();
+  const muscleGroupLabel = useMuscleGroupLabel();
   const [muscleGroups, setMuscleGroups] = useState<MuscleGroupItemsDto[]>([]);
   const [filter, setExerciseFilter] = useState<ExerciseFilter>("ALL");
   const [search, setSearch] = useState("");
@@ -90,14 +92,14 @@ const Exercises = () => {
     return base.filter(
       (e) =>
         e.title.toLowerCase().includes(q) ||
-        MuscleLabel[e.muscle].toLowerCase().includes(q),
+        muscleLabel(e.muscle).toLowerCase().includes(q),
     );
-  }, [allExercises, filter, search]);
+  }, [allExercises, filter, search, muscleLabel]);
 
   const headerLabel =
     filter === "ALL"
-      ? "All Exercises"
-      : MuscleGroupLabel[filter as MuscleGroupType];
+      ? t("exercises.allExercises")
+      : muscleGroupLabel(filter as MuscleGroupType);
 
   const openCreate = () =>
     setCreateOpen(filter === "ALL" ? MuscleGroup.CHEST : filter);
@@ -128,8 +130,10 @@ const Exercises = () => {
               className="ml-auto flex shrink-0 items-center gap-2 bg-indigo hover:bg-lightIndigo transition-colors rounded-lg px-4 py-2 text-sm font-semibold cursor-pointer lg:order-3 lg:ml-0"
             >
               <FaPlus size={12} />
-              <span className="hidden sm:inline">New Exercise</span>
-              <span className="sm:hidden">New</span>
+              <span className="hidden sm:inline">
+                {t("exercises.newExercise")}
+              </span>
+              <span className="sm:hidden">{t("exercises.newShort")}</span>
             </button>
           </div>
           <div className="relative w-full lg:order-2 lg:w-80 lg:max-w-full">
@@ -140,7 +144,7 @@ const Exercises = () => {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search exercises..."
+              placeholder={t("exercises.searchPlaceholder")}
               className="w-full bg-mediumGrey rounded-lg pl-9 pr-3 py-2 text-sm outline-none border border-transparent focus:border-indigo transition-colors"
             />
           </div>
@@ -188,7 +192,7 @@ const Exercises = () => {
 
       <ConfirmModal
         open={!!deleteTarget}
-        title="Delete exercise?"
+        title={t("exercises.deleteTitle")}
         description={
           deleteTarget
             ? `"${deleteTarget.title}" will be permanently removed.`

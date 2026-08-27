@@ -22,7 +22,7 @@ export const workoutController = {
   async getAllWorkouts(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = Number(req.userId);
-      const workouts = await workoutService.getAllWorkouts(userId);
+      const workouts = await workoutService.getAllWorkouts(userId, req.locale);
       requestSuccessHandler(res, workouts, "Workouts retrieved successfully!");
     } catch (error) {
       next(error);
@@ -33,7 +33,11 @@ export const workoutController = {
     try {
       const userId = Number(req.userId);
       const id = Number(req.params.id);
-      const workout = await workoutService.getWorkoutById(userId, id);
+      const workout = await workoutService.getWorkoutById(
+        userId,
+        id,
+        req.locale,
+      );
 
       if (!workout) {
         return requestErrorHandler(

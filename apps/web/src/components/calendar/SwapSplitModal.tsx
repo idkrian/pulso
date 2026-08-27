@@ -3,7 +3,7 @@ import { LuMoon, LuTrash2, LuX } from "react-icons/lu";
 import type { TrainingSplitDto } from "@/dtos/training-splits.dto";
 import type { TrainingSplitDayEntry } from "@/dtos/training-split-day.dto";
 import { getAllUserTrainingSplits } from "@/api/training-split";
-import { formatDate } from "@/utils/date";
+import { useFormatDate, useT } from "@/i18n";
 
 interface SwapSplitModalProps {
   open: boolean;
@@ -24,6 +24,8 @@ const SwapSplitModal = ({
   onAssign,
   onRemove,
 }: SwapSplitModalProps) => {
+  const t = useT();
+  const formatDate = useFormatDate();
   const [splits, setSplits] = useState<TrainingSplitDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -86,7 +88,7 @@ const SwapSplitModal = ({
           </div>
           <button
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t("common.close")}
             className="flex items-center justify-center w-8 h-8 rounded-md bg-darkGrey hover:bg-darkGrey/70 cursor-pointer transition"
           >
             <LuX size={16} />
@@ -95,16 +97,16 @@ const SwapSplitModal = ({
 
         <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4">
           <p className="text-xs uppercase tracking-wider text-lightGrey/60 mb-3">
-            Pick a training split
+            {t("swapSplitModal.pickSplit")}
           </p>
 
           {loading ? (
             <div className="flex items-center justify-center py-10 text-lightGrey/50 text-sm">
-              Loading splits…
+              {t("swapSplitModal.loading")}
             </div>
           ) : splits.length === 0 ? (
             <p className="text-sm text-lightGrey/60 text-center py-6">
-              No splits available. Create one first.
+              {t("swapSplitModal.noSplits")}
             </p>
           ) : (
             <div className="flex flex-col gap-2">
@@ -125,7 +127,9 @@ const SwapSplitModal = ({
                   >
                     <span className="font-semibold text-sm">{s.title}</span>
                     <span className="text-[11px] text-lightGrey/60">
-                      {s.exercises.length} exercises
+                      {t("swapSplitModal.exerciseCount", {
+                        count: s.exercises.length,
+                      })}
                     </span>
                   </button>
                 );
@@ -141,7 +145,7 @@ const SwapSplitModal = ({
             className="flex items-center gap-1.5 px-3 h-9 rounded-md bg-darkGrey hover:bg-darkGrey/70 text-sm font-semibold cursor-pointer transition disabled:opacity-50"
           >
             <LuMoon size={14} />
-            Mark as rest
+            {t("swapSplitModal.markAsRest")}
           </button>
 
           {currentEntry && (
@@ -151,7 +155,7 @@ const SwapSplitModal = ({
               className="flex items-center gap-1.5 px-3 h-9 rounded-md bg-red-500/15 hover:bg-red-500/30 text-red-300 text-sm font-semibold cursor-pointer transition disabled:opacity-50"
             >
               <LuTrash2 size={14} />
-              Clear day
+              {t("swapSplitModal.clearDay")}
             </button>
           )}
         </div>

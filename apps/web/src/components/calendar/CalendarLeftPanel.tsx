@@ -1,8 +1,16 @@
-import { LuFlame, LuPlay, LuMoon, LuDumbbell, LuLayers, LuTrophy } from "react-icons/lu";
+import {
+  LuFlame,
+  LuPlay,
+  LuMoon,
+  LuDumbbell,
+  LuLayers,
+  LuTrophy,
+} from "react-icons/lu";
 import type { TrainingSplitDayEntry } from "@/dtos/training-split-day.dto";
 import type { WorkoutSessionDto } from "@/dtos/workout-session.dto";
-import { DEFAULT_ACCENT, formatDate, muscleGroupAccent, summarizeSplit } from "@/utils";
+import { DEFAULT_ACCENT, muscleGroupAccent, summarizeSplit } from "@/utils";
 import { formatVolume, sessionVolume } from "@/utils/workout-history";
+import { useFormatDate, useT } from "@/i18n";
 
 interface CalendarLeftPanelProps {
   todayEntry?: TrainingSplitDayEntry;
@@ -23,6 +31,8 @@ const CalendarLeftPanel = ({
   streak,
   onStartWorkout,
 }: CalendarLeftPanelProps) => {
+  const t = useT();
+  const formatDate = useFormatDate();
   const today = new Date();
   const split = todayEntry?.trainingSplit;
   const isRest = todayEntry?.restDay ?? !split;
@@ -53,20 +63,25 @@ const CalendarLeftPanel = ({
       <div className="flex flex-col items-center gap-3 w-full">
         {!isRest && !todaySession && (
           <p className="text-white/70 font-semibold text-sm uppercase tracking-wider">
-            Today's Workout
+            {t("calendar.todaysWorkout")}
           </p>
         )}
         {todaySession ? (
           <div className="flex flex-col items-center gap-2 py-4 text-center">
             <LuTrophy size={36} className="text-yellow-300" />
-            <p className="text-white font-bold text-2xl">Workout Done!</p>
+            <p className="text-white font-bold text-2xl">
+              {t("calendar.workoutDone")}
+            </p>
             <p className="text-white/70 text-sm">
-              {split ? split.title : "Great session"} completed
+              {t("calendar.sessionCompleted", {
+                title: split ? split.title : t("calendar.fallbackSessionTitle"),
+              })}
             </p>
             <div className="grid grid-cols-2 gap-2 w-full mt-1">
               <div className="flex flex-col items-center rounded-md bg-black/20 py-1.5 text-white">
                 <span className="text-sm font-semibold">
-                  {todaySession.workoutExerciseLogs?.length ?? 0} ex
+                  {todaySession.workoutExerciseLogs?.length ?? 0}{" "}
+                  {t("calendar.exercisesShort")}
                 </span>
               </div>
               <div className="flex flex-col items-center rounded-md bg-black/20 py-1.5 text-white">
@@ -79,9 +94,11 @@ const CalendarLeftPanel = ({
         ) : isRest ? (
           <div className="flex flex-col items-center gap-2 py-4">
             <LuMoon size={36} className="text-white/80" />
-            <p className="text-white font-bold text-2xl">Rest Day</p>
+            <p className="text-white font-bold text-2xl">
+              {t("common.restDay")}
+            </p>
             <p className="text-white/60 text-xs text-center">
-              No training scheduled — recover well.
+              {t("calendar.restDayHint")}
             </p>
           </div>
         ) : split && summary ? (
@@ -93,13 +110,13 @@ const CalendarLeftPanel = ({
               <div className="flex items-center justify-center gap-1.5 rounded-md bg-black/20 py-1.5 text-white">
                 <LuDumbbell size={14} />
                 <span className="text-sm font-semibold">
-                  {summary.exerciseCount} ex
+                  {summary.exerciseCount} {t("calendar.exercisesShort")}
                 </span>
               </div>
               <div className="flex items-center justify-center gap-1.5 rounded-md bg-black/20 py-1.5 text-white">
                 <LuLayers size={14} />
                 <span className="text-sm font-semibold">
-                  {summary.totalSets} sets
+                  {summary.totalSets} {t("calendar.sets")}
                 </span>
               </div>
             </div>
@@ -108,7 +125,7 @@ const CalendarLeftPanel = ({
               className="flex items-center justify-center gap-2 w-full h-11 rounded-md bg-white text-darkGrey font-bold cursor-pointer transition hover:scale-[1.02]"
             >
               <LuPlay size={16} />
-              Start Workout
+              {t("calendar.startWorkout")}
             </button>
           </>
         ) : null}
@@ -116,7 +133,7 @@ const CalendarLeftPanel = ({
 
       <div className="flex flex-col gap-2 w-full">
         <p className="text-white/70 font-semibold text-xs uppercase tracking-wider text-center">
-          This Week
+          {t("calendar.thisWeek")}
         </p>
         <div className="grid grid-cols-3 gap-2 w-full">
           <div className="flex flex-col items-center rounded-md bg-black/25 py-2">
@@ -124,7 +141,7 @@ const CalendarLeftPanel = ({
               {sessionsCompleted}/{sessionsPlanned}
             </span>
             <span className="text-white/60 text-[10px] uppercase tracking-wide mt-1">
-              sessions
+              {t("calendar.sessions")}
             </span>
           </div>
           <div className="flex flex-col items-center rounded-md bg-black/25 py-2">
@@ -132,7 +149,7 @@ const CalendarLeftPanel = ({
               {formatVolume(weekVolume)}
             </span>
             <span className="text-white/60 text-[10px] uppercase tracking-wide mt-1">
-              volume
+              {t("calendar.volume")}
             </span>
           </div>
           <div className="flex flex-col items-center rounded-md bg-black/25 py-2">
@@ -141,7 +158,7 @@ const CalendarLeftPanel = ({
               <span className="font-bold text-lg leading-none">{streak}</span>
             </div>
             <span className="text-white/60 text-[10px] uppercase tracking-wide mt-1">
-              streak
+              {t("calendar.streak")}
             </span>
           </div>
         </div>

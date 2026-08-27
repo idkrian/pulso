@@ -9,8 +9,8 @@ import {
   LuDumbbell,
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
-import { MuscleGroupLabel } from "../dtos/muscle.dto";
 import { DEFAULT_ACCENT, muscleGroupAccent, summarizeSplit } from "../utils";
+import { useMuscleGroupLabel, useT } from "@/i18n";
 
 interface TrainingSplitCardProps {
   split: TrainingSplitDto;
@@ -31,6 +31,8 @@ const TrainingSplitCard = ({
 }: TrainingSplitCardProps) => {
   const MAX_EXERCISES_VISIBLE = fullHeight ? 12 : 4;
   const navigate = useNavigate();
+  const t = useT();
+  const muscleGroupLabel = useMuscleGroupLabel();
   const summary = summarizeSplit(split);
   const accent = summary.primaryGroup
     ? muscleGroupAccent[summary.primaryGroup]
@@ -72,8 +74,11 @@ const TrainingSplitCard = ({
         <div className="flex-1 min-w-0">
           <p className="text-lg font-bold text-white truncate">{split.title}</p>
           <p className="text-xs text-white/70">
-            {summary.muscleGroups.length} muscle group
-            {summary.muscleGroups.length === 1 ? "" : "s"}
+            {summary.muscleGroups.length === 1
+              ? t("trainingSplits.muscleGroupCount", { count: 1 })
+              : t("trainingSplits.muscleGroupCountPlural", {
+                  count: summary.muscleGroups.length,
+                })}
           </p>
         </div>
       </div>
@@ -86,7 +91,7 @@ const TrainingSplitCard = ({
                 key={group}
                 className={`text-[11px] px-2 py-0.5 rounded-full border ${muscleGroupAccent[group].chip}`}
               >
-                {MuscleGroupLabel[group]}
+                {muscleGroupLabel(group)}
               </span>
             ))}
           </div>
@@ -99,7 +104,7 @@ const TrainingSplitCard = ({
               <span className="text-sm font-bold">{summary.exerciseCount}</span>
             </div>
             <span className="text-[10px] text-lightGrey/60 uppercase tracking-wide">
-              exercises
+              {t("trainingSplits.exercises")}
             </span>
           </div>
           <div className="flex flex-col items-center justify-center border-x border-white/5">
@@ -108,7 +113,7 @@ const TrainingSplitCard = ({
               <span className="text-sm font-bold">{summary.totalSets}</span>
             </div>
             <span className="text-[10px] text-lightGrey/60 uppercase tracking-wide">
-              sets
+              {t("trainingSplits.sets")}
             </span>
           </div>
           <div className="flex flex-col items-center justify-center">
@@ -121,7 +126,7 @@ const TrainingSplitCard = ({
               </span>
             </div>
             <span className="text-[10px] text-lightGrey/60 uppercase tracking-wide">
-              duration
+              {t("trainingSplits.duration")}
             </span>
           </div>
         </div>
@@ -141,7 +146,7 @@ const TrainingSplitCard = ({
             ))}
             {hiddenCount > 0 && (
               <span className="text-xs text-lightGrey/50 italic">
-                +{hiddenCount} more
+                {t("trainingSplits.moreExercises", { count: hiddenCount })}
               </span>
             )}
           </div>
@@ -154,11 +159,11 @@ const TrainingSplitCard = ({
               className="flex-1 flex items-center justify-center gap-1.5 h-9 rounded-md bg-indigo hover:bg-darkIndigo text-white text-sm font-semibold cursor-pointer transition"
             >
               <LuPlay size={14} />
-              Start Workout
+              {t("trainingSplits.startWorkout")}
             </button>
             <button
               onClick={stopAnd(() => navigate(`/training-splits/${split.id}`))}
-              aria-label="Edit split"
+              aria-label={t("trainingSplits.editSplit")}
               className="flex items-center justify-center w-9 h-9 rounded-md bg-darkGrey hover:bg-darkGrey/70 text-white cursor-pointer transition"
             >
               <LuPencil size={16} className="text-amber-400" />
@@ -166,7 +171,7 @@ const TrainingSplitCard = ({
             {onDelete && (
               <button
                 onClick={stopAnd(() => onDelete(split))}
-                aria-label="Delete split"
+                aria-label={t("trainingSplits.deleteSplit")}
                 className="flex items-center justify-center w-9 h-9 rounded-md bg-darkGrey hover:bg-red-500/20 text-white cursor-pointer transition"
               >
                 <LuTrash2 size={16} className="text-red-400" />

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
-import { MuscleGroupLabel, MuscleLabel } from "@/dtos/muscle.dto";
 import type { ExerciseDto } from "@/dtos/exercise.dto";
 import type { ExerciseStatsDto } from "@/dtos/exercise.dto";
 import MuscleIcon from "@/components/exercises/MuscleIcon";
@@ -9,7 +8,12 @@ import ExerciseProgressChart from "@/components/charts/ExerciseProgressChart";
 import { getExerciseStats } from "@/api/exercise";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatWeight } from "@/utils/units";
-import { formatDate } from "@/utils/date";
+import {
+  useFormatDate,
+  useMuscleGroupLabel,
+  useMuscleLabel,
+  useT,
+} from "@/i18n";
 
 type Props = {
   exercise: ExerciseDto | null;
@@ -21,9 +25,12 @@ type Props = {
 const ExerciseDrawer = ({ exercise, onClose, onEdit, onDelete }: Props) => {
   const open = !!exercise;
   const { unit } = useAuth();
+  const t = useT();
+  const formatDate = useFormatDate();
+  const muscleLabel = useMuscleLabel();
+  const muscleGroupLabel = useMuscleGroupLabel();
   const [stats, setStats] = useState<ExerciseStatsDto | null>(null);
   const [loading, setLoading] = useState(false);
-  // Global catalog entries (userId === null) belong to the app, not the user.
   const isCustom = exercise?.userId !== null;
 
   useEffect(() => {
@@ -52,7 +59,7 @@ const ExerciseDrawer = ({ exercise, onClose, onEdit, onDelete }: Props) => {
           <>
             <div className="flex items-center justify-between p-5 border-b border-mediumGrey">
               <p className="text-xs uppercase tracking-wider text-lightGrey/60 font-semibold">
-                Exercise Details
+                {t("exerciseDrawer.title")}
               </p>
               <IoClose
                 size={22}
@@ -75,30 +82,32 @@ const ExerciseDrawer = ({ exercise, onClose, onEdit, onDelete }: Props) => {
                           : "bg-mediumGrey text-lightGrey/60"
                       }`}
                     >
-                      {isCustom ? "Custom" : "Catalog"}
+                      {isCustom
+                        ? t("exerciseDrawer.custom")
+                        : t("exerciseDrawer.catalog")}
                     </span>
                   </div>
                   <p className="text-sm text-lightGrey/60">
-                    {MuscleGroupLabel[exercise.muscleGroup]}
+                    {muscleGroupLabel(exercise.muscleGroup)}
                   </p>
                 </div>
               </div>
 
-              <Section label="Primary Muscle">
+              <Section label={t("exerciseDrawer.primaryMuscle")}>
                 <span className="inline-block text-sm px-3 py-1.5 rounded-md bg-darkIndigo/40 text-lightIndigo border border-indigo/30">
-                  {MuscleLabel[exercise.muscle]}
+                  {muscleLabel(exercise.muscle)}
                 </span>
               </Section>
 
               {exercise.description && (
-                <Section label="Description">
+                <Section label={t("exerciseDrawer.description")}>
                   <p className="text-sm text-lightGrey leading-relaxed">
                     {exercise.description}
                   </p>
                 </Section>
               )}
 
-              <Section label="Personal Best">
+              <Section label={t("exerciseDrawer.personalBest")}>
                 {loading ? (
                   <Placeholder />
                 ) : stats?.personalBest ? (
@@ -108,31 +117,38 @@ const ExerciseDrawer = ({ exercise, onClose, onEdit, onDelete }: Props) => {
                         value={`${formatWeight(stats.personalBest.weight, unit)} × ${stats.personalBest.reps}`}
                       />
                       <Stat
-                        value={`${formatWeight(stats.personalBest.estimatedOneRepMax, unit)} est. 1RM`}
+                        value={t("exerciseDrawer.estimatedOneRepMax", {
+                          weight: formatWeight(
+                            stats.personalBest.estimatedOneRepMax,
+                            unit,
+                          ),
+                        })}
                       />
                     </div>
                     {stats.bestWeight !== null && (
                       <p className="text-xs text-lightGrey/50">
-                        Heaviest ever: {formatWeight(stats.bestWeight, unit)}
+                        {t("exerciseDrawer.heaviestEver", {
+                          weight: formatWeight(stats.bestWeight, unit),
+                        })}
                       </p>
                     )}
                   </div>
                 ) : (
-                  <Empty text="No data yet — log a workout to see your PRs." />
+                  <Empty text={t("exerciseDrawer.noPersonalBest")} />
                 )}
               </Section>
 
-              <Section label="Progression">
+              <Section label={t("exerciseDrawer.progression")}>
                 {loading ? (
                   <Placeholder />
                 ) : stats && stats.history.length > 0 ? (
                   <ExerciseProgressChart history={stats.history} />
                 ) : (
-                  <Empty text="Volume and weight trends will appear here." />
+                  <Empty text={t("exerciseDrawer.noProgression")} />
                 )}
               </Section>
 
-              <Section label="Last Performed">
+              <Section label={t("exerciseDrawer.lastPerformed")}>
                 {loading ? (
                   <Placeholder />
                 ) : stats?.lastPerformed ? (
@@ -141,14 +157,14 @@ const ExerciseDrawer = ({ exercise, onClose, onEdit, onDelete }: Props) => {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
-                    }, "en-US")}
+                    })}
                   </p>
                 ) : (
-                  <Empty text="Not performed yet." />
+                  <Empty text={t("exerciseDrawer.notPerformed")} />
                 )}
               </Section>
 
-              <Section label="History">
+              <Section label={t("exerciseDrawer.history")}>
                 {loading ? (
                   <Placeholder />
                 ) : stats && stats.history.length > 0 ? (
@@ -162,10 +178,12 @@ const ExerciseDrawer = ({ exercise, onClose, onEdit, onDelete }: Props) => {
                               month: "short",
                               day: "numeric",
                               year: "numeric",
-                            }, "en-US")}
+                            })}
                           </p>
                           <p className="text-[10px] text-lightGrey/40">
-                            Vol {formatWeight(entry.totalVolume, unit)}
+                            {t("exerciseDrawer.volume", {
+                              weight: formatWeight(entry.totalVolume, unit),
+                            })}
                           </p>
                         </div>
                         <div className="flex flex-col gap-1">
@@ -174,15 +192,19 @@ const ExerciseDrawer = ({ exercise, onClose, onEdit, onDelete }: Props) => {
                               key={set.setNumber}
                               className="text-sm text-lightGrey"
                             >
-                              Set {set.setNumber}:{" "}
+                              {t("exerciseDrawer.setNumber", {
+                                number: set.setNumber,
+                              })}{" "}
                               <span className="font-medium">
-                                {set.reps} reps ×{" "}
-                                {formatWeight(set.weight, unit)}
+                                {t("exerciseDrawer.setDetail", {
+                                  reps: set.reps,
+                                  weight: formatWeight(set.weight, unit),
+                                })}
                               </span>
                               {set.rpe !== null && (
                                 <span className="text-lightGrey/40">
                                   {" "}
-                                  @ RPE {set.rpe}
+                                  {t("exerciseDrawer.rpe", { rpe: set.rpe })}
                                 </span>
                               )}
                             </p>
@@ -192,7 +214,7 @@ const ExerciseDrawer = ({ exercise, onClose, onEdit, onDelete }: Props) => {
                     ))}
                   </div>
                 ) : (
-                  <Empty text="Volume and weight trends will appear here." />
+                  <Empty text={t("exerciseDrawer.noProgression")} />
                 )}
               </Section>
             </div>
@@ -205,20 +227,19 @@ const ExerciseDrawer = ({ exercise, onClose, onEdit, onDelete }: Props) => {
                     className="flex-1 flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold bg-mediumGrey hover:bg-mediumGrey/70 transition-colors cursor-pointer"
                   >
                     <FiEdit2 size={14} />
-                    Edit
+                    {t("common.edit")}
                   </button>
                   <button
                     onClick={() => onDelete?.(exercise)}
                     className="flex-1 flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-colors cursor-pointer"
                   >
                     <FiTrash2 size={14} />
-                    Delete
+                    {t("common.delete")}
                   </button>
                 </>
               ) : (
                 <p className="flex-1 text-center text-xs text-lightGrey/50 py-2.5">
-                  Catalog exercises can't be edited. Create your own to
-                  customize it.
+                  {t("exerciseDrawer.catalogLocked")}
                 </p>
               )}
             </div>

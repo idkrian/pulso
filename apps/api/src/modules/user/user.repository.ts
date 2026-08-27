@@ -4,6 +4,7 @@ import type {
   CreateUserRequestDto,
   UpdateMeRequestDto,
 } from "./user.schema.js";
+import type { Locale } from "../../shared/constants/locales.js";
 
 const publicUserSelect = {
   id: true,
@@ -16,12 +17,15 @@ const publicUserSelect = {
 } as const;
 
 export const userRepository = {
-  async createUser(data: CreateUserRequestDto) {
+  async createUser(
+    data: CreateUserRequestDto & { languagePreference: Locale },
+  ) {
     return await prisma.users.create({
       data: {
         name: data.name,
         email: data.email,
         password: data.password,
+        languagePreference: data.languagePreference,
       },
       select: publicUserSelect,
     });

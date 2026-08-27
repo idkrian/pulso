@@ -3,6 +3,7 @@ import type { LoggedSet } from "@/dtos/workout.dto";
 import { rpeColor } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { toCanonicalWeight, toDisplayWeight, weightStep } from "@/utils/units";
+import { useT } from "@/i18n";
 
 type Props = {
   set: LoggedSet;
@@ -14,6 +15,7 @@ type Props = {
 
 const SetRow = ({ set, index, targetReps, onUpdate, onLog }: Props) => {
   const { unit } = useAuth();
+  const t = useT();
   const step = weightStep(unit);
   // set.weight is canonical (kg); the input works in the user's unit.
   const displayWeight = toDisplayWeight(set.weight, unit);
@@ -74,7 +76,7 @@ const SetRow = ({ set, index, targetReps, onUpdate, onLog }: Props) => {
 
       <div className="order-last col-span-4 flex items-center gap-1.5 lg:order-0 lg:col-span-1">
         <span className="text-[10px] uppercase tracking-wider text-lightGrey/50 lg:hidden">
-          RPE
+          {t("workout.colRpe")}
         </span>
         <input
           type="range"

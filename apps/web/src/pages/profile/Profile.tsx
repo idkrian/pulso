@@ -5,19 +5,20 @@ import BodyWeightChart from "@/components/charts/BodyWeightChart";
 import Button from "@/components/ui/Button";
 import { useAuth } from "@/contexts/AuthContext";
 import type { BodyWeightDto } from "@/dtos/body-weight.dto";
-import type { UnitPreference } from "@/dtos/auth.dto";
-// import type { LanguagePreference } from "@/dtos/auth.dto";
+import type { LanguagePreference, UnitPreference } from "@/dtos/auth.dto";
 import { formatWeight, toCanonicalWeight, unitLabel } from "@/utils/units";
-import { formatDate } from "@/utils/date";
+import { useFormatDate, useT } from "@/i18n";
 
 const UNITS: UnitPreference[] = ["KG", "LB"];
-// const LANGUAGES: { value: LanguagePreference; label: string }[] = [
-//   { value: "en", label: "EN" },
-//   { value: "pt", label: "PT" },
-// ];
+const LANGUAGES: { value: LanguagePreference; label: string }[] = [
+  { value: "en", label: "EN" },
+  { value: "pt", label: "PT" },
+];
 
 const Profile = () => {
-  const { user, unit, updateProfile } = useAuth();
+  const { user, unit, locale, updateProfile } = useAuth();
+  const t = useT();
+  const formatDate = useFormatDate();
   const [entries, setEntries] = useState<BodyWeightDto[]>([]);
   const [weightInput, setWeightInput] = useState("");
   const [saving, setSaving] = useState(false);
@@ -60,14 +61,14 @@ const Profile = () => {
     }
   };
 
-  // const changeLanguage = async (next: LanguagePreference) => {
-  //   if (next === locale) return;
-  //   try {
-  //     await updateProfile({ languagePreference: next });
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const changeLanguage = async (next: LanguagePreference) => {
+    if (next === locale) return;
+    try {
+      await updateProfile({ languagePreference: next });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="flex w-full flex-col gap-3 lg:h-full lg:overflow-hidden">
@@ -80,7 +81,9 @@ const Profile = () => {
             <p className="text-xl font-bold leading-tight text-white">
               {latest ? formatWeight(latest.weight, unit) : "--"}
             </p>
-            <p className="truncate text-xs text-lightGrey/60">Current weight</p>
+            <p className="truncate text-xs text-lightGrey/60">
+              {t("profile.currentWeight")}
+            </p>
           </div>
         </div>
 
@@ -99,7 +102,7 @@ const Profile = () => {
                 : "--"}
             </p>
             <p className="truncate text-xs text-lightGrey/60">
-              Since last entry
+              {t("profile.sinceLastEntry")}
             </p>
           </div>
         </div>
@@ -127,7 +130,6 @@ const Profile = () => {
                 </button>
               ))}
             </div>
-            {/* Language toggle: hidden until UI i18n is done. Uncomment to re-enable.
             <div className="flex gap-1">
               {LANGUAGES.map((option) => (
                 <button
@@ -143,17 +145,16 @@ const Profile = () => {
                 </button>
               ))}
             </div>
-            */}
           </div>
         </div>
       </div>
 
       <div className="grid min-w-0 gap-3 lg:flex-1 lg:min-h-0 lg:grid-cols-[280px_1fr]">
         <div className="flex min-w-0 flex-col gap-3 rounded-lg bg-mediumGrey p-4 lg:min-h-0">
-          <p className="text-sm font-semibold text-white">Log body weight</p>
-          <p className="text-xs text-lightGrey/60">
-            Weigh yourself at the same time of day for a consistent trend.
+          <p className="text-sm font-semibold text-white">
+            {t("profile.logBodyWeight")}
           </p>
+          <p className="text-xs text-lightGrey/60">{t("profile.weighHint")}</p>
           <div className="flex items-center gap-2">
             <input
               type="number"
@@ -170,7 +171,7 @@ const Profile = () => {
           </div>
           <Button
             fullWidth
-            label={saving ? "Saving..." : "Log Weight"}
+            label={saving ? t("profile.saving") : t("profile.logWeight")}
             onClick={logWeight}
           />
 
@@ -187,7 +188,7 @@ const Profile = () => {
                     {formatDate(entry.createdAt, {
                       month: "short",
                       day: "numeric",
-                    }, "en-US")}
+                    })}
                   </span>
                   <span className="font-semibold text-white">
                     {formatWeight(entry.weight, unit)}

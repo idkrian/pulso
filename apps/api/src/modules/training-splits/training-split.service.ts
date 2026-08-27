@@ -5,6 +5,8 @@ import type {
   CreateTrainingSplitRequestDto,
   UpdateTrainingSplitRequestDto,
 } from "./training-split.scheme.js";
+import type { Locale } from "../../shared/constants/locales.js";
+import { withTranslatedSplitExercises } from "../../shared/utils/exercise-translation.js";
 
 export const trainingSplitService = {
   async createTrainingSplit(
@@ -14,15 +16,27 @@ export const trainingSplitService = {
     return await trainingSplitRepository.createTrainingSplit(userId, data);
   },
 
-  async getAllUserTrainingSplits(userId: number) {
-    return await trainingSplitRepository.getAllUserTrainingSplits(userId);
+  async getAllUserTrainingSplits(userId: number, locale: Locale) {
+    const splits = await trainingSplitRepository.getAllUserTrainingSplits(
+      userId,
+      locale,
+    );
+
+    return splits.map(withTranslatedSplitExercises);
   },
 
-  async getUserTrainingSplitById(userId: number, trainingSplitId: number) {
-    return await trainingSplitRepository.getUserTrainingSplitById(
+  async getUserTrainingSplitById(
+    userId: number,
+    trainingSplitId: number,
+    locale: Locale,
+  ) {
+    const split = await trainingSplitRepository.getUserTrainingSplitById(
       userId,
       trainingSplitId,
+      locale,
     );
+
+    return split ? withTranslatedSplitExercises(split) : split;
   },
 
   async updateUserTrainingSplit(
@@ -30,16 +44,20 @@ export const trainingSplitService = {
     trainingSplitId: number,
     data: UpdateTrainingSplitRequestDto,
     res: Response,
+    locale: Locale,
   ) {
     if (!trainingSplitId) {
       requestErrorHandler(res, "Training Split ID not informed!");
     }
 
-    return await trainingSplitRepository.updateUserTrainingSplit(
+    const split = await trainingSplitRepository.updateUserTrainingSplit(
       userId,
       trainingSplitId,
       data,
+      locale,
     );
+
+    return withTranslatedSplitExercises(split);
   },
 
   async deleteUserTrainingSplit(

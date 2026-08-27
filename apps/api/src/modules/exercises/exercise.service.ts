@@ -6,6 +6,7 @@ import type {
   UpdateExerciseRequestDto,
 } from "./exercise.schema.js";
 import type { Locale } from "../../shared/constants/locales.js";
+import { withExerciseTranslation } from "../../shared/utils/exercise-translation.js";
 import type {
   ExerciseHistoryEntryDto,
   ExercisePerformanceDto,
@@ -118,16 +119,7 @@ export const exerciseService = {
 
   async getAllExercises(userId: number, locale: Locale) {
     const exercises = await exerciseRepository.getAllExercises(userId, locale);
-
-    // The translation (if any) wins; otherwise the canonical title/description stays.
-    return exercises.map(({ translations, ...exercise }) => {
-      const translation = translations[0];
-      return {
-        ...exercise,
-        title: translation?.title ?? exercise.title,
-        description: translation?.description ?? exercise.description,
-      };
-    });
+    return exercises.map(withExerciseTranslation);
   },
 
   async getAllExercisesByMuscleGroup(userId: number, locale: Locale) {

@@ -5,7 +5,7 @@ import { formatDate } from "./date";
 // Re-exported so existing `@/utils` imports keep working; defined in ./date.
 export { APP_TZ, dayKey, formatDate, isSameDay, todayKey } from "./date";
 
-export const getWeekDays = (weekOffset: number = 0) => {
+export const getWeekDays = (weekOffset: number = 0, locale?: string) => {
   const days = [];
   const today = new Date();
   const dayOfWeek = today.getDay();
@@ -20,8 +20,8 @@ export const getWeekDays = (weekOffset: number = 0) => {
     date.setDate(monday.getDate() + i);
     days.push({
       date: date,
-      dayName: formatDate(date, { weekday: "long" }),
-      day: formatDate(date, { month: "numeric", day: "numeric" }),
+      dayName: formatDate(date, { weekday: "long" }, locale),
+      day: formatDate(date, { month: "numeric", day: "numeric" }, locale),
       dayNumber: date.getDay(),
     });
   }
@@ -35,20 +35,34 @@ export const startOfDay = (d: Date) => {
   return copy;
 };
 
-export const formatWeekRangeLabel = (days: { date: Date }[]) => {
-  if (days.length === 0) return "";
+export interface WeekRangeParts {
+  sameMonth: boolean;
+  month: string;
+  start: string;
+  end: string;
+}
+
+export const weekRangeParts = (
+  days: { date: Date }[],
+  locale?: string,
+): WeekRangeParts | null => {
+  if (days.length === 0) return null;
   const first = days[0].date;
   const last = days[days.length - 1].date;
   const sameMonth = first.getMonth() === last.getMonth();
   const fmt = (d: Date) =>
-    formatDate(d, {
-      day: "2-digit",
-      month: sameMonth ? undefined : "short",
-    });
-  const monthLabel = formatDate(first, { month: "long" });
-  return sameMonth
-    ? `${monthLabel} ${fmt(first)} – ${fmt(last)}`
-    : `${fmt(first)} – ${fmt(last)}`;
+    formatDate(
+      d,
+      { day: "2-digit", month: sameMonth ? undefined : "short" },
+      locale,
+    );
+
+  return {
+    sameMonth,
+    month: formatDate(first, { month: "long" }, locale),
+    start: fmt(first),
+    end: fmt(last),
+  };
 };
 
 export const getExercisesByMuscleGroup = (
@@ -98,7 +112,10 @@ export interface SplitSummary {
 
 export const summarizeSplit = (split: TrainingSplitDto): SplitSummary => {
   const exerciseCount = split.exercises.length;
-  const totalSets = split.exercises.reduce((sum, ex) => sum + (ex.sets ?? 0), 0);
+  const totalSets = split.exercises.reduce(
+    (sum, ex) => sum + (ex.sets ?? 0),
+    0,
+  );
   const estimatedMinutes = totalSets > 0 ? Math.round(totalSets * 2 + 5) : 0;
 
   const groupCounts = new Map<MuscleGroupType, number>();

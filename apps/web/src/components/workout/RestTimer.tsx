@@ -1,5 +1,6 @@
 import { LuPause, LuPlay, LuRotateCw } from "react-icons/lu";
 import { REST_PRESETS, formatTime } from "@/utils";
+import { useT } from "@/i18n";
 
 type Props = {
   remaining: number;
@@ -18,6 +19,7 @@ const RestTimer = ({
   onToggle,
   onReset,
 }: Props) => {
+  const t = useT();
   const pct = total > 0 ? (remaining / total) * 100 : 0;
   const ringColor = pct > 60 ? "#10b981" : pct > 30 ? "#f59e0b" : "#ef4444";
   const circumference = 2 * Math.PI * 45;
@@ -55,7 +57,7 @@ const RestTimer = ({
       </div>
       <div className="flex flex-col gap-2 flex-1 min-w-0">
         <span className="text-[10px] uppercase tracking-widest text-lightGrey/60">
-          Rest Timer
+          {t("workout.restTimer")}
         </span>
         <div className="flex gap-1 flex-wrap">
           {REST_PRESETS.map((s) => (

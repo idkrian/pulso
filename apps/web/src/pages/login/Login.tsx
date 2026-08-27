@@ -11,11 +11,13 @@ import {
   LuRotateCw,
 } from "react-icons/lu";
 import { useAuth } from "@/contexts/AuthContext";
+import { useT } from "@/i18n";
 import Icon from "@/assets/icons/pulse-white.svg";
 import Logo from "@/assets/icons/pulse-gradient.svg";
 
 const Login = () => {
   const { isAuthenticated, login, register } = useAuth();
+  const t = useT();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -56,16 +58,16 @@ const Login = () => {
       if (axios.isAxiosError(err)) {
         const status = err.response?.status;
         if (isSignup && status === 409) {
-          setError("This email is already registered.");
+          setError(t("login.error.emailTaken"));
         } else if (!isSignup && status === 401) {
-          setError("Incorrect email or password.");
+          setError(t("login.error.badCredentials"));
         } else if (isSignup) {
-          setError("Couldn't create your account. Please try again.");
+          setError(t("login.error.signupFailed"));
         } else {
-          setError("Couldn't sign you in. Please try again.");
+          setError(t("login.error.loginFailed"));
         }
       } else {
-        setError("Something went wrong. Please try again.");
+        setError(t("common.error.generic"));
       }
     } finally {
       setLoading(false);
@@ -92,11 +94,9 @@ const Login = () => {
             </span>
           </div>
           <h1 className="auth-shimmer-text bg-linear-to-r from-white via-lightIndigo to-white bg-clip-text text-2xl font-extrabold leading-snug text-transparent">
-            Feel every beat of your progress.
+            {t("login.tagline")}
           </h1>
-          <p className="text-sm text-white/70">
-            Your workouts, your progress — all in one place.
-          </p>
+          <p className="text-sm text-white/70">{t("login.subtitle")}</p>
         </div>
 
         {/* Form side */}
@@ -115,12 +115,12 @@ const Login = () => {
 
             <div className="space-y-1.5">
               <h2 className="text-2xl font-bold text-white">
-                {isSignup ? "Create your account" : "Welcome back"}
+                {isSignup ? t("login.signupHeading") : t("login.loginHeading")}
               </h2>
               <p className="text-sm text-lightGrey/50">
                 {isSignup
-                  ? "Fill in your details to get started."
-                  : "Enter your credentials to continue."}
+                  ? t("login.signupSubheading")
+                  : t("login.loginSubheading")}
               </p>
             </div>
 
@@ -134,7 +134,7 @@ const Login = () => {
               {isSignup && (
                 <label className="block space-y-1.5">
                   <span className="text-xs font-medium uppercase tracking-wider text-lightGrey/50">
-                    Name
+                    {t("login.nameLabel")}
                   </span>
                   <div className="group relative">
                     <LuUser
@@ -146,7 +146,7 @@ const Login = () => {
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="Your name"
+                      placeholder={t("login.namePlaceholder")}
                       className="w-full rounded-lg border border-mediumGrey bg-mediumGrey/40 py-2.5 pl-10 pr-3 text-sm text-white placeholder:text-lightGrey/30 outline-none transition-all focus:border-indigo focus:bg-mediumGrey focus:ring-2 focus:ring-indigo/30"
                     />
                   </div>
@@ -155,7 +155,7 @@ const Login = () => {
 
               <label className="block space-y-1.5">
                 <span className="text-xs font-medium uppercase tracking-wider text-lightGrey/50">
-                  Email
+                  {t("login.emailLabel")}
                 </span>
                 <div className="group relative">
                   <LuMail
@@ -168,7 +168,7 @@ const Login = () => {
                     autoFocus
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@email.com"
+                    placeholder={t("login.emailPlaceholder")}
                     className="w-full rounded-lg border border-mediumGrey bg-mediumGrey/40 py-2.5 pl-10 pr-3 text-sm text-white placeholder:text-lightGrey/30 outline-none transition-all focus:border-indigo focus:bg-mediumGrey focus:ring-2 focus:ring-indigo/30"
                   />
                 </div>
@@ -176,7 +176,7 @@ const Login = () => {
 
               <label className="block space-y-1.5">
                 <span className="text-xs font-medium uppercase tracking-wider text-lightGrey/50">
-                  Password
+                  {t("login.passwordLabel")}
                 </span>
                 <div className="group relative">
                   <LuLock
@@ -216,7 +216,7 @@ const Login = () => {
                 <LuRotateCw size={20} className="animate-spin" />
               ) : (
                 <>
-                  {isSignup ? "Create account" : "Sign in"}
+                  {isSignup ? t("login.signupSubmit") : t("login.loginSubmit")}
                   <LuArrowRight
                     size={18}
                     className="transition-transform group-hover:translate-x-1"
@@ -226,13 +226,15 @@ const Login = () => {
             </button>
 
             <p className="text-center text-sm text-lightGrey/50">
-              {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
+              {isSignup ? t("login.hasAccount") : t("login.noAccount")}{" "}
               <button
                 type="button"
                 onClick={toggleMode}
                 className="font-semibold text-lightIndigo transition-colors hover:text-indigo cursor-pointer"
               >
-                {isSignup ? "Sign in" : "Sign up"}
+                {isSignup
+                  ? t("login.switchToLogin")
+                  : t("login.switchToSignup")}
               </button>
             </p>
           </form>

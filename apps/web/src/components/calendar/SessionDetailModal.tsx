@@ -1,12 +1,12 @@
 import { LuClock, LuDumbbell, LuLayers, LuX } from "react-icons/lu";
 import type { WorkoutSessionDto } from "@/dtos/workout-session.dto";
 import { formatTime } from "@/utils";
-import { formatDate } from "@/utils/date";
 import {
   formatVolume,
   sessionTotalSets,
   sessionVolume,
 } from "@/utils/workout-history";
+import { useFormatDate, useT } from "@/i18n";
 
 interface SessionDetailModalProps {
   open: boolean;
@@ -19,6 +19,9 @@ const SessionDetailModal = ({
   session,
   onClose,
 }: SessionDetailModalProps) => {
+  const t = useT();
+  const formatDate = useFormatDate();
+
   if (!open || !session) return null;
 
   const volume = sessionVolume(session);
@@ -36,7 +39,8 @@ const SessionDetailModal = ({
         <div className="flex items-start justify-between px-6 py-4 border-b border-darkGrey">
           <div>
             <h2 className="text-xl font-bold">
-              {session.trainingSplit?.title ?? "Workout"}
+              {session.trainingSplit?.title ??
+                t("sessionDetailModal.fallbackTitle")}
             </h2>
             <p className="text-xs text-lightGrey/60 capitalize">
               {formatDate(session.createdAt, { dateStyle: "full" })}
@@ -44,7 +48,7 @@ const SessionDetailModal = ({
           </div>
           <button
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t("common.close")}
             className="flex items-center justify-center w-8 h-8 rounded-md bg-darkGrey hover:bg-darkGrey/70 text-white cursor-pointer transition"
           >
             <LuX size={16} />
@@ -60,7 +64,7 @@ const SessionDetailModal = ({
               </span>
             </div>
             <span className="text-[10px] text-lightGrey/60 uppercase">
-              duration
+              {t("sessionDetailModal.duration")}
             </span>
           </div>
           <div className="flex flex-col items-center rounded-md bg-darkGrey/60 py-2">
@@ -69,7 +73,7 @@ const SessionDetailModal = ({
               <span className="font-bold">{totalSets}</span>
             </div>
             <span className="text-[10px] text-lightGrey/60 uppercase">
-              sets
+              {t("sessionDetailModal.sets")}
             </span>
           </div>
           <div className="flex flex-col items-center rounded-md bg-darkGrey/60 py-2">
@@ -78,14 +82,14 @@ const SessionDetailModal = ({
               <span className="font-bold">{formatVolume(volume)}</span>
             </div>
             <span className="text-[10px] text-lightGrey/60 uppercase">
-              volume
+              {t("sessionDetailModal.volume")}
             </span>
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 py-4">
           <p className="text-xs uppercase tracking-wider text-lightGrey/60 mb-3">
-            Exercises
+            {t("sessionDetailModal.exercises")}
           </p>
           <div className="flex flex-col gap-3">
             {session.workoutExerciseLogs.map((log) => (

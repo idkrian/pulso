@@ -31,7 +31,10 @@ export const trainingSplitDayController = {
     try {
       const userId = Number(req.userId);
       const trainingSplitDays =
-        await trainingSplitDaysService.getAllTrainingSplitDays(userId);
+        await trainingSplitDaysService.getAllTrainingSplitDays(
+          userId,
+          req.locale,
+        );
 
       requestSuccessHandler(
         res,

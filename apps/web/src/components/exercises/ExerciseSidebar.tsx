@@ -1,10 +1,7 @@
 import { LuLayoutGrid } from "react-icons/lu";
-import {
-  MuscleGroup,
-  MuscleGroupLabel,
-  type ExerciseFilter,
-} from "@/dtos/muscle.dto";
+import { MuscleGroup, type ExerciseFilter } from "@/dtos/muscle.dto";
 import MuscleIcon from "@/components/exercises/MuscleIcon";
+import { useMuscleGroupLabel, useT } from "@/i18n";
 
 type Props = {
   filter: ExerciseFilter;
@@ -12,35 +9,40 @@ type Props = {
   onChange: (filter: ExerciseFilter) => void;
 };
 
-const ExerciseSidebar = ({ filter, counts, onChange }: Props) => (
-  <aside className="flex shrink-0 flex-col border-b border-darkGrey bg-darkGrey/40 lg:w-64 lg:border-b-0 lg:border-r">
-    <div className="hidden px-5 py-5 lg:block">
-      <p className="text-xs uppercase tracking-wider text-lightGrey/60 font-semibold">
-        Filter by muscle
-      </p>
-    </div>
-    <nav className="flex gap-2 overflow-x-auto px-4 py-3 lg:flex-1 lg:flex-col lg:gap-1 lg:overflow-x-visible lg:overflow-y-auto lg:px-3 lg:py-0 lg:pb-4">
-      <SidebarItem
-        label="All Exercises"
-        count={counts.ALL ?? 0}
-        active={filter === "ALL"}
-        onClick={() => onChange("ALL")}
-        icon={<LuLayoutGrid size={18} />}
-      />
-      <div className="hidden h-px bg-mediumGrey my-2 lg:block" />
-      {Object.values(MuscleGroup).map((mg) => (
+const ExerciseSidebar = ({ filter, counts, onChange }: Props) => {
+  const t = useT();
+  const muscleGroupLabel = useMuscleGroupLabel();
+
+  return (
+    <aside className="flex shrink-0 flex-col border-b border-darkGrey bg-darkGrey/40 lg:w-64 lg:border-b-0 lg:border-r">
+      <div className="hidden px-5 py-5 lg:block">
+        <p className="text-xs uppercase tracking-wider text-lightGrey/60 font-semibold">
+          {t("exercises.filterByMuscle")}
+        </p>
+      </div>
+      <nav className="flex gap-2 overflow-x-auto px-4 py-3 lg:flex-1 lg:flex-col lg:gap-1 lg:overflow-x-visible lg:overflow-y-auto lg:px-3 lg:py-0 lg:pb-4">
         <SidebarItem
-          key={mg}
-          label={MuscleGroupLabel[mg]}
-          count={counts[mg] ?? 0}
-          active={filter === mg}
-          onClick={() => onChange(mg)}
-          icon={<MuscleIcon group={mg} />}
+          label={t("exercises.allExercises")}
+          count={counts.ALL ?? 0}
+          active={filter === "ALL"}
+          onClick={() => onChange("ALL")}
+          icon={<LuLayoutGrid size={18} />}
         />
-      ))}
-    </nav>
-  </aside>
-);
+        <div className="hidden h-px bg-mediumGrey my-2 lg:block" />
+        {Object.values(MuscleGroup).map((mg) => (
+          <SidebarItem
+            key={mg}
+            label={muscleGroupLabel(mg)}
+            count={counts[mg] ?? 0}
+            active={filter === mg}
+            onClick={() => onChange(mg)}
+            icon={<MuscleIcon group={mg} />}
+          />
+        ))}
+      </nav>
+    </aside>
+  );
+};
 
 type ItemProps = {
   label: string;

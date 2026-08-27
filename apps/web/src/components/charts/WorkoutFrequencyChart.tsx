@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   Card,
@@ -16,13 +16,7 @@ import {
 import { getAllWorkouts } from "@/api/workout";
 import type { WorkoutSessionDto } from "@/dtos/workout-session.dto";
 import { dayKey, formatDate } from "@/utils/date";
-
-const chartConfig = {
-  workouts: {
-    label: "Workouts",
-    color: "#7c3aed",
-  },
-} satisfies ChartConfig;
+import { useDateLocale, useT } from "@/i18n";
 
 function getWeekStart(dateStr: string): string {
   const d = new Date(dateStr);
@@ -33,7 +27,7 @@ function getWeekStart(dateStr: string): string {
   return dayKey(d);
 }
 
-function buildWeeklyData(workouts: WorkoutSessionDto[]) {
+function buildWeeklyData(workouts: WorkoutSessionDto[], locale: string) {
   const counts: Record<string, number> = {};
   for (const w of workouts) {
     const key = getWeekStart(w.createdAt);
@@ -43,29 +37,52 @@ function buildWeeklyData(workouts: WorkoutSessionDto[]) {
     .sort(([a], [b]) => a.localeCompare(b))
     .slice(-12)
     .map(([week, workouts]) => ({
-      week: formatDate(week + "T12:00:00", {
-        month: "short",
-        day: "numeric",
-      }, "en-US"),
+      week: formatDate(
+        week + "T12:00:00",
+        { month: "short", day: "numeric" },
+        locale,
+      ),
       workouts,
     }));
 }
 
 const WorkoutFrequencyChart = () => {
-  const [data, setData] = useState<{ week: string; workouts: number }[]>([]);
+  const t = useT();
+  const dateLocale = useDateLocale();
+  const [sessions, setSessions] = useState<WorkoutSessionDto[]>([]);
 
   useEffect(() => {
-    getAllWorkouts().then((ws) => setData(buildWeeklyData(ws)));
+    getAllWorkouts().then(setSessions);
   }, []);
+
+  const data = useMemo(
+    () => buildWeeklyData(sessions, dateLocale),
+    [sessions, dateLocale],
+  );
+
+  const chartConfig = useMemo(
+    () =>
+      ({
+        workouts: {
+          label: t("charts.workoutsSeries"),
+          color: "#7c3aed",
+        },
+      }) satisfies ChartConfig,
+    [t],
+  );
 
   if (data.length === 0) {
     return (
       <Card className="bg-mediumGrey border-none flex-1">
         <CardHeader>
-          <CardTitle className="text-white">Workout Frequency</CardTitle>
+          <CardTitle className="text-white">
+            {t("charts.workoutFrequency")}
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-lightGrey/60 text-sm">No workout history yet</p>
+          <p className="text-lightGrey/60 text-sm">
+            {t("charts.workoutFrequencyEmpty")}
+          </p>
         </CardContent>
       </Card>
     );
@@ -74,8 +91,12 @@ const WorkoutFrequencyChart = () => {
   return (
     <Card className="bg-mediumGrey border-none flex min-w-0 flex-col lg:flex-1 lg:min-h-0">
       <CardHeader className="pb-0">
-        <CardTitle className="text-white">Workout Frequency</CardTitle>
-        <CardDescription>Workouts per week (last 12 weeks)</CardDescription>
+        <CardTitle className="text-white">
+          {t("charts.workoutFrequency")}
+        </CardTitle>
+        <CardDescription>
+          {t("charts.workoutFrequencyDescription")}
+        </CardDescription>
       </CardHeader>
       <CardContent className="min-w-0 pb-2 lg:flex-1 lg:min-h-0">
         <ChartContainer config={chartConfig} className="h-56 w-full lg:h-full">
@@ -86,7 +107,11 @@ const WorkoutFrequencyChart = () => {
                 <stop offset="95%" stopColor="#7c3aed" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid vertical={false} stroke="#e5e5f0" strokeOpacity={0.08} />
+            <CartesianGrid
+              vertical={false}
+              stroke="#e5e5f0"
+              strokeOpacity={0.08}
+            />
             <XAxis
               dataKey="week"
               tick={{ fill: "#e5e5f0", fontSize: 11 }}

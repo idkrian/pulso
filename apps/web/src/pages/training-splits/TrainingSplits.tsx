@@ -11,11 +11,13 @@ import { FaPlus } from "react-icons/fa";
 import { LuClipboardList } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { getApiErrorMessage } from "@/utils/error";
+import { useT } from "@/i18n";
 
 const SKELETON_COUNT = 4;
 
 const TrainingSplits = () => {
   const navigate = useNavigate();
+  const t = useT();
   const [trainingSplits, setTrainingSplits] = useState<TrainingSplitDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [pendingDelete, setPendingDelete] = useState<TrainingSplitDto | null>(
@@ -70,10 +72,12 @@ const TrainingSplits = () => {
     <div className="relative flex w-full flex-col py-4 lg:h-full">
       <ConfirmModal
         open={pendingDelete !== null}
-        title="Delete training split?"
+        title={t("trainingSplits.deleteTitle")}
         description={
           pendingDelete
-            ? `"${pendingDelete.title}" will be permanently removed.`
+            ? t("trainingSplits.deleteDescription", {
+                title: pendingDelete.title,
+              })
             : undefined
         }
         error={deleteError}
@@ -97,11 +101,10 @@ const TrainingSplits = () => {
           </div>
           <div className="flex flex-col gap-1">
             <h2 className="text-2xl font-bold text-white">
-              No training splits yet
+              {t("trainingSplits.emptyTitle")}
             </h2>
             <p className="text-sm text-lightGrey/60 max-w-sm">
-              Create your first split to plan your weekly workouts and start
-              tracking your sessions.
+              {t("trainingSplits.emptyDescription")}
             </p>
           </div>
           <button
@@ -109,7 +112,7 @@ const TrainingSplits = () => {
             className="flex items-center gap-2 px-4 py-2 rounded-md bg-indigo hover:bg-darkIndigo text-white font-semibold cursor-pointer transition"
           >
             <FaPlus size={14} />
-            Create training split
+            {t("trainingSplits.create")}
           </button>
         </div>
       )}
@@ -129,7 +132,7 @@ const TrainingSplits = () => {
 
       {!isEmpty && (
         <button
-          aria-label="Create training split"
+          aria-label={t("trainingSplits.create")}
           className="fixed bottom-[calc(3.5rem+1rem+env(safe-area-inset-bottom))] right-4 z-40 flex items-center justify-center size-14 rounded-full bg-indigo hover:bg-darkIndigo shadow-xl cursor-pointer transition duration-300 hover:-translate-y-1 hover:scale-110 lg:bottom-6 lg:right-6"
           onClick={() => navigate("/training-splits/create")}
         >

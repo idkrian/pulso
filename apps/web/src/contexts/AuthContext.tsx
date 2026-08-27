@@ -66,6 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     applyLocaleHeader(locale);
+    document.documentElement.lang = locale;
   }, [locale]);
 
   const logout = useCallback(() => {

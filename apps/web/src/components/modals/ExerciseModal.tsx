@@ -4,10 +4,10 @@ import { FaPlus } from "react-icons/fa";
 import { FiCheck } from "react-icons/fi";
 import {
   MuscleGroup,
-  MuscleGroupLabel,
   MusclesByGroup,
   type MuscleGroupType,
 } from "@/dtos/muscle.dto";
+import { useMuscleGroupLabel, useMusclesByGroup, useT } from "@/i18n";
 import type { ExerciseDto } from "@/dtos/exercise.dto";
 import { createExercise, updateExercise } from "@/api/exercise";
 import { getApiErrorMessage } from "@/utils/error";
@@ -38,10 +38,13 @@ const ExerciseModal = ({
 }: Props) => {
   const isEditing = !!exercise;
   const baseGroup = exercise?.muscleGroup ?? initialGroup;
+  const t = useT();
+  const muscleGroupLabel = useMuscleGroupLabel();
+  const musclesByGroup = useMusclesByGroup();
 
   const [muscleGroup, setMuscleGroup] = useState<MuscleGroupType>(baseGroup);
   const [muscle, setMuscle] = useState(
-    exercise?.muscle ?? MusclesByGroup[baseGroup][0].value,
+    exercise?.muscle ?? MusclesByGroup[baseGroup][0],
   );
   const [title, setTitle] = useState(exercise?.title ?? "");
   const [description, setDescription] = useState("");
@@ -55,7 +58,7 @@ const ExerciseModal = ({
   useEffect(() => {
     const group = exercise?.muscleGroup ?? initialGroup;
     setMuscleGroup(group);
-    setMuscle(exercise?.muscle ?? MusclesByGroup[group][0].value);
+    setMuscle(exercise?.muscle ?? MusclesByGroup[group][0]);
     setTitle(exercise?.title ?? "");
     setDescription("");
   }, [initialGroup, exercise]);
@@ -68,7 +71,7 @@ const ExerciseModal = ({
 
   const onGroupChange = (group: MuscleGroupType) => {
     setMuscleGroup(group);
-    setMuscle(MusclesByGroup[group][0].value);
+    setMuscle(MusclesByGroup[group][0]);
   };
 
   const submit = async () => {
@@ -111,11 +114,13 @@ const ExerciseModal = ({
         status={feedbackStatus}
         description={
           feedbackStatus === "success"
-            ? `Exercise ${isEditing ? "updated" : "created"} successfully.`
+            ? isEditing
+              ? t("exerciseModal.updatedSuccess")
+              : t("exerciseModal.createdSuccess")
             : errorMessage ||
-              `There was an error ${
-                isEditing ? "updating" : "creating"
-              } the exercise.`
+              (isEditing
+                ? t("exerciseModal.updateError")
+                : t("exerciseModal.createError"))
         }
         onClose={() => {
           setFeedbackOpen(false);
@@ -141,10 +146,12 @@ const ExerciseModal = ({
             </div>
             <div>
               <p className="text-xs uppercase tracking-wider text-lightGrey/60 font-semibold">
-                {isEditing ? "Edit Exercise" : "New Exercise"}
+                {isEditing
+                  ? t("exerciseModal.editTitle")
+                  : t("exerciseModal.newTitle")}
               </p>
               <h2 className="text-lg font-bold leading-tight">
-                {MuscleGroupLabel[muscleGroup]}
+                {muscleGroupLabel(muscleGroup)}
               </h2>
             </div>
           </div>
@@ -157,7 +164,7 @@ const ExerciseModal = ({
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-5">
-          <Field label="Muscle Group">
+          <Field label={t("exerciseModal.muscleGroup")}>
             <div className="flex flex-wrap gap-2">
               {Object.values(MuscleGroup).map((mg) => {
                 const active = mg === muscleGroup;
@@ -173,26 +180,26 @@ const ExerciseModal = ({
                     }`}
                   >
                     <MuscleIcon group={mg} className="w-4 h-4 object-contain" />
-                    {MuscleGroupLabel[mg]}
+                    {muscleGroupLabel(mg)}
                   </button>
                 );
               })}
             </div>
           </Field>
 
-          <Field label="Target Muscle">
+          <Field label={t("exerciseModal.targetMuscle")}>
             <Select
               value={muscle}
               onValueChange={(value) => setMuscle(value as typeof muscle)}
             >
               <SelectTrigger className="w-full bg-darkGrey border-transparent text-white focus-visible:border-indigo focus-visible:ring-0">
-                <SelectValue placeholder="Select muscle" />
+                <SelectValue placeholder={t("exerciseModal.selectMuscle")} />
               </SelectTrigger>
               <SelectContent
                 position="popper"
                 className="bg-darkGrey border-darkGrey"
               >
-                {MusclesByGroup[muscleGroup].map((m) => (
+                {musclesByGroup[muscleGroup].map((m) => (
                   <SelectItem key={m.value} value={m.value}>
                     {m.text}
                   </SelectItem>
@@ -201,23 +208,23 @@ const ExerciseModal = ({
             </Select>
           </Field>
 
-          <Field label="Title">
+          <Field label={t("exerciseModal.titleLabel")}>
             <input
               type="text"
               autoFocus
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Incline Dumbbell Press"
+              placeholder={t("exerciseModal.titlePlaceholder")}
               className="w-full bg-darkGrey rounded-lg px-3 py-2.5 text-sm outline-none border border-transparent focus:border-indigo transition-colors placeholder:text-lightGrey/40"
             />
           </Field>
 
           {!isEditing && (
-            <Field label="Description" optional>
+            <Field label={t("exerciseModal.descriptionLabel")} optional>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Notes, cues, or setup details..."
+                placeholder={t("exerciseModal.descriptionPlaceholder")}
                 className="w-full bg-darkGrey rounded-lg px-3 py-2.5 text-sm outline-none border border-transparent focus:border-indigo transition-colors placeholder:text-lightGrey/40 resize-none h-24"
               />
             </Field>
@@ -230,7 +237,7 @@ const ExerciseModal = ({
             onClick={onClose}
             className="flex-1 rounded-lg px-3 py-2.5 text-sm font-semibold bg-darkGrey hover:bg-darkGrey/70 transition-colors cursor-pointer"
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             onClick={submit}
@@ -240,11 +247,11 @@ const ExerciseModal = ({
             {isEditing ? <FiCheck size={14} /> : <FaPlus size={12} />}
             {submitting
               ? isEditing
-                ? "Saving..."
-                : "Creating..."
+                ? t("exerciseModal.saving")
+                : t("exerciseModal.creating")
               : isEditing
-                ? "Save Changes"
-                : "Create Exercise"}
+                ? t("exerciseModal.saveChanges")
+                : t("exerciseModal.createExercise")}
           </button>
         </div>
       </div>
@@ -260,20 +267,24 @@ const Field = ({
   label: string;
   optional?: boolean;
   children: React.ReactNode;
-}) => (
-  <div className="flex flex-col gap-2">
-    <div className="flex items-center gap-2">
-      <p className="text-xs uppercase tracking-wider text-lightGrey/50 font-semibold">
-        {label}
-      </p>
-      {optional && (
-        <span className="text-[10px] text-lightGrey/40 normal-case tracking-normal">
-          optional
-        </span>
-      )}
+}) => {
+  const t = useT();
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <p className="text-xs uppercase tracking-wider text-lightGrey/50 font-semibold">
+          {label}
+        </p>
+        {optional && (
+          <span className="text-[10px] text-lightGrey/40 normal-case tracking-normal">
+            {t("common.optional")}
+          </span>
+        )}
+      </div>
+      {children}
     </div>
-    {children}
-  </div>
-);
+  );
+};
 
 export default ExerciseModal;

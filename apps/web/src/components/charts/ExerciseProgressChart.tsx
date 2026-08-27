@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import {
   ChartContainer,
@@ -8,18 +9,7 @@ import {
 import type { ExerciseHistoryEntryDto } from "@/dtos/exercise.dto";
 import { useAuth } from "@/contexts/AuthContext";
 import { toDisplayWeight, unitLabel } from "@/utils/units";
-import { formatDate } from "@/utils/date";
-
-const chartConfig = {
-  estimatedOneRepMax: {
-    label: "Est. 1RM",
-    color: "#a78bfa",
-  },
-  maxWeight: {
-    label: "Top set",
-    color: "#34d399",
-  },
-} satisfies ChartConfig;
+import { useFormatDate, useT } from "@/i18n";
 
 type Props = {
   history: ExerciseHistoryEntryDto[];
@@ -27,10 +17,27 @@ type Props = {
 
 const ExerciseProgressChart = ({ history }: Props) => {
   const { unit } = useAuth();
+  const t = useT();
+  const formatDate = useFormatDate();
+
+  const chartConfig = useMemo(
+    () =>
+      ({
+        estimatedOneRepMax: {
+          label: t("charts.estimatedOneRepMax"),
+          color: "#a78bfa",
+        },
+        maxWeight: {
+          label: t("charts.topSet"),
+          color: "#34d399",
+        },
+      }) satisfies ChartConfig,
+    [t],
+  );
 
   // History arrives oldest-first from the API, which is the order charts want.
   const data = history.map((entry) => ({
-    date: formatDate(entry.date, { month: "short", day: "numeric" }, "en-US"),
+    date: formatDate(entry.date, { month: "short", day: "numeric" }),
     estimatedOneRepMax: toDisplayWeight(entry.estimatedOneRepMax, unit),
     maxWeight: toDisplayWeight(entry.maxWeight, unit),
   }));
@@ -38,7 +45,7 @@ const ExerciseProgressChart = ({ history }: Props) => {
   if (data.length < 2) {
     return (
       <p className="text-sm text-lightGrey/60 italic">
-        Log this exercise at least twice to see a progression trend.
+        {t("charts.progressionEmpty")}
       </p>
     );
   }

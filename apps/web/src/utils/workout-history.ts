@@ -5,10 +5,7 @@ export const sessionVolume = (session: WorkoutSessionDto): number =>
   session.workoutExerciseLogs.reduce(
     (sum, log) =>
       sum +
-      log.workoutSets.reduce(
-        (a, s) => a + (s.weight ?? 0) * (s.reps ?? 0),
-        0,
-      ),
+      log.workoutSets.reduce((a, s) => a + (s.weight ?? 0) * (s.reps ?? 0), 0),
     0,
   );
 

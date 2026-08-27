@@ -4,8 +4,10 @@ import {
   getWorkoutSummaryStats,
   type WorkoutSummaryStats,
 } from "@/api/workout";
+import { useT } from "@/i18n";
 
 const WorkoutStatsCards = () => {
+  const t = useT();
   const [stats, setStats] = useState<WorkoutSummaryStats | null>(null);
 
   useEffect(() => {
@@ -18,26 +20,30 @@ const WorkoutStatsCards = () => {
 
   const items = [
     {
-      unit: "Workouts",
-      timeframe: "All time",
+      id: "workouts-all",
+      unit: t("stats.workouts"),
+      timeframe: t("stats.allTime"),
       value: stats?.totalWorkouts ?? "--",
       icon: Dumbbell,
     },
     {
-      unit: "Workouts",
-      timeframe: "This week",
+      id: "workouts-week",
+      unit: t("stats.workouts"),
+      timeframe: t("stats.thisWeek"),
       value: stats?.workoutsThisWeek ?? "--",
       icon: CalendarDays,
     },
     {
-      unit: "Workouts",
-      timeframe: "This month",
+      id: "workouts-month",
+      unit: t("stats.workouts"),
+      timeframe: t("stats.thisMonth"),
       value: stats?.workoutsThisMonth ?? "--",
       icon: TrendingUp,
     },
     {
-      unit: "Hours",
-      timeframe: "All time",
+      id: "hours-all",
+      unit: t("stats.hours"),
+      timeframe: t("stats.allTime"),
       value: totalHours,
       icon: Clock,
     },
@@ -45,9 +51,9 @@ const WorkoutStatsCards = () => {
 
   return (
     <div className="grid grid-cols-4 gap-2 lg:gap-3">
-      {items.map(({ unit, timeframe, value, icon: Icon }) => (
+      {items.map(({ id, unit, timeframe, value, icon: Icon }) => (
         <div
-          key={`${unit}-${timeframe}`}
+          key={id}
           className="flex min-w-0 flex-col items-center gap-1.5 rounded-lg bg-mediumGrey px-1.5 py-3 text-center lg:flex-row lg:gap-3 lg:px-4 lg:py-2.5 lg:text-left"
         >
           <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-darkIndigo/40 lg:size-9 lg:rounded-md">

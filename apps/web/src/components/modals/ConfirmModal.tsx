@@ -1,4 +1,5 @@
 import { LuTriangleAlert } from "react-icons/lu";
+import { useT } from "@/i18n";
 
 type Props = {
   open: boolean;
@@ -17,12 +18,14 @@ const ConfirmModal = ({
   title,
   description,
   error,
-  confirmLabel = "Delete",
-  cancelLabel = "Cancel",
+  confirmLabel,
+  cancelLabel,
   loading = false,
   onConfirm,
   onCancel,
 }: Props) => {
+  const t = useT();
+
   if (!open) return null;
 
   return (
@@ -40,7 +43,9 @@ const ConfirmModal = ({
           </div>
           <h2 className="text-2xl font-bold text-center">{title}</h2>
           {description && (
-            <p className="text-sm text-lightGrey/70 text-center">{description}</p>
+            <p className="text-sm text-lightGrey/70 text-center">
+              {description}
+            </p>
           )}
           {error && (
             <p className="w-full rounded-md bg-red-500/10 border border-red-500/30 px-3 py-2 text-sm text-red-400 text-center">
@@ -53,14 +58,14 @@ const ConfirmModal = ({
               disabled={loading}
               className="flex-1 rounded-md px-3 py-2 text-sm font-semibold bg-darkGrey hover:bg-darkGrey/80 cursor-pointer transition disabled:opacity-50"
             >
-              {cancelLabel}
+              {cancelLabel ?? t("common.cancel")}
             </button>
             <button
               onClick={onConfirm}
               disabled={loading}
               className="flex-1 rounded-md px-3 py-2 text-sm font-semibold bg-red-500 hover:bg-red-600 cursor-pointer transition disabled:opacity-50"
             >
-              {loading ? "..." : confirmLabel}
+              {loading ? "..." : (confirmLabel ?? t("common.delete"))}
             </button>
           </div>
         </div>

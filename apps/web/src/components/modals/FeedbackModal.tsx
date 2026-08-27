@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { GrClose } from "react-icons/gr";
 import { ImCheckmark } from "react-icons/im";
+import { useT } from "@/i18n";
 
 type Props = {
   open: boolean;
@@ -17,17 +18,19 @@ const FeedbackModal = ({
   onClose,
   description,
 }: Props) => {
+  const t = useT();
+
   if (!open) return null;
 
   const titles = {
     success: {
-      title: "Success!",
+      title: t("feedbackModal.success"),
       description,
       color: "green",
       icon: <ImCheckmark color="green" size={40} />,
     },
     error: {
-      title: "Error!",
+      title: t("feedbackModal.error"),
       description,
       color: "red",
       icon: <GrClose color="red" size={40} />,
@@ -53,7 +56,7 @@ const FeedbackModal = ({
               className="w-full rounded bg-indigo px-3 py-2 text-sm font-semibold cursor-pointer"
               onClick={onClose}
             >
-              Ok
+              {t("feedbackModal.ok")}
             </button>
           )}
         </div>

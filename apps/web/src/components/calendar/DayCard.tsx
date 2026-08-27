@@ -8,25 +8,16 @@ import {
 } from "react-icons/lu";
 import type { TrainingSplitDayEntry } from "@/dtos/training-split-day.dto";
 import type { WorkoutSessionDto } from "@/dtos/workout-session.dto";
-import {
-  DEFAULT_ACCENT,
-  formatDate,
-  muscleGroupAccent,
-  summarizeSplit,
-} from "@/utils";
+import { DEFAULT_ACCENT, muscleGroupAccent, summarizeSplit } from "@/utils";
 import {
   formatVolume,
   sessionTotalSets,
   sessionVolume,
 } from "@/utils/workout-history";
+import { useFormatDate, useT, type TranslateFn } from "@/i18n";
 
 export type DayStatus =
-  | "today"
-  | "completed"
-  | "missed"
-  | "upcoming"
-  | "rest"
-  | "empty";
+  "today" | "completed" | "missed" | "upcoming" | "rest" | "empty";
 
 interface DayCardProps {
   date: Date;
@@ -48,18 +39,18 @@ const statusStyles: Record<DayStatus, string> = {
   empty: "border-dashed border-white/10 hover:border-white/30",
 };
 
-const statusBadge = (status: DayStatus) => {
+const statusBadge = (status: DayStatus, t: TranslateFn) => {
   switch (status) {
     case "completed":
       return (
         <span className="text-center flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 uppercase tracking-wider">
-          <LuCheck size={10} /> Done
+          <LuCheck size={10} /> {t("calendar.done")}
         </span>
       );
     case "missed":
       return (
         <span className="text-center flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-300 uppercase tracking-wider">
-          <LuTriangleAlert size={10} /> Missed
+          <LuTriangleAlert size={10} /> {t("calendar.missed")}
         </span>
       );
     default:
@@ -77,13 +68,15 @@ const DayCard = ({
   onClick,
   onEdit,
 }: DayCardProps) => {
+  const t = useT();
+  const formatDate = useFormatDate();
   const split = entry?.trainingSplit ?? session?.trainingSplit;
   const summary = split?.exercises ? summarizeSplit(split) : null;
   const accent =
     summary?.primaryGroup != null
       ? muscleGroupAccent[summary.primaryGroup]
       : DEFAULT_ACCENT;
-  const badge = statusBadge(status);
+  const badge = statusBadge(status, t);
 
   return (
     <div
@@ -121,14 +114,16 @@ const DayCard = ({
           {status === "rest" && (
             <div className="flex flex-1 flex-col items-center justify-center gap-1 text-white/50">
               <LuMoon size={22} />
-              <span className="text-sm font-semibold">Rest Day</span>
+              <span className="text-sm font-semibold">
+                {t("common.restDay")}
+              </span>
             </div>
           )}
 
           {!split && !session && status !== "rest" && (
             <div className="flex flex-1 flex-col items-center justify-center gap-1 py-2 text-white/30 group-hover:text-white/60 transition">
               <LuPlus size={22} />
-              <span className="text-xs">Assign split</span>
+              <span className="text-xs">{t("calendar.assignSplit")}</span>
             </div>
           )}
 
@@ -153,7 +148,7 @@ const DayCard = ({
                         : session!.workoutExerciseLogs.length}
                     </span>
                     <span className="text-[9px] text-lightGrey/60 uppercase">
-                      ex
+                      {t("calendar.exercisesShort")}
                     </span>
                   </div>
                   <div className="flex flex-col items-center rounded-md bg-darkGrey/60 py-1">
@@ -161,7 +156,7 @@ const DayCard = ({
                       {summary ? summary.totalSets : sessionTotalSets(session!)}
                     </span>
                     <span className="text-[9px] text-lightGrey/60 uppercase">
-                      sets
+                      {t("calendar.sets")}
                     </span>
                   </div>
                 </div>
@@ -170,7 +165,11 @@ const DayCard = ({
               {status === "completed" && session && (
                 <div className="flex items-center w-full justify-between text-[11px] text-emerald-300/80 mt-auto">
                   <span>{formatVolume(sessionVolume(session))} kg</span>
-                  <span>{sessionTotalSets(session)} sets logged</span>
+                  <span>
+                    {t("calendar.setsLogged", {
+                      count: sessionTotalSets(session),
+                    })}
+                  </span>
                 </div>
               )}
 
@@ -185,7 +184,7 @@ const DayCard = ({
                     className="flex flex-1 items-center justify-center gap-1 h-7 rounded-md bg-indigo hover:bg-darkIndigo text-white text-xs font-semibold transition"
                   >
                     <LuPlay size={11} />
-                    Start
+                    {t("calendar.start")}
                   </button>
                   {onEdit && (
                     <button
@@ -194,8 +193,8 @@ const DayCard = ({
                         e.stopPropagation();
                         onEdit();
                       }}
-                      title="Edit workout"
-                      aria-label="Edit workout"
+                      title={t("calendar.editWorkout")}
+                      aria-label={t("calendar.editWorkout")}
                       className="flex items-center justify-center h-7 w-7 shrink-0 rounded-md bg-darkGrey/60 hover:bg-darkGrey text-white/70 hover:text-white transition cursor-pointer"
                     >
                       <LuPencil size={12} />
@@ -206,7 +205,7 @@ const DayCard = ({
 
               {status === "missed" && (
                 <div className="text-center text-[11px] text-red-300/80 mt-auto">
-                  No workout logged
+                  {t("calendar.noWorkoutLogged")}
                 </div>
               )}
             </>

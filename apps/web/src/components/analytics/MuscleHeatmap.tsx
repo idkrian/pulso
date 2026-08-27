@@ -5,6 +5,7 @@ import {
   buildHighlighterData,
   type NormalizedMuscleStat,
 } from "@/utils/muscle-highlighter-map";
+import { useT } from "@/i18n";
 
 const HEATMAP_COLORS = ["#3b82f6", "#22d3ee", "#22c55e", "#f59e0b", "#ef4444"];
 
@@ -22,26 +23,26 @@ type MuscleHeatmapProps = {
 };
 
 const MuscleHeatmap = ({ period }: MuscleHeatmapProps) => {
+  const t = useT();
   const [data, setData] = useState<NormalizedMuscleStat[]>([]);
 
   useEffect(() => {
     getWorkoutMuscleStats(period).then((stats) => {
-      console.log(stats, period);
-      console.log(buildHighlighterData(stats, period));
-
       setData(buildHighlighterData(stats, period));
     });
   }, [period]);
 
   return (
     <div className="flex flex-col items-center gap-3 lg:h-full">
-      <p className="text-white text-base font-semibold">Muscle Activity</p>
+      <p className="text-white text-base font-semibold">
+        {t("charts.muscleActivity")}
+      </p>
 
       {data.length === 0 ? (
         <div className="flex min-h-40 flex-1 flex-col items-center justify-center gap-2 lg:min-h-0">
           <p className="text-3xl opacity-60">🫥</p>
           <p className="text-lightGrey text-sm">
-            No workout data for this period
+            {t("charts.muscleActivityEmpty")}
           </p>
         </div>
       ) : (
@@ -64,7 +65,9 @@ const MuscleHeatmap = ({ period }: MuscleHeatmapProps) => {
             />
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-lightGrey">Undertrained</span>
+            <span className="text-xs text-lightGrey">
+              {t("charts.undertrained")}
+            </span>
             {HEATMAP_COLORS.map((color, index) => (
               <div key={color} className="flex flex-col items-center gap-1">
                 <div
@@ -72,11 +75,15 @@ const MuscleHeatmap = ({ period }: MuscleHeatmapProps) => {
                   style={{ backgroundColor: color }}
                 />
                 {index === 2 && (
-                  <span className="text-[10px] text-lightGrey">Optimal</span>
+                  <span className="text-[10px] text-lightGrey">
+                    {t("charts.optimal")}
+                  </span>
                 )}
               </div>
             ))}
-            <span className="text-xs text-lightGrey">Overtrained</span>
+            <span className="text-xs text-lightGrey">
+              {t("charts.overtrained")}
+            </span>
           </div>
         </>
       )}

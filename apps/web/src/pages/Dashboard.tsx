@@ -13,9 +13,11 @@ import WorkoutFrequencyChart from "@/components/charts/WorkoutFrequencyChart";
 import type { MuscleStatsPeriod } from "@/api/workout";
 import { LuPencil } from "react-icons/lu";
 import SwapSplitModal from "@/components/calendar/SwapSplitModal";
-import { formatDate } from "@/utils/date";
+import { useFormatDate, useT } from "@/i18n";
 
 const Dashboard = () => {
+  const t = useT();
+  const formatDate = useFormatDate();
   const [trainingSplitByDay, setTrainingSplitByDay] =
     useState<TrainingSplitDayMap>({});
   const [period, setPeriod] = useState<MuscleStatsPeriod>("week");
@@ -61,7 +63,7 @@ const Dashboard = () => {
           {todaySplit ? (
             <>
               <p className="text-center text-lg font-semibold text-white">
-                Today's Training
+                {t("dashboard.todaysTraining")}
               </p>
               <TrainingSplitCard
                 fullHeight
@@ -72,14 +74,14 @@ const Dashboard = () => {
               <div className="flex w-full gap-2">
                 <Button
                   fullWidth
-                  label="Start Workout"
+                  label={t("dashboard.startWorkout")}
                   onClick={() => navigate(`/workout/${todaySplit.id}`)}
                 />
                 <button
                   type="button"
                   onClick={openTodaySwap}
-                  title="Edit workout"
-                  aria-label="Edit workout"
+                  title={t("dashboard.editWorkout")}
+                  aria-label={t("dashboard.editWorkout")}
                   className="flex items-center justify-center h-full w-12 shrink-0 rounded-md bg-darkGrey/60 hover:bg-darkGrey text-white/70 hover:text-white transition cursor-pointer"
                 >
                   <LuPencil size={14} />
@@ -89,9 +91,11 @@ const Dashboard = () => {
           ) : (
             <div className="flex flex-col items-center justify-center flex-1 gap-2">
               <p className="text-5xl">🔋</p>
-              <p className="text-2xl font-bold text-white">Rest Day</p>
+              <p className="text-2xl font-bold text-white">
+                {t("common.restDay")}
+              </p>
               <p className="text-sm font-medium text-lightGrey text-center">
-                No training scheduled for today. Recover well!
+                {t("dashboard.restDayHint")}
               </p>
             </div>
           )}

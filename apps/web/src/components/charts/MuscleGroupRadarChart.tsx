@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis } from "recharts";
 import {
   Card,
@@ -18,50 +18,52 @@ import {
   type MuscleGroupStat,
   type MuscleStatsPeriod,
 } from "@/api/workout";
-
-const MUSCLE_GROUPS: { key: string; label: string }[] = [
-  { key: "CHEST", label: "Chest" },
-  { key: "BACK", label: "Back" },
-  { key: "SHOULDERS", label: "Shoulders" },
-  { key: "ARMS", label: "Arms" },
-  { key: "LEGS", label: "Legs" },
-  { key: "GLUTES", label: "Glutes" },
-  { key: "CORE", label: "Core" },
-];
-
-const chartConfig = {
-  sets: {
-    label: "Sets",
-    color: "#7c3aed",
-  },
-} satisfies ChartConfig;
+import { MuscleGroup } from "@/dtos/muscle.dto";
+import { useMuscleGroupLabel, useT } from "@/i18n";
 
 type MuscleGroupRadarChartProps = {
   period: MuscleStatsPeriod;
 };
 
 const MuscleGroupRadarChart = ({ period }: MuscleGroupRadarChartProps) => {
+  const t = useT();
+  const muscleGroupLabel = useMuscleGroupLabel();
   const [data, setData] = useState<MuscleGroupStat[]>([]);
 
   useEffect(() => {
     getWorkoutMuscleGroupsStats(period).then(setData);
   }, [period]);
 
+  const chartConfig = useMemo(
+    () =>
+      ({
+        sets: {
+          label: t("charts.setsSeries"),
+          color: "#7c3aed",
+        },
+      }) satisfies ChartConfig,
+    [t],
+  );
+
   const totals: Record<string, number> = {};
   for (const item of data) {
     totals[item.muscleGroup] = item.totalSets;
   }
 
-  const chartData = MUSCLE_GROUPS.map(({ key, label }) => ({
-    muscle: label,
-    sets: totals[key] ?? 0,
+  const chartData = Object.values(MuscleGroup).map((group) => ({
+    muscle: muscleGroupLabel(group),
+    sets: totals[group] ?? 0,
   }));
 
   return (
     <Card className="bg-mediumGrey border-none flex min-w-0 flex-col">
       <CardHeader className="pb-0">
-        <CardTitle className="text-white">Muscle Balance</CardTitle>
-        <CardDescription>Sets per muscle group</CardDescription>
+        <CardTitle className="text-white">
+          {t("charts.muscleBalance")}
+        </CardTitle>
+        <CardDescription>
+          {t("charts.muscleBalanceDescription")}
+        </CardDescription>
       </CardHeader>
       <CardContent className="min-w-0 flex-1 pb-2 -px-6">
         <ChartContainer

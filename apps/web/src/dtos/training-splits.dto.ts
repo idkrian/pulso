@@ -8,7 +8,7 @@ export interface TrainingSplitDto {
   exercises: TrainingSplitExerciseDto[];
 }
 
-export interface CreateTrainingSplitRequestDto  {
+export interface CreateTrainingSplitRequestDto {
   title: string;
   exercises: {
     exerciseId: number;

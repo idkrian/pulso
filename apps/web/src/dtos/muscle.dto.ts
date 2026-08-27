@@ -67,153 +67,52 @@ export const Muscle = {
 
 export type MuscleType = (typeof Muscle)[keyof typeof Muscle];
 
-export const MuscleLabel: Record<MuscleType, string> = {
-  CHEST_GENERAL: "Chest General",
-  UPPER_CHEST: "Upper Chest",
-  MIDDLE_CHEST: "Middle Chest",
-  LOWER_CHEST: "Lower Chest",
-
-  BACK_GENERAL: "Back General",
-  LATS: "Lats",
-  TRAPS: "Traps",
-  LOWER_BACK: "Lower Back",
-  RHOMBOIDS: "Rhomboids",
-
-  SHOULDERS_GENERAL: "Shoulders General",
-  FRONT_DELTOID: "Front Deltoid",
-  SIDE_DELTOID: "Side Deltoid",
-  REAR_DELTOID: "Rear Deltoid",
-
-  ARMS_GENERAL: "Arms General",
-  BICEPS_LONG_HEAD: "Biceps Long Head",
-  BICEPS_SHORT_HEAD: "Biceps Short Head",
-  TRICEPS_LONG_HEAD: "Triceps Long Head",
-  TRICEPS_LATERAL_HEAD: "Triceps Lateral Head",
-  TRICEPS_MEDIAL_HEAD: "Triceps Medial Head",
-
-  FOREARMS_GENERAL: "Forearms General",
-  BRACHIORADIALIS: "Brachioradialis",
-  PRONATOR_TERES: "Pronator Teres",
-  FLEXORS: "Flexors",
-  EXTENSORS: "Extensors",
-
-  LEGS_GENERAL: "Legs General",
-  QUADRICEPS: "Quadriceps",
-  HAMSTRINGS: "Hamstrings",
-  CALVES: "Calves",
-
-  GLUTES_GENERAL: "Glutes General",
-  GLUTEUS_MAXIMUS: "Gluteus Maximus",
-  GLUTEUS_MEDIUS: "Gluteus Medius",
-  GLUTEUS_MINIMUS: "Gluteus Minimus",
-
-  CORE_GENERAL: "Core General",
-  ABS: "Abs",
-  OBLIQUES: "Obliques",
-};
-
-export const MusclesByGroup: Record<
-  MuscleGroupType,
-  { text: string; value: MuscleType }[]
-> = {
+export const MusclesByGroup: Record<MuscleGroupType, MuscleType[]> = {
   CHEST: [
-    { text: MuscleLabel[Muscle.CHEST_GENERAL], value: Muscle.CHEST_GENERAL },
-    { text: MuscleLabel[Muscle.UPPER_CHEST], value: Muscle.UPPER_CHEST },
-    { text: MuscleLabel[Muscle.MIDDLE_CHEST], value: Muscle.MIDDLE_CHEST },
-    { text: MuscleLabel[Muscle.LOWER_CHEST], value: Muscle.LOWER_CHEST },
+    Muscle.CHEST_GENERAL,
+    Muscle.UPPER_CHEST,
+    Muscle.MIDDLE_CHEST,
+    Muscle.LOWER_CHEST,
   ],
   BACK: [
-    { text: MuscleLabel[Muscle.BACK_GENERAL], value: Muscle.BACK_GENERAL },
-    { text: MuscleLabel[Muscle.LATS], value: Muscle.LATS },
-    { text: MuscleLabel[Muscle.TRAPS], value: Muscle.TRAPS },
-    { text: MuscleLabel[Muscle.LOWER_BACK], value: Muscle.LOWER_BACK },
-    { text: MuscleLabel[Muscle.RHOMBOIDS], value: Muscle.RHOMBOIDS },
+    Muscle.BACK_GENERAL,
+    Muscle.LATS,
+    Muscle.TRAPS,
+    Muscle.LOWER_BACK,
+    Muscle.RHOMBOIDS,
   ],
   SHOULDERS: [
-    {
-      text: MuscleLabel[Muscle.SHOULDERS_GENERAL],
-      value: Muscle.SHOULDERS_GENERAL,
-    },
-    { text: MuscleLabel[Muscle.FRONT_DELTOID], value: Muscle.FRONT_DELTOID },
-    { text: MuscleLabel[Muscle.SIDE_DELTOID], value: Muscle.SIDE_DELTOID },
-    { text: MuscleLabel[Muscle.REAR_DELTOID], value: Muscle.REAR_DELTOID },
+    Muscle.SHOULDERS_GENERAL,
+    Muscle.FRONT_DELTOID,
+    Muscle.SIDE_DELTOID,
+    Muscle.REAR_DELTOID,
   ],
   ARMS: [
-    { text: MuscleLabel[Muscle.ARMS_GENERAL], value: Muscle.ARMS_GENERAL },
-    {
-      text: MuscleLabel[Muscle.BICEPS_LONG_HEAD],
-      value: Muscle.BICEPS_LONG_HEAD,
-    },
-    {
-      text: MuscleLabel[Muscle.BICEPS_SHORT_HEAD],
-      value: Muscle.BICEPS_SHORT_HEAD,
-    },
-    {
-      text: MuscleLabel[Muscle.TRICEPS_LONG_HEAD],
-      value: Muscle.TRICEPS_LONG_HEAD,
-    },
-    {
-      text: MuscleLabel[Muscle.TRICEPS_LATERAL_HEAD],
-      value: Muscle.TRICEPS_LATERAL_HEAD,
-    },
-    {
-      text: MuscleLabel[Muscle.TRICEPS_MEDIAL_HEAD],
-      value: Muscle.TRICEPS_MEDIAL_HEAD,
-    },
-    {
-      text: MuscleLabel[Muscle.FOREARMS_GENERAL],
-      value: Muscle.FOREARMS_GENERAL,
-    },
-    {
-      text: MuscleLabel[Muscle.BRACHIORADIALIS],
-      value: Muscle.BRACHIORADIALIS,
-    },
-    {
-      text: MuscleLabel[Muscle.PRONATOR_TERES],
-      value: Muscle.PRONATOR_TERES,
-    },
-    { text: MuscleLabel[Muscle.FLEXORS], value: Muscle.FLEXORS },
-    { text: MuscleLabel[Muscle.EXTENSORS], value: Muscle.EXTENSORS },
+    Muscle.ARMS_GENERAL,
+    Muscle.BICEPS_LONG_HEAD,
+    Muscle.BICEPS_SHORT_HEAD,
+    Muscle.TRICEPS_LONG_HEAD,
+    Muscle.TRICEPS_LATERAL_HEAD,
+    Muscle.TRICEPS_MEDIAL_HEAD,
+    Muscle.FOREARMS_GENERAL,
+    Muscle.BRACHIORADIALIS,
+    Muscle.PRONATOR_TERES,
+    Muscle.FLEXORS,
+    Muscle.EXTENSORS,
   ],
   LEGS: [
-    { text: MuscleLabel[Muscle.LEGS_GENERAL], value: Muscle.LEGS_GENERAL },
-    { text: MuscleLabel[Muscle.QUADRICEPS], value: Muscle.QUADRICEPS },
-    { text: MuscleLabel[Muscle.HAMSTRINGS], value: Muscle.HAMSTRINGS },
-    { text: MuscleLabel[Muscle.CALVES], value: Muscle.CALVES },
+    Muscle.LEGS_GENERAL,
+    Muscle.QUADRICEPS,
+    Muscle.HAMSTRINGS,
+    Muscle.CALVES,
   ],
   GLUTES: [
-    {
-      text: MuscleLabel[Muscle.GLUTES_GENERAL],
-      value: Muscle.GLUTES_GENERAL,
-    },
-    {
-      text: MuscleLabel[Muscle.GLUTEUS_MAXIMUS],
-      value: Muscle.GLUTEUS_MAXIMUS,
-    },
-    {
-      text: MuscleLabel[Muscle.GLUTEUS_MEDIUS],
-      value: Muscle.GLUTEUS_MEDIUS,
-    },
-    {
-      text: MuscleLabel[Muscle.GLUTEUS_MINIMUS],
-      value: Muscle.GLUTEUS_MINIMUS,
-    },
+    Muscle.GLUTES_GENERAL,
+    Muscle.GLUTEUS_MAXIMUS,
+    Muscle.GLUTEUS_MEDIUS,
+    Muscle.GLUTEUS_MINIMUS,
   ],
-  CORE: [
-    { text: MuscleLabel[Muscle.CORE_GENERAL], value: Muscle.CORE_GENERAL },
-    { text: MuscleLabel[Muscle.ABS], value: Muscle.ABS },
-    { text: MuscleLabel[Muscle.OBLIQUES], value: Muscle.OBLIQUES },
-  ],
-};
-
-export const MuscleGroupLabel: Record<MuscleGroupType, string> = {
-  CHEST: "Chest",
-  BACK: "Back",
-  SHOULDERS: "Shoulders",
-  ARMS: "Arms",
-  LEGS: "Legs",
-  GLUTES: "Glutes",
-  CORE: "Core",
+  CORE: [Muscle.CORE_GENERAL, Muscle.ABS, Muscle.OBLIQUES],
 };
 
 export interface MuscleGroupItemsDto {

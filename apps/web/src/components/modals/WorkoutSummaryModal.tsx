@@ -1,6 +1,9 @@
 import { LuTrophy } from "react-icons/lu";
 import Button from "@/components/ui/Button";
 import { formatTime } from "@/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { toDisplayWeight, unitLabel } from "@/utils/units";
+import { useFormatNumber, useT } from "@/i18n";
 
 type Props = {
   open: boolean;
@@ -23,6 +26,10 @@ const WorkoutSummaryModal = ({
   onClose,
   onSave,
 }: Props) => {
+  const t = useT();
+  const { unit } = useAuth();
+  const formatNumber = useFormatNumber();
+
   if (!open) return null;
 
   return (
@@ -33,7 +40,7 @@ const WorkoutSummaryModal = ({
             <LuTrophy size={36} className="text-lightIndigo" />
           </div>
           <h2 className="text-center text-2xl font-bold lg:text-3xl">
-            Workout Complete
+            {t("workoutSummary.title")}
           </h2>
           <p className="text-center text-lightGrey/60">{title}</p>
         </div>
@@ -41,7 +48,7 @@ const WorkoutSummaryModal = ({
         <div className="mb-6 grid grid-cols-3 gap-2 lg:gap-3">
           <div className="rounded-xl bg-darkGrey p-2 text-center lg:p-4">
             <p className="text-[10px] uppercase text-lightGrey/50 lg:text-xs">
-              Time
+              {t("workoutSummary.time")}
             </p>
             <p className="mt-1 text-lg font-bold tabular-nums lg:text-2xl">
               {formatTime(workoutSeconds)}
@@ -49,16 +56,19 @@ const WorkoutSummaryModal = ({
           </div>
           <div className="rounded-xl bg-darkGrey p-2 text-center lg:p-4">
             <p className="text-[10px] uppercase text-lightGrey/50 lg:text-xs">
-              Volume
+              {t("workoutSummary.volume")}
             </p>
             <p className="mt-1 text-lg font-bold tabular-nums lg:text-2xl">
-              {totalVolume.toLocaleString()}
-              <span className="text-xs text-lightGrey/50 lg:text-sm"> kg</span>
+              {formatNumber(toDisplayWeight(totalVolume, unit))}
+              <span className="text-xs text-lightGrey/50 lg:text-sm">
+                {" "}
+                {unitLabel(unit)}
+              </span>
             </p>
           </div>
           <div className="rounded-xl bg-darkGrey p-2 text-center lg:p-4">
             <p className="text-[10px] uppercase text-lightGrey/50 lg:text-xs">
-              Sets
+              {t("workoutSummary.sets")}
             </p>
             <p className="mt-1 text-lg font-bold tabular-nums lg:text-2xl">
               {totalCompletedSets}
@@ -71,9 +81,13 @@ const WorkoutSummaryModal = ({
             onClick={onClose}
             className="cursor-pointer rounded-md px-4 py-2.5 text-lightGrey transition-colors hover:bg-darkGrey"
           >
-            Keep going
+            {t("workoutSummary.keepGoing")}
           </button>
-          <Button label="SAVE" onClick={onSave} loading={submitting} />
+          <Button
+            label={t("workoutSummary.save")}
+            onClick={onSave}
+            loading={submitting}
+          />
         </div>
       </div>
     </div>

@@ -3,15 +3,17 @@ import type {
   CreateUserRequestDto,
   UpdateMeRequestDto,
 } from "./user.schema.js";
+import { DEFAULT_LOCALE, type Locale } from "../../shared/constants/locales.js";
 import bcrypt from "bcrypt";
 
 export const userService = {
-  async createUser(data: CreateUserRequestDto) {
+  async createUser(data: CreateUserRequestDto, locale: Locale = DEFAULT_LOCALE) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     return await userRepository.createUser({
       ...data,
       password: hashedPassword,
+      languagePreference: locale,
     });
   },
 

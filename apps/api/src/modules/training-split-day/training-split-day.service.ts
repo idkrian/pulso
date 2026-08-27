@@ -3,6 +3,7 @@ import type {
   CreateTrainingSplitDayRequestDto,
   UpdateTrainingSplitDayRequestDto,
 } from "./training-split-day.scheme.js";
+import type { Locale } from "../../shared/constants/locales.js";
 
 export const trainingSplitDaysService = {
   async createTrainingSplitDay(
@@ -15,8 +16,11 @@ export const trainingSplitDaysService = {
     );
   },
 
-  async getAllTrainingSplitDays(userId: number) {
-    return await trainingSplitDaysRepository.getAllTrainingSplitDays(userId);
+  async getAllTrainingSplitDays(userId: number, locale: Locale) {
+    return await trainingSplitDaysRepository.getAllTrainingSplitDays(
+      userId,
+      locale,
+    );
   },
 
   async updateTrainingSplitDay(

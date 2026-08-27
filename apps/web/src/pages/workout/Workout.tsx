@@ -11,6 +11,7 @@ import type { ExerciseProgress, LoggedSet } from "@/dtos/workout.dto";
 import { DEFAULT_REST } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatWeight } from "@/utils/units";
+import { useT } from "@/i18n";
 import PRToast from "@/components/workout/PRToast";
 import WorkoutHeader from "@/components/workout/WorkoutHeader";
 import ActiveExerciseCard from "@/components/workout/ActiveExerciseCard";
@@ -22,6 +23,7 @@ const Workout = () => {
   const { splitId } = useParams();
   const navigate = useNavigate();
   const { unit } = useAuth();
+  const t = useT();
 
   const [split, setSplit] = useState<TrainingSplitDto | null>(null);
   const [progress, setProgress] = useState<Record<number, ExerciseProgress>>(
@@ -200,10 +202,10 @@ const Workout = () => {
 
     if (bestWeight != null && target.weight > bestWeight) {
       triggerPR(
-        `New PR on ${splitExercise?.exercise.title}: ${formatWeight(
-          target.weight,
-          unit,
-        )}`,
+        t("workout.newPR", {
+          exercise: splitExercise?.exercise.title ?? "",
+          weight: formatWeight(target.weight, unit),
+        }),
       );
       // Raise the bar locally so the next set compares against the new record.
       setPerformances((prev) =>
@@ -341,7 +343,10 @@ const Workout = () => {
       </div>
 
       <div className="flex shrink-0 justify-end [&>button]:w-full lg:[&>button]:w-auto">
-        <Button label="Finish Workout" onClick={() => setShowSummary(true)} />
+        <Button
+          label={t("workout.finish")}
+          onClick={() => setShowSummary(true)}
+        />
       </div>
 
       <WorkoutSummaryModal

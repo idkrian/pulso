@@ -4,13 +4,16 @@ import type { TrainingSplitExerciseDto } from "@/dtos/training-split-exercise.dt
 import type { ExerciseDto } from "@/dtos/exercise.dto";
 import {
   MuscleGroup,
-  MuscleGroupLabel,
-  MuscleLabel,
-  MusclesByGroup,
   type MuscleGroupType,
   type MuscleType,
 } from "@/dtos/muscle.dto";
 import MuscleIcon from "@/components/exercises/MuscleIcon";
+import {
+  useMuscleGroupLabel,
+  useMuscleLabel,
+  useMusclesByGroup,
+  useT,
+} from "@/i18n";
 import {
   Select,
   SelectContent,
@@ -55,19 +58,28 @@ const ExerciseEditPanel = ({
   onMuscleChange,
   onExerciseChange,
 }: Props) => {
+  const t = useT();
+  const muscleLabel = useMuscleLabel();
+  const muscleGroupLabel = useMuscleGroupLabel();
+  const musclesByGroup = useMusclesByGroup();
+
   const filterByMuscle = (muscle: MuscleType) =>
     exercises.filter((ex) => ex.muscle === muscle);
 
   const countByGroup = (group: MuscleGroupType) =>
     exercises.filter((ex) => ex.muscleGroup === group).length;
 
-  const emptyHint = <span className="text-xs text-lightGrey/40">empty</span>;
+  const emptyHint = (
+    <span className="text-xs text-lightGrey/40">
+      {t("exerciseEditPanel.empty")}
+    </span>
+  );
 
   return (
     <>
       <div className="flex items-center justify-between px-5 py-4 border-b border-mediumGrey shrink-0">
         <p className="text-xs uppercase tracking-wider text-lightGrey/60 font-semibold">
-          Edit Exercise
+          {t("exerciseEditPanel.title")}
         </p>
         <button
           onClick={onClose}
@@ -91,14 +103,14 @@ const ExerciseEditPanel = ({
                 {exercise.exercise.title}
               </p>
               <p className="text-xs text-lightGrey/60">
-                {MuscleLabel[exercise.exercise.muscle]}
+                {muscleLabel(exercise.exercise.muscle)}
               </p>
             </div>
           </div>
         )}
 
         <div className="grid grid-cols-2 gap-3">
-          <PanelField label="Sets">
+          <PanelField label={t("exerciseEditPanel.sets")}>
             <input
               type="number"
               min={1}
@@ -108,7 +120,7 @@ const ExerciseEditPanel = ({
               className="w-full bg-mediumGrey rounded-lg px-3 py-2 text-sm outline-none border border-transparent focus:border-indigo transition-colors text-white"
             />
           </PanelField>
-          <PanelField label="Reps">
+          <PanelField label={t("exerciseEditPanel.reps")}>
             <input
               type="text"
               value={exercise.reps}
@@ -118,7 +130,7 @@ const ExerciseEditPanel = ({
           </PanelField>
         </div>
 
-        <PanelField label="Muscle Group">
+        <PanelField label={t("exerciseEditPanel.muscleGroup")}>
           <Select
             value={exercise.exercise?.muscleGroup ?? ""}
             onValueChange={(value) =>
@@ -126,14 +138,16 @@ const ExerciseEditPanel = ({
             }
           >
             <SelectTrigger className="w-full bg-mediumGrey border-transparent text-white data-placeholder:text-lightGrey/50 focus-visible:border-indigo focus-visible:ring-0">
-              <SelectValue placeholder="Select muscle group" />
+              <SelectValue
+                placeholder={t("exerciseEditPanel.selectMuscleGroup")}
+              />
             </SelectTrigger>
             <SelectContent position="popper">
               {(Object.values(MuscleGroup) as MuscleGroupType[]).map((mg) => {
                 const isEmpty = countByGroup(mg) === 0;
                 return (
                   <SelectItem key={mg} value={mg} disabled={isEmpty}>
-                    {MuscleGroupLabel[mg]}
+                    {muscleGroupLabel(mg)}
                     {isEmpty && emptyHint}
                   </SelectItem>
                 );
@@ -142,18 +156,18 @@ const ExerciseEditPanel = ({
           </Select>
         </PanelField>
 
-        <PanelField label="Muscle">
+        <PanelField label={t("exerciseEditPanel.muscle")}>
           <Select
             value={exercise.exercise?.muscle ?? ""}
             onValueChange={(value) => onMuscleChange(value as MuscleType)}
           >
             <SelectTrigger className="w-full bg-mediumGrey border-transparent text-white data-placeholder:text-lightGrey/50 focus-visible:border-indigo focus-visible:ring-0">
-              <SelectValue placeholder="Select muscle" />
+              <SelectValue placeholder={t("exerciseEditPanel.selectMuscle")} />
             </SelectTrigger>
             <SelectContent position="popper">
               {exercise.exercise?.muscleGroup &&
-                MusclesByGroup[
-                  exercise.exercise.muscleGroup as keyof typeof MusclesByGroup
+                musclesByGroup[
+                  exercise.exercise.muscleGroup as MuscleGroupType
                 ]?.map(({ text, value }) => {
                   const isEmpty = filterByMuscle(value).length === 0;
                   return (
@@ -167,13 +181,15 @@ const ExerciseEditPanel = ({
           </Select>
         </PanelField>
 
-        <PanelField label="Exercise">
+        <PanelField label={t("exerciseEditPanel.exercise")}>
           <Select
             value={String(exercise.exerciseId ?? exercise.exercise?.id ?? "")}
             onValueChange={(value) => onExerciseChange(Number(value))}
           >
             <SelectTrigger className="w-full bg-mediumGrey border-transparent text-white data-placeholder:text-lightGrey/50 focus-visible:border-indigo focus-visible:ring-0">
-              <SelectValue placeholder="Select exercise" />
+              <SelectValue
+                placeholder={t("exerciseEditPanel.selectExercise")}
+              />
             </SelectTrigger>
             <SelectContent position="popper">
               {filterByMuscle(exercise.exercise?.muscle).map((exOpt) => (
@@ -191,14 +207,14 @@ const ExerciseEditPanel = ({
             className="flex flex-1 items-center justify-center gap-2 py-2.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition text-sm font-medium cursor-pointer"
           >
             <LuTrash2 size={14} />
-            Remove
+            {t("exerciseEditPanel.remove")}
           </button>
           <button
             onClick={onClose}
             className="flex flex-1 items-center justify-center gap-2 py-2.5 rounded-lg border border-indigo/40 text-lightIndigo hover:bg-indigo/10 transition text-sm font-medium cursor-pointer"
           >
             <LuCheck size={14} />
-            Done
+            {t("exerciseEditPanel.done")}
           </button>
         </div>
       </div>
