@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "tsx watch database/server.ts",
     "build": "prisma generate && tsc",
-    "start": "prisma migrate deploy && node dist/database/server.js"
+    "start": "prisma migrate deploy && prisma db seed && node dist/database/server.js"
   },
   "engines": {
     "node": ">=22"

@@ -1,6 +1,8 @@
-import "dotenv/config";
-import type { Muscle, MuscleGroup } from "./generated/prisma/client.js";
-import { prisma } from "./prisma.js";
+import type {
+  Muscle,
+  MuscleGroup,
+} from "../prisma/generated/prisma/client.js";
+import { prisma } from "../prisma/prisma.js";
 
 type SeedExercise = {
   muscleGroup: MuscleGroup;
@@ -959,7 +961,7 @@ const CATALOG: SeedExercise[] = [
   },
 ];
 
-async function main() {
+export async function seedExercises() {
   for (const item of CATALOG) {
     const existing = await prisma.exercises.findFirst({
       where: {
@@ -1010,11 +1012,3 @@ async function main() {
 
   console.log(`Seeded ${CATALOG.length} catalog exercises (en + pt).`);
 }
-
-main()
-  .then(() => prisma.$disconnect())
-  .catch(async (error) => {
-    console.error(error);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
