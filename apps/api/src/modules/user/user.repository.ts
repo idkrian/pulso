@@ -1,12 +1,8 @@
 import type { UnitPreference } from "../../../database/prisma/generated/prisma/client.js";
 import { prisma } from "../../../database/prisma/prisma.js";
-import type {
-  CreateUserRequestDto,
-  UpdateMeRequestDto,
-} from "./user.schema.js";
-import type { Locale } from "../../shared/constants/locales.js";
+import type { UpdateMeRequestDto } from "./user.schema.js";
 
-const publicUserSelect = {
+export const publicUserSelect = {
   id: true,
   createdAt: true,
   updatedAt: true,
@@ -17,20 +13,6 @@ const publicUserSelect = {
 } as const;
 
 export const userRepository = {
-  async createUser(
-    data: CreateUserRequestDto & { languagePreference: Locale },
-  ) {
-    return await prisma.users.create({
-      data: {
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        languagePreference: data.languagePreference,
-      },
-      select: publicUserSelect,
-    });
-  },
-
   async getUserById(userId: number) {
     return await prisma.users.findUnique({
       where: { id: userId },
