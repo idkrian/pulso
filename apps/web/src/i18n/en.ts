@@ -363,6 +363,7 @@ export const en = {
     emailLabel: "Email",
     emailPlaceholder: "you@email.com",
     passwordLabel: "Password",
+    confirmPasswordLabel: "Confirm password",
 
     signupSubmit: "Create account",
     loginSubmit: "Sign in",
@@ -372,8 +373,17 @@ export const en = {
     switchToLogin: "Sign in",
     switchToSignup: "Sign up",
 
+    passwordStrength: {
+      weak: "Weak password",
+      fair: "Fair password",
+      good: "Good password",
+      strong: "Strong password",
+    },
+
     error: {
       emailTaken: "This email is already registered.",
+      passwordMismatch: "The passwords do not match.",
+      passwordTooShort: "Your password must be at least 8 characters long.",
       badCredentials: "Incorrect email or password.",
       signupFailed: "Couldn't create your account. Please try again.",
       loginFailed: "Couldn't sign you in. Please try again.",

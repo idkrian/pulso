@@ -12,6 +12,8 @@ import {
 } from "react-icons/lu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useT } from "@/i18n";
+import PasswordStrengthMeter from "@/components/auth/PasswordStrengthMeter";
+import { MIN_PASSWORD_LENGTH } from "@/utils/password";
 import Icon from "@/assets/icons/pulse-white.svg";
 import Logo from "@/assets/icons/pulse-gradient.svg";
 
@@ -25,14 +27,19 @@ const Login = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const isSignup = mode === "signup";
 
+  const passwordsDiffer =
+    isSignup && confirmPassword.length > 0 && password !== confirmPassword;
+
   const toggleMode = () => {
     setMode((mode) => (mode === "login" ? "signup" : "login"));
+    setConfirmPassword("");
     setError(null);
   };
 
@@ -40,12 +47,23 @@ const Login = () => {
     (location.state as { from?: { pathname?: string } } | null)?.from
       ?.pathname ?? "/";
 
-  // Already logged in? Skip the login screen entirely.
   if (isAuthenticated) return <Navigate to={from} replace />;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (isSignup) {
+      if (password.length < MIN_PASSWORD_LENGTH) {
+        setError(t("login.error.passwordTooShort"));
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError(t("login.error.passwordMismatch"));
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       if (isSignup) {
@@ -204,7 +222,40 @@ const Login = () => {
                     )}
                   </button>
                 </div>
+                {isSignup && <PasswordStrengthMeter password={password} />}
               </label>
+
+              {isSignup && (
+                <label className="block space-y-1.5">
+                  <span className="text-xs font-medium uppercase tracking-wider text-lightGrey/50">
+                    {t("login.confirmPasswordLabel")}
+                  </span>
+                  <div className="group relative">
+                    <LuLock
+                      size={18}
+                      className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lightGrey/40 transition-colors group-focus-within:text-lightIndigo"
+                    />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="••••••••"
+                      aria-invalid={passwordsDiffer}
+                      className={`w-full rounded-lg border bg-mediumGrey/40 py-2.5 pl-10 pr-3 text-sm text-white placeholder:text-lightGrey/30 outline-none transition-all focus:bg-mediumGrey focus:ring-2 ${
+                        passwordsDiffer
+                          ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/30"
+                          : "border-mediumGrey focus:border-indigo focus:ring-indigo/30"
+                      }`}
+                    />
+                  </div>
+                  {passwordsDiffer && (
+                    <p className="text-xs text-red-400">
+                      {t("login.error.passwordMismatch")}
+                    </p>
+                  )}
+                </label>
+              )}
             </div>
 
             <button

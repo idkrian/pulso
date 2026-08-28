@@ -368,6 +368,7 @@ export const pt: LocaleDictionary = {
     emailLabel: "E-mail",
     emailPlaceholder: "voce@email.com",
     passwordLabel: "Senha",
+    confirmPasswordLabel: "Confirmar senha",
 
     signupSubmit: "Criar conta",
     loginSubmit: "Entrar",
@@ -377,8 +378,17 @@ export const pt: LocaleDictionary = {
     switchToLogin: "Entrar",
     switchToSignup: "Cadastre-se",
 
+    passwordStrength: {
+      weak: "Senha fraca",
+      fair: "Senha razoável",
+      good: "Senha boa",
+      strong: "Senha forte",
+    },
+
     error: {
       emailTaken: "Este e-mail já está cadastrado.",
+      passwordMismatch: "As senhas não conferem.",
+      passwordTooShort: "Sua senha precisa ter pelo menos 8 caracteres.",
       badCredentials: "E-mail ou senha incorretos.",
       signupFailed: "Não foi possível criar sua conta. Tente novamente.",
       loginFailed: "Não foi possível entrar. Tente novamente.",
