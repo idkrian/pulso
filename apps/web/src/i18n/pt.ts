@@ -378,6 +378,14 @@ export const pt: LocaleDictionary = {
     switchToLogin: "Entrar",
     switchToSignup: "Cadastre-se",
 
+    verifyHeading: "Confira seu e-mail",
+    verifySubheading: "Enviamos um código de 6 dígitos para {email}. Digite abaixo para concluir seu cadastro.",
+    codeLabel: "Código de verificação",
+    verifySubmit: "Confirmar código",
+    resend: "Reenviar código",
+    resendIn: "Reenviar código em {seconds}s",
+    backToSignup: "Usar outro e-mail",
+
     passwordStrength: {
       weak: "Senha fraca",
       fair: "Senha razoável",
@@ -392,6 +400,11 @@ export const pt: LocaleDictionary = {
       badCredentials: "E-mail ou senha incorretos.",
       signupFailed: "Não foi possível criar sua conta. Tente novamente.",
       loginFailed: "Não foi possível entrar. Tente novamente.",
+      invalidCode: "Código inválido ou expirado. Solicite um novo.",
+      tooManyAttempts: "Muitas tentativas. Solicite um novo código.",
+      tooManyRequests: "Muitas tentativas. Aguarde um momento e tente de novo.",
+      emailSendFailed: "Não conseguimos enviar o e-mail. Tente novamente.",
+      verifyFailed: "Não foi possível confirmar o código. Tente novamente.",
     },
   },
 };

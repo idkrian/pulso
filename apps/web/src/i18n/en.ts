@@ -373,6 +373,14 @@ export const en = {
     switchToLogin: "Sign in",
     switchToSignup: "Sign up",
 
+    verifyHeading: "Check your email",
+    verifySubheading: "We sent a 6-digit code to {email}. Enter it below to finish creating your account.",
+    codeLabel: "Verification code",
+    verifySubmit: "Confirm code",
+    resend: "Resend code",
+    resendIn: "Resend code in {seconds}s",
+    backToSignup: "Use a different email",
+
     passwordStrength: {
       weak: "Weak password",
       fair: "Fair password",
@@ -387,6 +395,11 @@ export const en = {
       badCredentials: "Incorrect email or password.",
       signupFailed: "Couldn't create your account. Please try again.",
       loginFailed: "Couldn't sign you in. Please try again.",
+      invalidCode: "Invalid or expired code. Request a new one.",
+      tooManyAttempts: "Too many attempts. Request a new code.",
+      tooManyRequests: "Too many attempts. Please wait a moment and try again.",
+      emailSendFailed: "We couldn't send the email. Please try again.",
+      verifyFailed: "Couldn't confirm the code. Please try again.",
     },
   },
 };
