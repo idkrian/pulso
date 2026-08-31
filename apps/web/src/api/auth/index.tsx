@@ -4,7 +4,9 @@ import type {
   LoginRequestDto,
   LoginResponseDto,
   RegisterRequestDto,
+  ResendCodeRequestDto,
   UpdateMeDto,
+  VerifyRegistrationRequestDto,
 } from "@/dtos/auth.dto";
 
 const AUTH_URL = `${import.meta.env.VITE_API_BASE}/auth`;
@@ -17,9 +19,19 @@ export const login = async (
   return response.data.data;
 };
 
-export const register = async (data: RegisterRequestDto): Promise<AuthUser> => {
-  const response = await axios.post(USER_URL, data);
+export const register = async (data: RegisterRequestDto): Promise<void> => {
+  await axios.post(`${AUTH_URL}/register`, data);
+};
+
+export const verifyRegistration = async (
+  data: VerifyRegistrationRequestDto,
+): Promise<LoginResponseDto> => {
+  const response = await axios.post(`${AUTH_URL}/register/verify`, data);
   return response.data.data;
+};
+
+export const resendCode = async (data: ResendCodeRequestDto): Promise<void> => {
+  await axios.post(`${AUTH_URL}/register/resend`, data);
 };
 
 export const getMe = async (): Promise<AuthUser> => {

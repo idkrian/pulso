@@ -13,6 +13,10 @@ import { localeMiddleware } from "./shared/middlewares/locale.js";
 import { env } from "./shared/config/env.js";
 
 const app = express();
+
+if (env.TRUST_PROXY > 0) {
+  app.set("trust proxy", env.TRUST_PROXY);
+}
 app.use(
   cors({
     origin: env.FRONTEND_URL,

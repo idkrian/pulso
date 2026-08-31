@@ -3,15 +3,6 @@ import { userService } from "./user.service.js";
 import { requestSuccessHandler } from "../../shared/utils/requestHandlers.js";
 
 export const userController = {
-  async createUser(req: Request, res: Response, next: NextFunction) {
-    try {
-      const user = await userService.createUser(req.body, req.locale);
-      requestSuccessHandler(res, user, "User created successfully!");
-    } catch (error) {
-      next(error);
-    }
-  },
-
   async getMe(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = Number(req.userId);
@@ -31,5 +22,4 @@ export const userController = {
       next(error);
     }
   },
-
 };

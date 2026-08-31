@@ -29,6 +29,15 @@ export interface RegisterRequestDto {
   password: string;
 }
 
+export interface VerifyRegistrationRequestDto {
+  email: string;
+  code: string;
+}
+
+export interface ResendCodeRequestDto {
+  email: string;
+}
+
 export interface LoginResponseDto extends AuthUser {
   token: string;
 }

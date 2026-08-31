@@ -12,11 +12,14 @@ import {
   getMe,
   login as loginRequest,
   register as registerRequest,
+  resendCode as resendCodeRequest,
   updateMe,
+  verifyRegistration as verifyRegistrationRequest,
 } from "@/api/auth";
 import type {
   AuthUser,
   LanguagePreference,
+  LoginResponseDto,
   UnitPreference,
   UpdateMeDto,
 } from "@/dtos/auth.dto";
@@ -39,6 +42,8 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
+  verifyRegistration: (email: string, code: string) => Promise<void>;
+  resendCode: (email: string) => Promise<void>;
   updateProfile: (data: UpdateMeDto) => Promise<void>;
   logout: () => void;
 }
@@ -75,23 +80,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setSession({ token: null, user: null });
   }, []);
 
-  const login = useCallback(async (email: string, password: string) => {
-    const { token: newToken, ...authUser } = await loginRequest({
-      email,
-      password,
-    });
+  const startSession = useCallback((response: LoginResponseDto) => {
+    const { token: newToken, ...authUser } = response;
     persistSession(newToken, authUser);
     applyAuthHeader(newToken);
     setSession({ token: newToken, user: authUser });
   }, []);
 
+  const login = useCallback(
+    async (email: string, password: string) => {
+      startSession(await loginRequest({ email, password }));
+    },
+    [startSession],
+  );
+
   const register = useCallback(
     async (name: string, email: string, password: string) => {
       await registerRequest({ name, email, password });
-      await login(email, password);
     },
-    [login],
+    [],
   );
+
+  const verifyRegistration = useCallback(
+    async (email: string, code: string) => {
+      startSession(await verifyRegistrationRequest({ email, code }));
+    },
+    [startSession],
+  );
+
+  const resendCode = useCallback(async (email: string) => {
+    await resendCodeRequest({ email });
+  }, []);
 
   const updateProfile = useCallback(async (data: UpdateMeDto) => {
     const updated = await updateMe(data);
@@ -128,10 +147,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isAuthenticated: isTokenValid(token),
       login,
       register,
+      verifyRegistration,
+      resendCode,
       updateProfile,
       logout,
     }),
-    [user, token, locale, login, register, updateProfile, logout],
+    [
+      user,
+      token,
+      locale,
+      login,
+      register,
+      verifyRegistration,
+      resendCode,
+      updateProfile,
+      logout,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
