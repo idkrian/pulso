@@ -13,6 +13,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { formatWeight } from "@/utils/units";
 import { useT } from "@/i18n";
 import { useStopwatch } from "@/hooks/useStopwatch";
+import {
+  clearActiveWorkout,
+  readActiveWorkout,
+  saveActiveWorkout,
+} from "@/utils/active-workout";
 import PRToast from "@/components/workout/PRToast";
 import WorkoutHeader from "@/components/workout/WorkoutHeader";
 import ActiveExerciseCard from "@/components/workout/ActiveExerciseCard";
@@ -23,8 +28,13 @@ import WorkoutSummaryModal from "@/components/modals/WorkoutSummaryModal";
 const Workout = () => {
   const { splitId } = useParams();
   const navigate = useNavigate();
-  const { unit } = useAuth();
+  const { unit, user } = useAuth();
   const t = useT();
+
+  const [restored] = useState(() => {
+    const saved = readActiveWorkout(user?.id);
+    return saved && String(saved.splitId) === splitId ? saved : null;
+  });
 
   const [split, setSplit] = useState<TrainingSplitDto | null>(null);
   const [progress, setProgress] = useState<Record<number, ExerciseProgress>>(
@@ -33,14 +43,15 @@ const Workout = () => {
   const [performances, setPerformances] = useState<
     Record<number, ExercisePerformanceDto>
   >({});
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(restored?.activeIndex ?? 0);
 
   const {
     seconds: workoutSeconds,
     running: workoutRunning,
     toggle: toggleWorkoutTimer,
     reset: resetWorkoutTimer,
-  } = useStopwatch();
+    snapshot: timerSnapshot,
+  } = useStopwatch(restored?.timer);
 
   const [restRemaining, setRestRemaining] = useState(0);
   const [restTotal, setRestTotal] = useState(DEFAULT_REST);
@@ -61,7 +72,7 @@ const Workout = () => {
 
     const initialProgress: Record<number, ExerciseProgress> = {};
     split.exercises.forEach((ex) => {
-      initialProgress[ex.id] = {
+      initialProgress[ex.id] = restored?.progress[ex.id] ?? {
         sets: Array.from({ length: ex.sets }, () => ({
           weight: 0,
           reps: 0,
@@ -72,7 +83,8 @@ const Workout = () => {
       };
     });
     setProgress(initialProgress);
-  }, [split]);
+    setActiveIndex((i) => Math.min(i, split.exercises.length - 1));
+  }, [split, restored]);
 
   useEffect(() => {
     if (!split) return;
@@ -94,6 +106,18 @@ const Workout = () => {
       cancelled = true;
     };
   }, [split]);
+
+  useEffect(() => {
+    if (!split || Object.keys(progress).length === 0) return;
+
+    saveActiveWorkout(user?.id, {
+      splitId: split.id,
+      splitTitle: split.title,
+      progress,
+      activeIndex,
+      timer: timerSnapshot,
+    });
+  }, [split, progress, activeIndex, timerSnapshot, user?.id]);
 
   useEffect(() => {
     if (!restRunning) return;
@@ -251,6 +275,7 @@ const Workout = () => {
           }))
           .filter((ex) => ex.sets.length > 0),
       });
+      clearActiveWorkout(user?.id);
       navigate("/");
     } catch (e) {
       console.error(e);

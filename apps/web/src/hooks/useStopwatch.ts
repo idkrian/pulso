@@ -1,18 +1,28 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export const useStopwatch = (autoStart = true) => {
-  const [running, setRunning] = useState(autoStart);
+export type StopwatchSnapshot = {
+  startedAt: number | null;
+  accumulatedMs: number;
+};
+
+export const useStopwatch = (initial?: StopwatchSnapshot | null) => {
+  const [snapshot, setSnapshot] = useState<StopwatchSnapshot>(
+    () => initial ?? { startedAt: Date.now(), accumulatedMs: 0 },
+  );
   const [seconds, setSeconds] = useState(0);
 
-  const startedAtRef = useRef<number | null>(autoStart ? Date.now() : null);
-  const accumulatedRef = useRef(0);
+  const snapshotRef = useRef(snapshot);
+  const running = snapshot.startedAt !== null;
 
-  const elapsedMs = useCallback(
-    () =>
-      accumulatedRef.current +
-      (startedAtRef.current === null ? 0 : Date.now() - startedAtRef.current),
-    [],
-  );
+  const commit = useCallback((next: StopwatchSnapshot) => {
+    snapshotRef.current = next;
+    setSnapshot(next);
+  }, []);
+
+  const elapsedMs = useCallback(() => {
+    const { startedAt, accumulatedMs } = snapshotRef.current;
+    return accumulatedMs + (startedAt === null ? 0 : Date.now() - startedAt);
+  }, []);
 
   const sync = useCallback(
     () => setSeconds(Math.floor(elapsedMs() / 1000)),
@@ -20,9 +30,9 @@ export const useStopwatch = (autoStart = true) => {
   );
 
   useEffect(() => {
+    sync();
     if (!running) return;
 
-    sync();
     const id = window.setInterval(sync, 500);
     return () => window.clearInterval(id);
   }, [running, sync]);
@@ -45,23 +55,21 @@ export const useStopwatch = (autoStart = true) => {
 
   const toggle = useCallback(() => {
     if (running) {
-      accumulatedRef.current = elapsedMs();
-      startedAtRef.current = null;
-      setRunning(false);
+      commit({ startedAt: null, accumulatedMs: elapsedMs() });
       sync();
       return;
     }
 
-    startedAtRef.current = Date.now();
-    setRunning(true);
-  }, [running, elapsedMs, sync]);
+    commit({
+      startedAt: Date.now(),
+      accumulatedMs: snapshotRef.current.accumulatedMs,
+    });
+  }, [running, commit, elapsedMs, sync]);
 
   const reset = useCallback(() => {
-    accumulatedRef.current = 0;
-    startedAtRef.current = Date.now();
-    setRunning(true);
+    commit({ startedAt: Date.now(), accumulatedMs: 0 });
     setSeconds(0);
-  }, []);
+  }, [commit]);
 
-  return { seconds, running, toggle, reset };
+  return { seconds, running, snapshot, toggle, reset };
 };
