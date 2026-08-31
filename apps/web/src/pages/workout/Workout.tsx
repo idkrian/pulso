@@ -12,6 +12,7 @@ import { DEFAULT_REST } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatWeight } from "@/utils/units";
 import { useT } from "@/i18n";
+import { useStopwatch } from "@/hooks/useStopwatch";
 import PRToast from "@/components/workout/PRToast";
 import WorkoutHeader from "@/components/workout/WorkoutHeader";
 import ActiveExerciseCard from "@/components/workout/ActiveExerciseCard";
@@ -34,8 +35,12 @@ const Workout = () => {
   >({});
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const [workoutSeconds, setWorkoutSeconds] = useState(0);
-  const [workoutRunning, setWorkoutRunning] = useState(true);
+  const {
+    seconds: workoutSeconds,
+    running: workoutRunning,
+    toggle: toggleWorkoutTimer,
+    reset: resetWorkoutTimer,
+  } = useStopwatch();
 
   const [restRemaining, setRestRemaining] = useState(0);
   const [restTotal, setRestTotal] = useState(DEFAULT_REST);
@@ -89,12 +94,6 @@ const Workout = () => {
       cancelled = true;
     };
   }, [split]);
-
-  useEffect(() => {
-    if (!workoutRunning) return;
-    const id = window.setInterval(() => setWorkoutSeconds((s) => s + 1), 1000);
-    return () => clearInterval(id);
-  }, [workoutRunning]);
 
   useEffect(() => {
     if (!restRunning) return;
@@ -292,11 +291,8 @@ const Workout = () => {
       <WorkoutHeader
         workoutSeconds={workoutSeconds}
         workoutRunning={workoutRunning}
-        onToggleRunning={() => setWorkoutRunning((r) => !r)}
-        onResetTime={() => {
-          setWorkoutSeconds(0);
-          setWorkoutRunning(true);
-        }}
+        onToggleRunning={toggleWorkoutTimer}
+        onResetTime={resetWorkoutTimer}
         exerciseFinishedCount={exerciseFinishedCount}
         totalExercises={orderedExercises.length}
         totalCompletedSets={totalCompletedSets}
