@@ -185,6 +185,7 @@ export const en = {
     colReps: "Reps",
     colRpe: "RPE",
     addSet: "Add set",
+    removeSet: "Remove set",
     notesPlaceholder: "Notes — how did this exercise feel?",
     setsLogged: "{done} / {total} sets logged",
 
@@ -198,6 +199,9 @@ export const en = {
     volume: "Volume",
     sets: "Sets",
     keepGoing: "Keep going",
+    noSetsLogged: "Log at least one set to save this workout.",
+    saveFailed:
+      "Could not save the workout. Check your connection and try again.",
     save: "SAVE",
   },
 

@@ -23,6 +23,7 @@ type Props = {
   onNext: () => void;
   onUpdateSet: (setIdx: number, patch: Partial<LoggedSet>) => void;
   onLogSet: (setIdx: number) => void;
+  onRemoveSet: (setIdx: number) => void;
   onUpdateNotes: (value: string) => void;
 };
 
@@ -36,6 +37,7 @@ const ActiveExerciseCard = ({
   onNext,
   onUpdateSet,
   onLogSet,
+  onRemoveSet,
   onUpdateNotes,
   addSet,
 }: Props) => {
@@ -121,11 +123,12 @@ const ActiveExerciseCard = ({
       </div>
 
       <div className="flex flex-col gap-2 pr-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
-        <div className="hidden shrink-0 grid-cols-[28px_1fr_70px_1.2fr_56px] gap-2 px-2 text-[10px] uppercase tracking-wider text-lightGrey/50 lg:grid">
+        <div className="hidden shrink-0 grid-cols-[28px_1fr_70px_1.2fr_56px_28px] gap-2 px-2 text-[10px] uppercase tracking-wider text-lightGrey/50 lg:grid">
           <span>{t("workout.colSet")}</span>
           <span>{t("workout.colWeight", { unit: unitLabel(unit) })}</span>
           <span className="text-center">{t("workout.colReps")}</span>
           <span>{t("workout.colRpe")}</span>
+          <span></span>
           <span></span>
         </div>
 
@@ -135,8 +138,10 @@ const ActiveExerciseCard = ({
             set={set}
             index={i}
             targetReps={exercise.reps}
+            canRemove={progress.sets.length > 1}
             onUpdate={(patch) => onUpdateSet(i, patch)}
             onLog={() => onLogSet(i)}
+            onRemove={() => onRemoveSet(i)}
           />
         ))}
         <button

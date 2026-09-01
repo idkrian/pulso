@@ -1,4 +1,4 @@
-import { LuTrophy } from "react-icons/lu";
+import { LuCircleAlert, LuTrophy } from "react-icons/lu";
 import Button from "@/components/ui/Button";
 import { formatTime } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,6 +12,8 @@ type Props = {
   totalVolume: number;
   totalCompletedSets: number;
   submitting: boolean;
+  canSave: boolean;
+  error: string | null;
   onClose: () => void;
   onSave: () => void;
 };
@@ -23,6 +25,8 @@ const WorkoutSummaryModal = ({
   totalVolume,
   totalCompletedSets,
   submitting,
+  canSave,
+  error,
   onClose,
   onSave,
 }: Props) => {
@@ -76,6 +80,19 @@ const WorkoutSummaryModal = ({
           </div>
         </div>
 
+        {(!canSave || error) && (
+          <div
+            className={`mb-4 flex items-start gap-2 rounded-xl border p-3 text-xs ${
+              error
+                ? "border-red-500/30 bg-red-500/10 text-red-300"
+                : "border-amber-500/30 bg-amber-500/10 text-amber-300"
+            }`}
+          >
+            <LuCircleAlert size={16} className="mt-px shrink-0" />
+            <p>{error ?? t("workoutSummary.noSetsLogged")}</p>
+          </div>
+        )}
+
         <div className="flex flex-col-reverse gap-2 lg:flex-row lg:justify-end lg:gap-3 [&>button]:w-full lg:[&>button]:w-auto">
           <button
             onClick={onClose}
@@ -87,6 +104,7 @@ const WorkoutSummaryModal = ({
             label={t("workoutSummary.save")}
             onClick={onSave}
             loading={submitting}
+            disabled={!canSave || submitting}
           />
         </div>
       </div>

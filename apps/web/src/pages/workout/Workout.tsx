@@ -61,6 +61,7 @@ const Workout = () => {
   const [submitting, setSubmitting] = useState(false);
   const [pulseVolume, setPulseVolume] = useState(false);
   const [recentPR, setRecentPR] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const prTimeout = useRef<number | null>(null);
 
   useEffect(() => {
@@ -184,6 +185,15 @@ const Workout = () => {
     });
   };
 
+  const removeSet = (exerciseId: number, setIdx: number) => {
+    setProgress((prev) => {
+      const ex = prev[exerciseId];
+      if (!ex || ex.sets.length <= 1) return prev;
+      const sets = ex.sets.filter((_, i) => i !== setIdx);
+      return { ...prev, [exerciseId]: { ...ex, sets } };
+    });
+  };
+
   const updateSet = (
     exerciseId: number,
     setIdx: number,
@@ -230,7 +240,6 @@ const Workout = () => {
           weight: formatWeight(target.weight, unit),
         }),
       );
-      // Raise the bar locally so the next set compares against the new record.
       setPerformances((prev) =>
         exerciseId === undefined || !prev[exerciseId]
           ? prev
@@ -253,13 +262,14 @@ const Workout = () => {
   };
 
   const finishWorkout = async () => {
-    if (!split) return;
+    if (!split || totalCompletedSets === 0) return;
+    setSaveError(null);
     setSubmitting(true);
     try {
       await createWorkout({
         id: split.id,
         title: split.title,
-        durationSeconds: workoutSeconds,
+        durationSeconds: Math.max(1, workoutSeconds),
         exercises: orderedExercises
           .map((ex) => ({
             exerciseId: ex.exerciseId,
@@ -279,6 +289,7 @@ const Workout = () => {
       navigate("/");
     } catch (e) {
       console.error(e);
+      setSaveError(t("workoutSummary.saveFailed"));
       setSubmitting(false);
     }
   };
@@ -344,6 +355,7 @@ const Workout = () => {
             updateSet(activeExercise.id, setIdx, patch)
           }
           onLogSet={(setIdx) => logSet(activeExercise.id, setIdx)}
+          onRemoveSet={(setIdx) => removeSet(activeExercise.id, setIdx)}
           onUpdateNotes={(value) =>
             setProgress((prev) => ({
               ...prev,
@@ -366,7 +378,10 @@ const Workout = () => {
       <div className="flex shrink-0 justify-end [&>button]:w-full lg:[&>button]:w-auto">
         <Button
           label={t("workout.finish")}
-          onClick={() => setShowSummary(true)}
+          onClick={() => {
+            setSaveError(null);
+            setShowSummary(true);
+          }}
         />
       </div>
 
@@ -377,6 +392,8 @@ const Workout = () => {
         totalVolume={totalVolume}
         totalCompletedSets={totalCompletedSets}
         submitting={submitting}
+        canSave={totalCompletedSets > 0}
+        error={saveError}
         onClose={() => setShowSummary(false)}
         onSave={finishWorkout}
       />

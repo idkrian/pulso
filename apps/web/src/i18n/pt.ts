@@ -188,6 +188,7 @@ export const pt: LocaleDictionary = {
     colReps: "Reps",
     colRpe: "RPE",
     addSet: "Adicionar série",
+    removeSet: "Remover série",
     notesPlaceholder: "Anotações — como foi este exercício?",
     setsLogged: "{done} / {total} séries registradas",
 
@@ -201,6 +202,9 @@ export const pt: LocaleDictionary = {
     volume: "Volume",
     sets: "Séries",
     keepGoing: "Continuar treinando",
+    noSetsLogged: "Registre pelo menos uma série para salvar este treino.",
+    saveFailed:
+      "Não foi possível salvar o treino. Verifique sua conexão e tente novamente.",
     save: "SALVAR",
   },
 

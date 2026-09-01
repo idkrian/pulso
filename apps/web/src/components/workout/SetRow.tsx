@@ -1,4 +1,4 @@
-import { LuCheck, LuMinus, LuPlus } from "react-icons/lu";
+import { LuCheck, LuMinus, LuPlus, LuTrash2 } from "react-icons/lu";
 import type { LoggedSet } from "@/dtos/workout.dto";
 import { rpeColor } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,11 +9,21 @@ type Props = {
   set: LoggedSet;
   index: number;
   targetReps: string;
+  canRemove: boolean;
   onUpdate: (patch: Partial<LoggedSet>) => void;
   onLog: () => void;
+  onRemove: () => void;
 };
 
-const SetRow = ({ set, index, targetReps, onUpdate, onLog }: Props) => {
+const SetRow = ({
+  set,
+  index,
+  targetReps,
+  canRemove,
+  onUpdate,
+  onLog,
+  onRemove,
+}: Props) => {
   const { unit } = useAuth();
   const t = useT();
   const step = weightStep(unit);
@@ -25,7 +35,7 @@ const SetRow = ({ set, index, targetReps, onUpdate, onLog }: Props) => {
 
   return (
     <div
-      className={`grid min-h-11 grid-cols-[28px_1fr_64px_44px] items-center gap-2 rounded-lg px-3 py-2.5 transition-all duration-300 lg:flex-1 lg:grid-cols-[28px_1fr_70px_1.2fr_56px] ${
+      className={`grid min-h-11 grid-cols-[28px_1fr_64px_44px_28px] items-center gap-2 rounded-lg px-3 py-2.5 transition-all duration-300 lg:flex-1 lg:grid-cols-[28px_1fr_70px_1.2fr_56px_28px] ${
         set.completed
           ? "bg-emerald-500/10 border border-emerald-500/30"
           : "bg-darkGrey/60 border border-transparent"
@@ -74,7 +84,7 @@ const SetRow = ({ set, index, targetReps, onUpdate, onLog }: Props) => {
         className="w-full text-center bg-mediumGrey/60 font-semibold text-sm outline-none rounded-md py-1 focus:bg-mediumGrey transition-colors disabled:bg-transparent"
       />
 
-      <div className="order-last col-span-4 flex items-center gap-1.5 lg:order-0 lg:col-span-1">
+      <div className="order-last col-span-5 flex items-center gap-1.5 lg:order-0 lg:col-span-1">
         <span className="text-[10px] uppercase tracking-wider text-lightGrey/50 lg:hidden">
           {t("workout.colRpe")}
         </span>
@@ -106,6 +116,16 @@ const SetRow = ({ set, index, targetReps, onUpdate, onLog }: Props) => {
         }`}
       >
         <LuCheck size={14} />
+      </button>
+
+      <button
+        disabled={!canRemove}
+        onClick={onRemove}
+        title={t("workout.removeSet")}
+        aria-label={t("workout.removeSet")}
+        className="flex h-9 cursor-pointer items-center justify-center rounded-md text-lightGrey/40 transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-20 disabled:hover:bg-transparent disabled:hover:text-lightGrey/40 lg:h-7"
+      >
+        <LuTrash2 size={14} />
       </button>
     </div>
   );
