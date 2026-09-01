@@ -2,10 +2,10 @@ import {
   LuChevronLeft,
   LuChevronRight,
   LuPlus,
+  LuRepeat2,
   LuStickyNote,
 } from "react-icons/lu";
-import type { TrainingSplitExerciseDto } from "@/dtos/training-split-exercise.dto";
-import type { ExerciseProgress, LoggedSet } from "@/dtos/workout.dto";
+import type { LoggedSet, WorkoutEntry } from "@/dtos/workout.dto";
 import type { ExercisePerformanceDto } from "@/dtos/exercise.dto";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatWeight, unitLabel } from "@/utils/units";
@@ -13,8 +13,7 @@ import { useT } from "@/i18n";
 import SetRow from "./SetRow";
 
 type Props = {
-  exercise: TrainingSplitExerciseDto;
-  progress: ExerciseProgress;
+  entry: WorkoutEntry;
   performance?: ExercisePerformanceDto | undefined;
   activeIndex: number;
   totalExercises: number;
@@ -25,11 +24,11 @@ type Props = {
   onLogSet: (setIdx: number) => void;
   onRemoveSet: (setIdx: number) => void;
   onUpdateNotes: (value: string) => void;
+  onSwapExercise: () => void;
 };
 
 const ActiveExerciseCard = ({
-  exercise,
-  progress,
+  entry,
   performance,
   activeIndex,
   totalExercises,
@@ -39,11 +38,12 @@ const ActiveExerciseCard = ({
   onLogSet,
   onRemoveSet,
   onUpdateNotes,
+  onSwapExercise,
   addSet,
 }: Props) => {
   const { unit } = useAuth();
   const t = useT();
-  const completedSets = progress.sets.filter((s) => s.completed).length;
+  const completedSets = entry.sets.filter((s) => s.completed).length;
   const lastSets = performance?.lastPerformed?.sets ?? [];
   const topLastSet = lastSets.reduce<(typeof lastSets)[number] | null>(
     (best, set) => (!best || set.weight > best.weight ? set : best),
@@ -68,13 +68,23 @@ const ActiveExerciseCard = ({
               total: totalExercises,
             })}
           </p>
-          <h2 className="text-xl font-bold leading-tight">
-            {exercise.exercise.title}
-          </h2>
+          <div className="flex items-center justify-center gap-1.5">
+            <h2 className="text-xl font-bold leading-tight">
+              {entry.exercise.title}
+            </h2>
+            <button
+              onClick={onSwapExercise}
+              title={t("workout.swapExercise")}
+              aria-label={t("workout.swapExercise")}
+              className="flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-darkGrey text-lightIndigo transition-colors hover:bg-indigo/30 hover:text-white"
+            >
+              <LuRepeat2 size={15} />
+            </button>
+          </div>
           <p className="text-xs text-lightGrey/60">
             {t("workout.target", {
-              sets: exercise.sets,
-              reps: exercise.reps,
+              sets: entry.targetSets,
+              reps: entry.targetReps,
             })}
           </p>
         </div>
@@ -110,7 +120,7 @@ const ActiveExerciseCard = ({
       )}
 
       <div className="flex gap-1.5 justify-center shrink-0">
-        {progress.sets.map((s, i) => (
+        {entry.sets.map((s, i) => (
           <div
             key={i}
             className={`h-1 w-8 rounded-full transition-all duration-300 ${
@@ -132,13 +142,13 @@ const ActiveExerciseCard = ({
           <span></span>
         </div>
 
-        {progress.sets.map((set, i) => (
+        {entry.sets.map((set, i) => (
           <SetRow
             key={i}
             set={set}
             index={i}
-            targetReps={exercise.reps}
-            canRemove={progress.sets.length > 1}
+            targetReps={entry.targetReps}
+            canRemove={entry.sets.length > 1}
             onUpdate={(patch) => onUpdateSet(i, patch)}
             onLog={() => onLogSet(i)}
             onRemove={() => onRemoveSet(i)}
@@ -159,7 +169,7 @@ const ActiveExerciseCard = ({
       <div className="flex items-start gap-2 shrink-0">
         <LuStickyNote size={14} className="mt-1.5 text-lightIndigo shrink-0" />
         <textarea
-          value={progress.notes}
+          value={entry.notes}
           placeholder={t("workout.notesPlaceholder")}
           onChange={(e) => onUpdateNotes(e.target.value)}
           className="flex-1 bg-darkGrey/60 rounded-lg px-2 py-1.5 text-xs outline-none focus:bg-darkGrey resize-none"
@@ -170,7 +180,7 @@ const ActiveExerciseCard = ({
       <p className="text-[10px] text-lightGrey/40 text-center shrink-0">
         {t("workout.setsLogged", {
           done: completedSets,
-          total: progress.sets.length,
+          total: entry.sets.length,
         })}
       </p>
     </div>

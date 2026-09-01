@@ -5,9 +5,9 @@ import { getTrainingSplitById } from "@/api/training-split";
 import { getExercisePerformances } from "@/api/exercise";
 import { createWorkout } from "@/api/workout";
 import type { TrainingSplitDto } from "@/dtos/training-splits.dto";
-import type { ExercisePerformanceDto } from "@/dtos/exercise.dto";
+import type { ExerciseDto, ExercisePerformanceDto } from "@/dtos/exercise.dto";
 import Button from "@/components/ui/Button";
-import type { ExerciseProgress, LoggedSet } from "@/dtos/workout.dto";
+import type { LoggedSet, WorkoutEntry } from "@/dtos/workout.dto";
 import { DEFAULT_REST } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatWeight } from "@/utils/units";
@@ -18,12 +18,20 @@ import {
   readActiveWorkout,
   saveActiveWorkout,
 } from "@/utils/active-workout";
+import {
+  createEntryId,
+  emptySet,
+  entriesFromSplit,
+  entryFromExercise,
+} from "@/utils/workout-entry";
 import PRToast from "@/components/workout/PRToast";
 import WorkoutHeader from "@/components/workout/WorkoutHeader";
 import ActiveExerciseCard from "@/components/workout/ActiveExerciseCard";
 import RestTimer from "@/components/workout/RestTimer";
 import UpNextList from "@/components/workout/UpNextList";
 import WorkoutSummaryModal from "@/components/modals/WorkoutSummaryModal";
+import ExercisePickerModal from "@/components/modals/ExercisePickerModal";
+import ConfirmModal from "@/components/modals/ConfirmModal";
 
 const Workout = () => {
   const { splitId } = useParams();
@@ -37,13 +45,14 @@ const Workout = () => {
   });
 
   const [split, setSplit] = useState<TrainingSplitDto | null>(null);
-  const [progress, setProgress] = useState<Record<number, ExerciseProgress>>(
-    {},
+  const [entries, setEntries] = useState<WorkoutEntry[]>(
+    restored?.entries ?? [],
   );
   const [performances, setPerformances] = useState<
     Record<number, ExercisePerformanceDto>
   >({});
   const [activeIndex, setActiveIndex] = useState(restored?.activeIndex ?? 0);
+  const requestedPerformances = useRef(new Set<number>());
 
   const {
     seconds: workoutSeconds,
@@ -64,61 +73,59 @@ const Workout = () => {
   const [saveError, setSaveError] = useState<string | null>(null);
   const prTimeout = useRef<number | null>(null);
 
+  const [pickerMode, setPickerMode] = useState<"swap" | "add" | null>(null);
+  const [pendingSwap, setPendingSwap] = useState<ExerciseDto | null>(null);
+  const [pendingRemoval, setPendingRemoval] = useState<WorkoutEntry | null>(
+    null,
+  );
+
   useEffect(() => {
     if (splitId) getTrainingSplitById(splitId).then(setSplit);
   }, [splitId]);
 
   useEffect(() => {
-    if (!split) return;
-
-    const initialProgress: Record<number, ExerciseProgress> = {};
-    split.exercises.forEach((ex) => {
-      initialProgress[ex.id] = restored?.progress[ex.id] ?? {
-        sets: Array.from({ length: ex.sets }, () => ({
-          weight: 0,
-          reps: 0,
-          rpe: 7,
-          completed: false,
-        })),
-        notes: "",
-      };
-    });
-    setProgress(initialProgress);
-    setActiveIndex((i) => Math.min(i, split.exercises.length - 1));
+    if (!split || restored) return;
+    setEntries(entriesFromSplit(split.exercises));
   }, [split, restored]);
 
   useEffect(() => {
-    if (!split) return;
-    let cancelled = false;
-
-    getExercisePerformances(split.exercises.map((ex) => ex.exerciseId))
-      .catch(() => [] as ExercisePerformanceDto[])
-      .then((list) => {
-        if (cancelled) return;
-
-        const byExercise: Record<number, ExercisePerformanceDto> = {};
-        list.forEach((item) => {
-          byExercise[item.exerciseId] = item;
-        });
-        setPerformances(byExercise);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [split]);
+    setActiveIndex((i) => Math.max(0, Math.min(i, entries.length - 1)));
+  }, [entries.length]);
 
   useEffect(() => {
-    if (!split || Object.keys(progress).length === 0) return;
+    const missing = entries
+      .map((entry) => entry.exerciseId)
+      .filter((id) => !requestedPerformances.current.has(id));
+
+    if (missing.length === 0) return;
+    missing.forEach((id) => requestedPerformances.current.add(id));
+
+    getExercisePerformances(missing)
+      .then((list) =>
+        setPerformances((prev) => {
+          const next = { ...prev };
+          list.forEach((item) => {
+            next[item.exerciseId] = item;
+          });
+          return next;
+        }),
+      )
+      .catch(() =>
+        missing.forEach((id) => requestedPerformances.current.delete(id)),
+      );
+  }, [entries]);
+
+  useEffect(() => {
+    if (!split || entries.length === 0) return;
 
     saveActiveWorkout(user?.id, {
       splitId: split.id,
       splitTitle: split.title,
-      progress,
+      entries,
       activeIndex,
       timer: timerSnapshot,
     });
-  }, [split, progress, activeIndex, timerSnapshot, user?.id]);
+  }, [split, entries, activeIndex, timerSnapshot, user?.id]);
 
   useEffect(() => {
     if (!restRunning) return;
@@ -134,79 +141,139 @@ const Workout = () => {
     return () => clearInterval(id);
   }, [restRunning]);
 
-  const orderedExercises = useMemo(
-    () => (split ? [...split.exercises].sort((a, b) => a.order - b.order) : []),
-    [split],
-  );
-
-  const activeExercise = orderedExercises[activeIndex];
+  const activeEntry = entries[activeIndex];
 
   const totalCompletedSets = useMemo(
     () =>
-      Object.values(progress).reduce(
-        (acc, p) => acc + p.sets.filter((s) => s.completed).length,
+      entries.reduce(
+        (acc, entry) => acc + entry.sets.filter((s) => s.completed).length,
         0,
       ),
-    [progress],
+    [entries],
   );
   const totalSets = useMemo(
-    () => Object.values(progress).reduce((acc, p) => acc + p.sets.length, 0),
-    [progress],
+    () => entries.reduce((acc, entry) => acc + entry.sets.length, 0),
+    [entries],
   );
   const overallPct = totalSets ? (totalCompletedSets / totalSets) * 100 : 0;
 
   const totalVolume = useMemo(
     () =>
-      Object.values(progress).reduce(
-        (acc, p) =>
+      entries.reduce(
+        (acc, entry) =>
           acc +
-          p.sets
+          entry.sets
             .filter((s) => s.completed)
             .reduce((a, s) => a + s.weight * s.reps, 0),
         0,
       ),
-    [progress],
+    [entries],
   );
 
-  const exerciseFinishedCount = orderedExercises.filter((ex) =>
-    progress[ex.id]?.sets.every((s) => s.completed),
+  const exerciseFinishedCount = entries.filter((entry) =>
+    entry.sets.every((s) => s.completed),
   ).length;
 
+  const patchEntry = (
+    entryId: string,
+    patch: (entry: WorkoutEntry) => WorkoutEntry,
+  ) =>
+    setEntries((prev) =>
+      prev.map((entry) => (entry.entryId === entryId ? patch(entry) : entry)),
+    );
+
   const addSet = () => {
-    if (!activeExercise) return;
-    setProgress((prev) => {
-      const ex = prev[activeExercise.id];
-      if (!ex) return prev;
-      const sets = [
-        ...ex.sets,
-        { weight: 0, reps: 0, rpe: 7, completed: false },
-      ];
-      return { ...prev, [activeExercise.id]: { ...ex, sets } };
-    });
+    if (!activeEntry) return;
+    patchEntry(activeEntry.entryId, (entry) => ({
+      ...entry,
+      sets: [...entry.sets, emptySet()],
+    }));
   };
 
-  const removeSet = (exerciseId: number, setIdx: number) => {
-    setProgress((prev) => {
-      const ex = prev[exerciseId];
-      if (!ex || ex.sets.length <= 1) return prev;
-      const sets = ex.sets.filter((_, i) => i !== setIdx);
-      return { ...prev, [exerciseId]: { ...ex, sets } };
-    });
-  };
+  const removeSet = (entryId: string, setIdx: number) =>
+    patchEntry(entryId, (entry) =>
+      entry.sets.length <= 1
+        ? entry
+        : { ...entry, sets: entry.sets.filter((_, i) => i !== setIdx) },
+    );
 
   const updateSet = (
-    exerciseId: number,
+    entryId: string,
     setIdx: number,
     patch: Partial<LoggedSet>,
-  ) => {
-    setProgress((prev) => {
-      const ex = prev[exerciseId];
-      if (!ex) return prev;
-      const sets = ex.sets.map((s, i) =>
-        i === setIdx ? { ...s, ...patch } : s,
-      );
-      return { ...prev, [exerciseId]: { ...ex, sets } };
-    });
+  ) =>
+    patchEntry(entryId, (entry) => ({
+      ...entry,
+      sets: entry.sets.map((s, i) => (i === setIdx ? { ...s, ...patch } : s)),
+    }));
+
+  const updateNotes = (entryId: string, notes: string) =>
+    patchEntry(entryId, (entry) => ({ ...entry, notes }));
+
+  const loggedSetCount = (entry: WorkoutEntry) =>
+    entry.sets.filter((s) => s.completed).length;
+
+  const keepActiveOn = (entryId: string | undefined, next: WorkoutEntry[]) => {
+    setEntries(next);
+    const idx = next.findIndex((entry) => entry.entryId === entryId);
+    if (idx >= 0) setActiveIndex(idx);
+  };
+
+  const moveEntry = (entryId: string, direction: -1 | 1) => {
+    const from = entries.findIndex((entry) => entry.entryId === entryId);
+    const to = from + direction;
+    if (from < 0 || to < 0 || to >= entries.length) return;
+
+    const next = [...entries];
+    [next[from], next[to]] = [next[to], next[from]];
+    keepActiveOn(activeEntry?.entryId, next);
+  };
+
+  const removeEntry = (entryId: string) => {
+    if (entries.length <= 1) return;
+    keepActiveOn(
+      activeEntry?.entryId,
+      entries.filter((entry) => entry.entryId !== entryId),
+    );
+  };
+
+  const requestRemoveEntry = (entryId: string) => {
+    const entry = entries.find((e) => e.entryId === entryId);
+    if (!entry || entries.length <= 1) return;
+
+    if (loggedSetCount(entry) > 0) {
+      setPendingRemoval(entry);
+      return;
+    }
+    removeEntry(entryId);
+  };
+
+  const swapActiveExercise = (exercise: ExerciseDto) => {
+    if (!activeEntry) return;
+    patchEntry(activeEntry.entryId, (entry) => ({
+      ...entry,
+      entryId: createEntryId(),
+      exerciseId: exercise.id,
+      exercise,
+      sets: Array.from({ length: entry.targetSets }, emptySet),
+      notes: "",
+    }));
+  };
+
+  const pickExercise = (exercise: ExerciseDto) => {
+    const mode = pickerMode;
+    setPickerMode(null);
+
+    if (mode === "add") {
+      setEntries((prev) => [...prev, entryFromExercise(exercise)]);
+      return;
+    }
+
+    if (activeEntry && loggedSetCount(activeEntry) > 0) {
+      setPendingSwap(exercise);
+      return;
+    }
+    swapActiveExercise(exercise);
   };
 
   const triggerPR = (label: string) => {
@@ -215,37 +282,36 @@ const Workout = () => {
     prTimeout.current = window.setTimeout(() => setRecentPR(null), 2500);
   };
 
-  const logSet = (splitExerciseId: number, setIdx: number) => {
-    const target = progress[splitExerciseId]?.sets[setIdx];
-    if (!target || target.completed) return;
+  const logSet = (entryId: string, setIdx: number) => {
+    const entry = entries.find((e) => e.entryId === entryId);
+    const target = entry?.sets[setIdx];
+    if (!entry || !target || target.completed) return;
     if (target.weight <= 0 || target.reps <= 0) return;
 
-    updateSet(splitExerciseId, setIdx, { completed: true });
+    updateSet(entryId, setIdx, { completed: true });
     setPulseVolume(true);
     setTimeout(() => setPulseVolume(false), 600);
 
     // The record comes from the server (all-time across every session), so beating
     // it here is a real PR — not just the heaviest set of today.
-    const splitExercise = orderedExercises.find(
-      (ex) => ex.id === splitExerciseId,
-    );
-    const exerciseId = splitExercise?.exerciseId;
-    const bestWeight =
-      exerciseId !== undefined ? performances[exerciseId]?.bestWeight : null;
+    const bestWeight = performances[entry.exerciseId]?.bestWeight;
 
     if (bestWeight != null && target.weight > bestWeight) {
       triggerPR(
         t("workout.newPR", {
-          exercise: splitExercise?.exercise.title ?? "",
+          exercise: entry.exercise.title,
           weight: formatWeight(target.weight, unit),
         }),
       );
       setPerformances((prev) =>
-        exerciseId === undefined || !prev[exerciseId]
+        !prev[entry.exerciseId]
           ? prev
           : {
               ...prev,
-              [exerciseId]: { ...prev[exerciseId], bestWeight: target.weight },
+              [entry.exerciseId]: {
+                ...prev[entry.exerciseId],
+                bestWeight: target.weight,
+              },
             },
       );
     }
@@ -253,10 +319,10 @@ const Workout = () => {
     setRestRemaining(restTotal);
     setRestRunning(true);
 
-    const allDone = progress[splitExerciseId].sets.every((s, i) =>
+    const allDone = entry.sets.every((s, i) =>
       i === setIdx ? true : s.completed,
     );
-    if (allDone && activeIndex < orderedExercises.length - 1) {
+    if (allDone && activeIndex < entries.length - 1) {
       setTimeout(() => setActiveIndex((i) => i + 1), 800);
     }
   };
@@ -270,11 +336,11 @@ const Workout = () => {
         id: split.id,
         title: split.title,
         durationSeconds: Math.max(1, workoutSeconds),
-        exercises: orderedExercises
-          .map((ex) => ({
-            exerciseId: ex.exerciseId,
-            notes: progress[ex.id].notes.trim() || undefined,
-            sets: progress[ex.id].sets
+        exercises: entries
+          .map((entry) => ({
+            exerciseId: entry.exerciseId,
+            notes: entry.notes.trim() || undefined,
+            sets: entry.sets
               .filter((s) => s.completed)
               .map((s, i) => ({
                 setNumber: i + 1,
@@ -283,7 +349,7 @@ const Workout = () => {
                 rpe: s.rpe,
               })),
           }))
-          .filter((ex) => ex.sets.length > 0),
+          .filter((entry) => entry.sets.length > 0),
       });
       clearActiveWorkout(user?.id);
       navigate("/");
@@ -294,7 +360,7 @@ const Workout = () => {
     }
   };
 
-  if (!split || !activeExercise || !progress[activeExercise.id]) {
+  if (!split || !activeEntry) {
     return (
       <div className="flex w-full h-full items-center justify-center text-white">
         <LuRotateCw size={36} className="animate-spin text-indigo" />
@@ -330,7 +396,7 @@ const Workout = () => {
         onToggleRunning={toggleWorkoutTimer}
         onResetTime={resetWorkoutTimer}
         exerciseFinishedCount={exerciseFinishedCount}
-        totalExercises={orderedExercises.length}
+        totalExercises={entries.length}
         totalCompletedSets={totalCompletedSets}
         totalSets={totalSets}
         overallPct={overallPct}
@@ -341,36 +407,33 @@ const Workout = () => {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:flex-1 lg:min-h-0">
         <ActiveExerciseCard
-          exercise={activeExercise}
-          progress={progress[activeExercise.id]}
-          performance={performances[activeExercise.exerciseId]}
+          entry={activeEntry}
+          performance={performances[activeEntry.exerciseId]}
           activeIndex={activeIndex}
-          totalExercises={orderedExercises.length}
+          totalExercises={entries.length}
           addSet={addSet}
           onPrev={() => setActiveIndex((i) => Math.max(0, i - 1))}
           onNext={() =>
-            setActiveIndex((i) => Math.min(orderedExercises.length - 1, i + 1))
+            setActiveIndex((i) => Math.min(entries.length - 1, i + 1))
           }
           onUpdateSet={(setIdx, patch) =>
-            updateSet(activeExercise.id, setIdx, patch)
+            updateSet(activeEntry.entryId, setIdx, patch)
           }
-          onLogSet={(setIdx) => logSet(activeExercise.id, setIdx)}
-          onRemoveSet={(setIdx) => removeSet(activeExercise.id, setIdx)}
-          onUpdateNotes={(value) =>
-            setProgress((prev) => ({
-              ...prev,
-              [activeExercise.id]: { ...prev[activeExercise.id], notes: value },
-            }))
-          }
+          onLogSet={(setIdx) => logSet(activeEntry.entryId, setIdx)}
+          onRemoveSet={(setIdx) => removeSet(activeEntry.entryId, setIdx)}
+          onUpdateNotes={(value) => updateNotes(activeEntry.entryId, value)}
+          onSwapExercise={() => setPickerMode("swap")}
         />
 
         <div className="flex flex-col gap-4 lg:min-h-0">
           <div className="hidden lg:block">{restTimer}</div>
           <UpNextList
-            exercises={orderedExercises}
-            progress={progress}
+            entries={entries}
             activeIndex={activeIndex}
             onSelect={setActiveIndex}
+            onMove={moveEntry}
+            onRemove={requestRemoveEntry}
+            onAdd={() => setPickerMode("add")}
           />
         </div>
       </div>
@@ -384,6 +447,55 @@ const Workout = () => {
           }}
         />
       </div>
+
+      <ExercisePickerModal
+        open={pickerMode !== null}
+        title={
+          pickerMode === "add"
+            ? t("workout.addPickerTitle")
+            : t("workout.swapPickerTitle")
+        }
+        currentExerciseId={
+          pickerMode === "swap" ? activeEntry.exerciseId : undefined
+        }
+        usedExerciseIds={entries.map((entry) => entry.exerciseId)}
+        onSelect={pickExercise}
+        onClose={() => setPickerMode(null)}
+      />
+
+      <ConfirmModal
+        open={pendingSwap !== null}
+        title={t("workout.swapConfirmTitle")}
+        description={t("workout.swapConfirmDescription", {
+          count: loggedSetCount(activeEntry),
+          exercise: activeEntry.exercise.title,
+        })}
+        confirmLabel={t("workout.swapConfirm")}
+        onConfirm={() => {
+          if (pendingSwap) swapActiveExercise(pendingSwap);
+          setPendingSwap(null);
+        }}
+        onCancel={() => setPendingSwap(null)}
+      />
+
+      <ConfirmModal
+        open={pendingRemoval !== null}
+        title={t("workout.removeConfirmTitle")}
+        description={
+          pendingRemoval
+            ? t("workout.removeConfirmDescription", {
+                count: loggedSetCount(pendingRemoval),
+                exercise: pendingRemoval.exercise.title,
+              })
+            : undefined
+        }
+        confirmLabel={t("workout.removeConfirm")}
+        onConfirm={() => {
+          if (pendingRemoval) removeEntry(pendingRemoval.entryId);
+          setPendingRemoval(null);
+        }}
+        onCancel={() => setPendingRemoval(null)}
+      />
 
       <WorkoutSummaryModal
         open={showSummary}

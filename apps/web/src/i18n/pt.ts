@@ -49,6 +49,15 @@ export const pt: LocaleDictionary = {
     createExercise: "Criar Exercício",
   },
 
+  exercisePicker: {
+    searchPlaceholder: "Buscar exercícios...",
+    all: "Todos",
+    loading: "Carregando exercícios…",
+    empty: "Nenhum exercício encontrado.",
+    current: "Atual",
+    inWorkout: "No treino",
+  },
+
   stats: {
     workouts: "Treinos",
     hours: "Horas",
@@ -191,6 +200,22 @@ export const pt: LocaleDictionary = {
     removeSet: "Remover série",
     notesPlaceholder: "Anotações — como foi este exercício?",
     setsLogged: "{done} / {total} séries registradas",
+
+    swapExercise: "Trocar exercício",
+    swapPickerTitle: "Trocar exercício",
+    addExercise: "Adicionar exercício",
+    addPickerTitle: "Adicionar exercício",
+    moveUp: "Mover para cima",
+    moveDown: "Mover para baixo",
+    removeExercise: "Remover exercício",
+    swapConfirmTitle: "Trocar este exercício?",
+    swapConfirmDescription:
+      "As {count} série(s) registradas em {exercise} serão descartadas.",
+    swapConfirm: "Trocar",
+    removeConfirmTitle: "Remover este exercício?",
+    removeConfirmDescription:
+      "As {count} série(s) registradas em {exercise} serão descartadas.",
+    removeConfirm: "Remover",
 
     restTimer: "Timer de Descanso",
     upNext: "A Seguir",

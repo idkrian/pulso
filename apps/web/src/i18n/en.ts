@@ -47,6 +47,15 @@ export const en = {
     createExercise: "Create Exercise",
   },
 
+  exercisePicker: {
+    searchPlaceholder: "Search exercises...",
+    all: "All",
+    loading: "Loading exercises…",
+    empty: "No exercises found.",
+    current: "Current",
+    inWorkout: "In workout",
+  },
+
   stats: {
     workouts: "Workouts",
     hours: "Hours",
@@ -188,6 +197,22 @@ export const en = {
     removeSet: "Remove set",
     notesPlaceholder: "Notes — how did this exercise feel?",
     setsLogged: "{done} / {total} sets logged",
+
+    swapExercise: "Swap exercise",
+    swapPickerTitle: "Swap exercise",
+    addExercise: "Add exercise",
+    addPickerTitle: "Add exercise",
+    moveUp: "Move up",
+    moveDown: "Move down",
+    removeExercise: "Remove exercise",
+    swapConfirmTitle: "Swap this exercise?",
+    swapConfirmDescription:
+      "The {count} set(s) you logged on {exercise} will be discarded.",
+    swapConfirm: "Swap",
+    removeConfirmTitle: "Remove this exercise?",
+    removeConfirmDescription:
+      "The {count} set(s) you logged on {exercise} will be discarded.",
+    removeConfirm: "Remove",
 
     restTimer: "Rest Timer",
     upNext: "Up Next",

@@ -1,13 +1,15 @@
-import type { ExerciseProgress } from "@/dtos/workout.dto";
+import type { WorkoutEntry } from "@/dtos/workout.dto";
 import type { StopwatchSnapshot } from "@/hooks/useStopwatch";
 
 const STORAGE_PREFIX = "pulso:active-workout";
 const MAX_AGE_MS = 6 * 60 * 60 * 1000;
+const CURRENT_VERSION = 2;
 
 export interface ActiveWorkout {
+  version: number;
   splitId: number;
   splitTitle: string;
-  progress: Record<number, ExerciseProgress>;
+  entries: WorkoutEntry[];
   activeIndex: number;
   timer: StopwatchSnapshot;
   updatedAt: number;
@@ -23,7 +25,9 @@ export const readActiveWorkout = (userId?: number): ActiveWorkout | null => {
     if (!raw) return null;
 
     const stored = JSON.parse(raw) as ActiveWorkout;
-    if (Date.now() - stored.updatedAt > MAX_AGE_MS) {
+    const expired = Date.now() - stored.updatedAt > MAX_AGE_MS;
+
+    if (expired || stored.version !== CURRENT_VERSION) {
       localStorage.removeItem(key);
       return null;
     }
@@ -37,12 +41,16 @@ export const readActiveWorkout = (userId?: number): ActiveWorkout | null => {
 
 export const saveActiveWorkout = (
   userId: number | undefined,
-  workout: Omit<ActiveWorkout, "updatedAt">,
+  workout: Omit<ActiveWorkout, "version" | "updatedAt">,
 ) => {
   try {
     localStorage.setItem(
       storageKey(userId),
-      JSON.stringify({ ...workout, updatedAt: Date.now() }),
+      JSON.stringify({
+        ...workout,
+        version: CURRENT_VERSION,
+        updatedAt: Date.now(),
+      }),
     );
   } catch {
     return;
@@ -53,7 +61,7 @@ export const clearActiveWorkout = (userId?: number) =>
   localStorage.removeItem(storageKey(userId));
 
 export const completedSetCount = (workout: ActiveWorkout): number =>
-  Object.values(workout.progress).reduce(
-    (acc, p) => acc + p.sets.filter((s) => s.completed).length,
+  workout.entries.reduce(
+    (acc, entry) => acc + entry.sets.filter((s) => s.completed).length,
     0,
   );
