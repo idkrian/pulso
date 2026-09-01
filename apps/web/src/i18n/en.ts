@@ -214,6 +214,12 @@ export const en = {
       "The {count} set(s) you logged on {exercise} will be discarded.",
     removeConfirm: "Remove",
 
+    leaveConfirmTitle: "Leave this workout?",
+    leaveConfirmDescription:
+      "Your progress stays saved and you can pick it up where you left off.",
+    leaveConfirm: "Leave",
+    leaveCancel: "Keep training",
+
     restTimer: "Rest Timer",
     upNext: "Up Next",
   },

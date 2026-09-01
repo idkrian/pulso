@@ -13,6 +13,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { formatWeight } from "@/utils/units";
 import { useT } from "@/i18n";
 import { useStopwatch } from "@/hooks/useStopwatch";
+import { useLeaveGuard } from "@/hooks/useLeaveGuard";
 import {
   clearActiveWorkout,
   readActiveWorkout,
@@ -36,7 +37,7 @@ import ConfirmModal from "@/components/modals/ConfirmModal";
 const Workout = () => {
   const { splitId } = useParams();
   const navigate = useNavigate();
-  const { unit, user } = useAuth();
+  const { unit, user, isAuthenticated } = useAuth();
   const t = useT();
 
   const [restored] = useState(() => {
@@ -156,6 +157,8 @@ const Workout = () => {
     [entries],
   );
   const overallPct = totalSets ? (totalCompletedSets / totalSets) * 100 : 0;
+
+  const leaveGuard = useLeaveGuard(totalCompletedSets > 0 && isAuthenticated);
 
   const totalVolume = useMemo(
     () =>
@@ -352,6 +355,7 @@ const Workout = () => {
           .filter((entry) => entry.sets.length > 0),
       });
       clearActiveWorkout(user?.id);
+      leaveGuard.release();
       navigate("/");
     } catch (e) {
       console.error(e);
@@ -495,6 +499,16 @@ const Workout = () => {
           setPendingRemoval(null);
         }}
         onCancel={() => setPendingRemoval(null)}
+      />
+
+      <ConfirmModal
+        open={leaveGuard.blocked}
+        title={t("workout.leaveConfirmTitle")}
+        description={t("workout.leaveConfirmDescription")}
+        confirmLabel={t("workout.leaveConfirm")}
+        cancelLabel={t("workout.leaveCancel")}
+        onConfirm={leaveGuard.confirmLeave}
+        onCancel={leaveGuard.cancelLeave}
       />
 
       <WorkoutSummaryModal

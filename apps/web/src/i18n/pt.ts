@@ -217,6 +217,12 @@ export const pt: LocaleDictionary = {
       "As {count} série(s) registradas em {exercise} serão descartadas.",
     removeConfirm: "Remover",
 
+    leaveConfirmTitle: "Sair deste treino?",
+    leaveConfirmDescription:
+      "Seu progresso fica salvo e você pode retomar de onde parou.",
+    leaveConfirm: "Sair",
+    leaveCancel: "Continuar treinando",
+
     restTimer: "Timer de Descanso",
     upNext: "A Seguir",
   },

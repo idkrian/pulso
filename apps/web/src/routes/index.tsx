@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router";
+import { createBrowserRouter } from "react-router";
 import Calendar from "../pages/calendar/Calendar";
 import Dashboard from "../pages/Dashboard";
 import TrainingSplits from "../pages/training-splits/TrainingSplits";
@@ -11,29 +11,26 @@ import Profile from "@/pages/profile/Profile";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AppLayout from "@/components/layout/AppLayout";
 
-export default function AppRoutes() {
-  return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
+const router = createBrowserRouter([
+  { path: "/login", element: <Login /> },
+  {
+    element: <ProtectedRoute />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [
+          { path: "/", element: <Dashboard /> },
+          { path: "/exercises", element: <Exercises /> },
+          { path: "/training-splits", element: <TrainingSplits /> },
+          { path: "/training-splits/:id", element: <TrainingSplitsDetails /> },
+          { path: "/training-splits/create", element: <TrainingSplitCreate /> },
+          { path: "/calendar", element: <Calendar /> },
+          { path: "/profile", element: <Profile /> },
+          { path: "/workout/:splitId", element: <Workout /> },
+        ],
+      },
+    ],
+  },
+]);
 
-      <Route element={<ProtectedRoute />}>
-        <Route element={<AppLayout />}>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/exercises" element={<Exercises />} />
-          <Route path="/training-splits" element={<TrainingSplits />} />
-          <Route
-            path="/training-splits/:id"
-            element={<TrainingSplitsDetails />}
-          />
-          <Route
-            path="/training-splits/create"
-            element={<TrainingSplitCreate />}
-          />
-          <Route path="/calendar" element={<Calendar />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/workout/:splitId" element={<Workout />} />
-        </Route>
-      </Route>
-    </Routes>
-  );
-}
+export default router;
