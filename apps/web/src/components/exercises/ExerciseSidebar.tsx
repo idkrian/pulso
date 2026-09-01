@@ -1,15 +1,22 @@
 import { LuLayoutGrid } from "react-icons/lu";
 import { MuscleGroup, type ExerciseFilter } from "@/dtos/muscle.dto";
 import MuscleIcon from "@/components/exercises/MuscleIcon";
+import Skeleton from "@/components/ui/Skeleton";
 import { useMuscleGroupLabel, useT } from "@/i18n";
 
 type Props = {
   filter: ExerciseFilter;
   counts: Record<string, number>;
+  loading?: boolean;
   onChange: (filter: ExerciseFilter) => void;
 };
 
-const ExerciseSidebar = ({ filter, counts, onChange }: Props) => {
+const ExerciseSidebar = ({
+  filter,
+  counts,
+  loading = false,
+  onChange,
+}: Props) => {
   const t = useT();
   const muscleGroupLabel = useMuscleGroupLabel();
 
@@ -24,6 +31,7 @@ const ExerciseSidebar = ({ filter, counts, onChange }: Props) => {
         <SidebarItem
           label={t("exercises.allExercises")}
           count={counts.ALL ?? 0}
+          loading={loading}
           active={filter === "ALL"}
           onClick={() => onChange("ALL")}
           icon={<LuLayoutGrid size={18} />}
@@ -34,6 +42,7 @@ const ExerciseSidebar = ({ filter, counts, onChange }: Props) => {
             key={mg}
             label={muscleGroupLabel(mg)}
             count={counts[mg] ?? 0}
+            loading={loading}
             active={filter === mg}
             onClick={() => onChange(mg)}
             icon={<MuscleIcon group={mg} />}
@@ -47,12 +56,20 @@ const ExerciseSidebar = ({ filter, counts, onChange }: Props) => {
 type ItemProps = {
   label: string;
   count: number;
+  loading: boolean;
   active: boolean;
   onClick: () => void;
   icon: React.ReactNode;
 };
 
-const SidebarItem = ({ label, count, active, onClick, icon }: ItemProps) => (
+const SidebarItem = ({
+  label,
+  count,
+  loading,
+  active,
+  onClick,
+  icon,
+}: ItemProps) => (
   <button
     onClick={onClick}
     className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer lg:w-full lg:shrink lg:gap-3 lg:rounded-lg lg:px-3 lg:py-2.5 lg:text-sm ${
@@ -72,7 +89,11 @@ const SidebarItem = ({ label, count, active, onClick, icon }: ItemProps) => (
           : "bg-mediumGrey text-lightGrey/60"
       }`}
     >
-      {count}
+      {loading ? (
+        <Skeleton className="inline-block h-[0.9em] w-2.5 align-middle bg-lightGrey/20" />
+      ) : (
+        count
+      )}
     </span>
   </button>
 );

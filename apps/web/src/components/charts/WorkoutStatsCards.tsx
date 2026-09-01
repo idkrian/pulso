@@ -4,14 +4,18 @@ import {
   getWorkoutSummaryStats,
   type WorkoutSummaryStats,
 } from "@/api/workout";
+import Skeleton from "@/components/ui/Skeleton";
 import { useT } from "@/i18n";
 
 const WorkoutStatsCards = () => {
   const t = useT();
   const [stats, setStats] = useState<WorkoutSummaryStats | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getWorkoutSummaryStats().then(setStats);
+    getWorkoutSummaryStats()
+      .then(setStats)
+      .finally(() => setLoading(false));
   }, []);
 
   const totalHours = stats
@@ -61,7 +65,11 @@ const WorkoutStatsCards = () => {
           </div>
           <div className="w-full min-w-0">
             <p className="text-lg font-bold leading-tight text-white lg:text-xl">
-              {value}
+              {loading ? (
+                <Skeleton className="inline-block h-[0.75em] w-10 align-middle" />
+              ) : (
+                value
+              )}
             </p>
             <p className="leading-tight lg:truncate lg:text-xs lg:text-lightGrey/60">
               <span className="block truncate text-[11px] font-medium text-lightGrey/80 lg:inline lg:text-xs lg:font-normal lg:text-lightGrey/60">

@@ -5,6 +5,7 @@ import {
   buildHighlighterData,
   type NormalizedMuscleStat,
 } from "@/utils/muscle-highlighter-map";
+import Skeleton from "@/components/ui/Skeleton";
 import { useT } from "@/i18n";
 
 const HEATMAP_COLORS = ["#3b82f6", "#22d3ee", "#22c55e", "#f59e0b", "#ef4444"];
@@ -25,11 +26,14 @@ type MuscleHeatmapProps = {
 const MuscleHeatmap = ({ period }: MuscleHeatmapProps) => {
   const t = useT();
   const [data, setData] = useState<NormalizedMuscleStat[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getWorkoutMuscleStats(period).then((stats) => {
-      setData(buildHighlighterData(stats, period));
-    });
+    getWorkoutMuscleStats(period)
+      .then((stats) => {
+        setData(buildHighlighterData(stats, period));
+      })
+      .finally(() => setLoading(false));
   }, [period]);
 
   return (
@@ -38,7 +42,15 @@ const MuscleHeatmap = ({ period }: MuscleHeatmapProps) => {
         {t("charts.muscleActivity")}
       </p>
 
-      {data.length === 0 ? (
+      {loading ? (
+        <div className="flex w-full flex-1 flex-col items-center gap-3 lg:min-h-0">
+          <div className="flex aspect-10/9 w-full min-w-0 items-center justify-center gap-3 lg:aspect-auto lg:w-auto lg:min-h-0 lg:flex-1">
+            <Skeleton className="h-full max-h-[450px] w-24 rounded-xl lg:w-32" />
+            <Skeleton className="h-full max-h-[450px] w-24 rounded-xl lg:w-32" />
+          </div>
+          <Skeleton className="h-4 w-48" />
+        </div>
+      ) : data.length === 0 ? (
         <div className="flex min-h-40 flex-1 flex-col items-center justify-center gap-2 lg:min-h-0">
           <p className="text-3xl opacity-60">🫥</p>
           <p className="text-lightGrey text-sm">

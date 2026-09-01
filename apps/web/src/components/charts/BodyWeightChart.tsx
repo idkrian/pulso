@@ -16,13 +16,15 @@ import {
 import type { BodyWeightDto } from "@/dtos/body-weight.dto";
 import { useAuth } from "@/contexts/AuthContext";
 import { toDisplayWeight, unitLabel } from "@/utils/units";
+import Skeleton from "@/components/ui/Skeleton";
 import { useFormatDate, useT } from "@/i18n";
 
 type Props = {
   entries: BodyWeightDto[];
+  loading?: boolean;
 };
 
-const BodyWeightChart = ({ entries }: Props) => {
+const BodyWeightChart = ({ entries, loading = false }: Props) => {
   const { unit } = useAuth();
   const t = useT();
   const formatDate = useFormatDate();
@@ -43,6 +45,19 @@ const BodyWeightChart = ({ entries }: Props) => {
     date: formatDate(entry.createdAt, { month: "short", day: "numeric" }),
     weight: toDisplayWeight(entry.weight, unit),
   }));
+
+  if (loading) {
+    return (
+      <Card className="bg-mediumGrey border-none min-w-0 flex-1">
+        <CardHeader>
+          <CardTitle className="text-white">{t("charts.bodyWeight")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-56 w-full rounded-lg" />
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (data.length === 0) {
     return (

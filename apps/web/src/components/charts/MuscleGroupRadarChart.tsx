@@ -19,6 +19,7 @@ import {
   type MuscleStatsPeriod,
 } from "@/api/workout";
 import { MuscleGroup } from "@/dtos/muscle.dto";
+import Skeleton from "@/components/ui/Skeleton";
 import { useMuscleGroupLabel, useT } from "@/i18n";
 
 type MuscleGroupRadarChartProps = {
@@ -29,9 +30,12 @@ const MuscleGroupRadarChart = ({ period }: MuscleGroupRadarChartProps) => {
   const t = useT();
   const muscleGroupLabel = useMuscleGroupLabel();
   const [data, setData] = useState<MuscleGroupStat[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getWorkoutMuscleGroupsStats(period).then(setData);
+    getWorkoutMuscleGroupsStats(period)
+      .then(setData)
+      .finally(() => setLoading(false));
   }, [period]);
 
   const chartConfig = useMemo(
@@ -66,30 +70,36 @@ const MuscleGroupRadarChart = ({ period }: MuscleGroupRadarChartProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="min-w-0 flex-1 pb-2 -px-6">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[220px] w-full lg:h-full"
-        >
-          <RadarChart
-            data={chartData}
-            margin={{ top: 10, right: 40, bottom: 10, left: 40 }}
-            outerRadius="80%"
+        {loading ? (
+          <div className="mx-auto flex aspect-square max-h-[220px] w-full items-center justify-center lg:h-full">
+            <Skeleton className="aspect-square h-full max-h-[180px] rounded-full" />
+          </div>
+        ) : (
+          <ChartContainer
+            config={chartConfig}
+            className="mx-auto aspect-square max-h-[220px] w-full lg:h-full"
           >
-            <PolarGrid stroke="#e5e5f0" strokeOpacity={0.15} />
-            <PolarAngleAxis
-              dataKey="muscle"
-              tick={{ fill: "#e5e5f0", fontSize: 11 }}
-            />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <Radar
-              dataKey="sets"
-              fill="#7c3aed"
-              fillOpacity={0.35}
-              stroke="#a78bfa"
-              strokeWidth={2}
-            />
-          </RadarChart>
-        </ChartContainer>
+            <RadarChart
+              data={chartData}
+              margin={{ top: 10, right: 40, bottom: 10, left: 40 }}
+              outerRadius="80%"
+            >
+              <PolarGrid stroke="#e5e5f0" strokeOpacity={0.15} />
+              <PolarAngleAxis
+                dataKey="muscle"
+                tick={{ fill: "#e5e5f0", fontSize: 11 }}
+              />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Radar
+                dataKey="sets"
+                fill="#7c3aed"
+                fillOpacity={0.35}
+                stroke="#a78bfa"
+                strokeWidth={2}
+              />
+            </RadarChart>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   );

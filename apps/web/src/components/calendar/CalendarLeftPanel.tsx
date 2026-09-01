@@ -10,9 +10,11 @@ import type { TrainingSplitDayEntry } from "@/dtos/training-split-day.dto";
 import type { WorkoutSessionDto } from "@/dtos/workout-session.dto";
 import { DEFAULT_ACCENT, muscleGroupAccent, summarizeSplit } from "@/utils";
 import { formatVolume, sessionVolume } from "@/utils/workout-history";
+import Skeleton from "@/components/ui/Skeleton";
 import { useFormatDate, useT } from "@/i18n";
 
 interface CalendarLeftPanelProps {
+  loading?: boolean;
   todayEntry?: TrainingSplitDayEntry;
   todaySession?: WorkoutSessionDto;
   weekVolume: number;
@@ -23,6 +25,7 @@ interface CalendarLeftPanelProps {
 }
 
 const CalendarLeftPanel = ({
+  loading = false,
   todayEntry,
   todaySession,
   weekVolume,
@@ -61,12 +64,22 @@ const CalendarLeftPanel = ({
       </div>
 
       <div className="flex flex-col items-center gap-3 w-full">
-        {!isRest && !todaySession && (
+        {loading && (
+          <div className="flex w-full flex-col items-center gap-3">
+            <Skeleton className="h-9 w-40 bg-white/15" />
+            <div className="grid grid-cols-2 gap-2 w-full">
+              <Skeleton className="h-8 rounded-md bg-white/15" />
+              <Skeleton className="h-8 rounded-md bg-white/15" />
+            </div>
+            <Skeleton className="h-11 w-full rounded-md bg-white/15" />
+          </div>
+        )}
+        {!loading && !isRest && !todaySession && (
           <p className="text-white/70 font-semibold text-sm uppercase tracking-wider">
             {t("calendar.todaysWorkout")}
           </p>
         )}
-        {todaySession ? (
+        {loading ? null : todaySession ? (
           <div className="flex flex-col items-center gap-2 py-4 text-center">
             <LuTrophy size={36} className="text-yellow-300" />
             <p className="text-white font-bold text-2xl">
@@ -138,7 +151,11 @@ const CalendarLeftPanel = ({
         <div className="grid grid-cols-3 gap-2 w-full">
           <div className="flex flex-col items-center rounded-md bg-black/25 py-2">
             <span className="text-white font-bold text-lg leading-none">
-              {sessionsCompleted}/{sessionsPlanned}
+              {loading ? (
+                <Skeleton className="inline-block h-[0.8em] w-10 align-middle bg-white/15" />
+              ) : (
+                `${sessionsCompleted}/${sessionsPlanned}`
+              )}
             </span>
             <span className="text-white/60 text-[10px] uppercase tracking-wide mt-1">
               {t("calendar.sessions")}
@@ -146,7 +163,11 @@ const CalendarLeftPanel = ({
           </div>
           <div className="flex flex-col items-center rounded-md bg-black/25 py-2">
             <span className="text-white font-bold text-lg leading-none">
-              {formatVolume(weekVolume)}
+              {loading ? (
+                <Skeleton className="inline-block h-[0.8em] w-10 align-middle bg-white/15" />
+              ) : (
+                formatVolume(weekVolume)
+              )}
             </span>
             <span className="text-white/60 text-[10px] uppercase tracking-wide mt-1">
               {t("calendar.volume")}
@@ -155,7 +176,13 @@ const CalendarLeftPanel = ({
           <div className="flex flex-col items-center rounded-md bg-black/25 py-2">
             <div className="flex items-center gap-1 text-white">
               <LuFlame size={14} className="text-orange-300" />
-              <span className="font-bold text-lg leading-none">{streak}</span>
+              <span className="font-bold text-lg leading-none">
+                {loading ? (
+                  <Skeleton className="inline-block h-[0.8em] w-6 align-middle bg-white/15" />
+                ) : (
+                  streak
+                )}
+              </span>
             </div>
             <span className="text-white/60 text-[10px] uppercase tracking-wide mt-1">
               {t("calendar.streak")}

@@ -16,6 +16,7 @@ import {
 import { getAllWorkouts } from "@/api/workout";
 import type { WorkoutSessionDto } from "@/dtos/workout-session.dto";
 import { dayKey, formatDate } from "@/utils/date";
+import Skeleton from "@/components/ui/Skeleton";
 import { useDateLocale, useT } from "@/i18n";
 
 function getWeekStart(dateStr: string): string {
@@ -46,13 +47,25 @@ function buildWeeklyData(workouts: WorkoutSessionDto[], locale: string) {
     }));
 }
 
+const FREQUENCY_SKELETON_BARS = [
+  "h-[45%]",
+  "h-[70%]",
+  "h-[35%]",
+  "h-[85%]",
+  "h-[60%]",
+  "h-[95%]",
+];
+
 const WorkoutFrequencyChart = () => {
   const t = useT();
   const dateLocale = useDateLocale();
   const [sessions, setSessions] = useState<WorkoutSessionDto[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAllWorkouts().then(setSessions);
+    getAllWorkouts()
+      .then(setSessions)
+      .finally(() => setLoading(false));
   }, []);
 
   const data = useMemo(
@@ -70,6 +83,28 @@ const WorkoutFrequencyChart = () => {
       }) satisfies ChartConfig,
     [t],
   );
+
+  if (loading) {
+    return (
+      <Card className="bg-mediumGrey border-none flex min-w-0 flex-col lg:flex-1 lg:min-h-0">
+        <CardHeader className="pb-0">
+          <CardTitle className="text-white">
+            {t("charts.workoutFrequency")}
+          </CardTitle>
+          <CardDescription>
+            {t("charts.workoutFrequencyDescription")}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="min-w-0 pb-2 lg:flex-1 lg:min-h-0">
+          <div className="flex h-56 w-full items-end gap-2 lg:h-full">
+            {FREQUENCY_SKELETON_BARS.map((height, index) => (
+              <Skeleton key={index} className={`flex-1 ${height}`} />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (data.length === 0) {
     return (

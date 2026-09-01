@@ -19,6 +19,7 @@ import {
 import CalendarLeftPanel from "@/components/calendar/CalendarLeftPanel";
 import WeekNavigator from "@/components/calendar/WeekNavigator";
 import DayCard, { type DayStatus } from "@/components/calendar/DayCard";
+import DayCardSkeleton from "@/components/calendar/DayCardSkeleton";
 import SessionDetailModal from "@/components/calendar/SessionDetailModal";
 import SwapSplitModal from "@/components/calendar/SwapSplitModal";
 
@@ -29,6 +30,7 @@ const Calendar = () => {
   const [weekOffset, setWeekOffset] = useState(0);
   const [splitsByDay, setSplitsByDay] = useState<TrainingSplitDayMap>({});
   const [sessions, setSessions] = useState<WorkoutSessionDto[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [openSession, setOpenSession] = useState<WorkoutSessionDto | null>(
     null,
@@ -41,8 +43,9 @@ const Calendar = () => {
     useSwapSplit(refreshSchedule);
 
   useEffect(() => {
-    refreshSchedule();
-    refreshSessions();
+    Promise.all([refreshSchedule(), refreshSessions()]).finally(() =>
+      setLoading(false),
+    );
     const onFocus = () => refreshSessions();
     window.addEventListener("focus", onFocus);
     return () => window.removeEventListener("focus", onFocus);
@@ -140,6 +143,7 @@ const Calendar = () => {
   return (
     <div className="flex w-full flex-col xl:h-full xl:flex-row">
       <CalendarLeftPanel
+        loading={loading}
         todayEntry={todayEntry}
         todaySession={todaySession}
         weekVolume={weekVolume}
@@ -157,40 +161,43 @@ const Calendar = () => {
         />
 
         <div className="grid min-w-0 grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-7 xl:gap-3 xl:flex-1 xl:min-h-0 xl:overflow-y-auto">
-          {week.map((day) => {
-            const entry = splitsByDay[day.dayNumber];
-            const session = findSessionOnDate(sessions, day.date);
-            const status = dayStatus(day.date, entry);
-            return (
-              <DayCard
-                key={day.date.toISOString()}
-                date={day.date}
-                dayName={day.dayName}
-                dayLabel={day.day}
-                status={status}
-                entry={entry}
-                session={session}
-                onClick={() =>
-                  handleDayClick(
-                    day.date,
-                    day.dayName,
-                    day.dayNumber,
-                    entry,
-                    session,
-                    status,
-                  )
-                }
-                onEdit={() =>
-                  openSwap({
-                    date: day.date,
-                    dayName: day.dayName,
-                    dayNumber: day.dayNumber,
-                    entry,
-                  })
-                }
-              />
-            );
-          })}
+          {loading &&
+            week.map((day) => <DayCardSkeleton key={day.date.toISOString()} />)}
+          {!loading &&
+            week.map((day) => {
+              const entry = splitsByDay[day.dayNumber];
+              const session = findSessionOnDate(sessions, day.date);
+              const status = dayStatus(day.date, entry);
+              return (
+                <DayCard
+                  key={day.date.toISOString()}
+                  date={day.date}
+                  dayName={day.dayName}
+                  dayLabel={day.day}
+                  status={status}
+                  entry={entry}
+                  session={session}
+                  onClick={() =>
+                    handleDayClick(
+                      day.date,
+                      day.dayName,
+                      day.dayNumber,
+                      entry,
+                      session,
+                      status,
+                    )
+                  }
+                  onEdit={() =>
+                    openSwap({
+                      date: day.date,
+                      dayName: day.dayName,
+                      dayNumber: day.dayNumber,
+                      entry,
+                    })
+                  }
+                />
+              );
+            })}
         </div>
       </div>
 

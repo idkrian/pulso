@@ -15,8 +15,12 @@ import ExerciseModal from "@/components/modals/ExerciseModal";
 import ConfirmModal from "@/components/modals/ConfirmModal";
 import ExerciseSidebar from "@/components/exercises/ExerciseSidebar";
 import ExerciseCard from "@/components/exercises/ExerciseCard";
+import ExerciseCardSkeleton from "@/components/exercises/ExerciseCardSkeleton";
 import ExercisesEmptyState from "@/components/exercises/ExercisesEmptyState";
 import ExerciseDrawer from "@/components/exercises/ExerciseDrawer";
+import Skeleton from "@/components/ui/Skeleton";
+
+const SKELETON_COUNT = 8;
 
 const Exercises = () => {
   const t = useT();
@@ -33,8 +37,12 @@ const Exercises = () => {
   const [deleteTarget, setDeleteTarget] = useState<ExerciseDto | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const fetchData = () => getMuscleGroups().then(setMuscleGroups);
+  const fetchData = () =>
+    getMuscleGroups()
+      .then(setMuscleGroups)
+      .finally(() => setLoading(false));
 
   const openDelete = (exercise: ExerciseDto) => {
     setDeleteError(null);
@@ -109,6 +117,7 @@ const Exercises = () => {
       <ExerciseSidebar
         filter={filter}
         counts={counts}
+        loading={loading}
         onChange={setExerciseFilter}
       />
 
@@ -119,10 +128,14 @@ const Exercises = () => {
               <h1 className="truncate text-xl font-bold lg:text-2xl">
                 {headerLabel}
               </h1>
-              <p className="text-sm text-lightGrey/60">
-                {visibleExercises.length}{" "}
-                {visibleExercises.length === 1 ? "exercise" : "exercises"}
-              </p>
+              {loading ? (
+                <Skeleton className="my-1 h-3 w-24 bg-mediumGrey" />
+              ) : (
+                <p className="text-sm text-lightGrey/60">
+                  {visibleExercises.length}{" "}
+                  {visibleExercises.length === 1 ? "exercise" : "exercises"}
+                </p>
+              )}
             </div>
             <div className="hidden flex-1 lg:block" />
             <button
@@ -151,7 +164,13 @@ const Exercises = () => {
         </header>
 
         <div className="flex-1 p-4 lg:overflow-y-auto lg:p-8">
-          {visibleExercises.length === 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(260px,1fr))] lg:gap-4">
+              {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+                <ExerciseCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : visibleExercises.length === 0 ? (
             <ExercisesEmptyState filter={filter} onCreate={openCreate} />
           ) : (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(260px,1fr))] lg:gap-4">

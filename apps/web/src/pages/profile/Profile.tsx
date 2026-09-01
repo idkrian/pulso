@@ -3,6 +3,7 @@ import { LuScale, LuTrendingDown, LuTrendingUp } from "react-icons/lu";
 import { createBodyWeight, getBodyWeights } from "@/api/body-weight";
 import BodyWeightChart from "@/components/charts/BodyWeightChart";
 import Button from "@/components/ui/Button";
+import Skeleton from "@/components/ui/Skeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import type { BodyWeightDto } from "@/dtos/body-weight.dto";
 import type { LanguagePreference, UnitPreference } from "@/dtos/auth.dto";
@@ -22,9 +23,13 @@ const Profile = () => {
   const [entries, setEntries] = useState<BodyWeightDto[]>([]);
   const [weightInput, setWeightInput] = useState("");
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getBodyWeights().then(setEntries).catch(console.error);
+    getBodyWeights()
+      .then(setEntries)
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
   const latest = entries.at(-1) ?? null;
@@ -79,7 +84,13 @@ const Profile = () => {
           </div>
           <div className="min-w-0">
             <p className="text-xl font-bold leading-tight text-white">
-              {latest ? formatWeight(latest.weight, unit) : "--"}
+              {loading ? (
+                <Skeleton className="inline-block h-[0.75em] w-16 align-middle" />
+              ) : latest ? (
+                formatWeight(latest.weight, unit)
+              ) : (
+                "--"
+              )}
             </p>
             <p className="truncate text-xs text-lightGrey/60">
               {t("profile.currentWeight")}
@@ -97,9 +108,13 @@ const Profile = () => {
           </div>
           <div className="min-w-0">
             <p className="text-xl font-bold leading-tight text-white">
-              {delta !== null
-                ? `${delta > 0 ? "+" : ""}${formatWeight(delta, unit)}`
-                : "--"}
+              {loading ? (
+                <Skeleton className="inline-block h-[0.75em] w-16 align-middle" />
+              ) : delta !== null ? (
+                `${delta > 0 ? "+" : ""}${formatWeight(delta, unit)}`
+              ) : (
+                "--"
+              )}
             </p>
             <p className="truncate text-xs text-lightGrey/60">
               {t("profile.sinceLastEntry")}
@@ -176,29 +191,37 @@ const Profile = () => {
           />
 
           <div className="mt-2 flex max-h-56 flex-col gap-1.5 overflow-y-auto lg:max-h-none lg:min-h-0">
-            {[...entries]
-              .reverse()
-              .slice(0, 10)
-              .map((entry) => (
-                <div
-                  key={entry.id}
-                  className="flex items-center justify-between text-xs px-2 py-1.5 rounded-md bg-darkGrey/40"
-                >
-                  <span className="text-lightGrey/60">
-                    {formatDate(entry.createdAt, {
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </span>
-                  <span className="font-semibold text-white">
-                    {formatWeight(entry.weight, unit)}
-                  </span>
-                </div>
+            {loading &&
+              Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton
+                  key={i}
+                  className="h-7 shrink-0 rounded-md bg-darkGrey/60"
+                />
               ))}
+            {!loading &&
+              [...entries]
+                .reverse()
+                .slice(0, 10)
+                .map((entry) => (
+                  <div
+                    key={entry.id}
+                    className="flex items-center justify-between text-xs px-2 py-1.5 rounded-md bg-darkGrey/40"
+                  >
+                    <span className="text-lightGrey/60">
+                      {formatDate(entry.createdAt, {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </span>
+                    <span className="font-semibold text-white">
+                      {formatWeight(entry.weight, unit)}
+                    </span>
+                  </div>
+                ))}
           </div>
         </div>
 
-        <BodyWeightChart entries={entries} />
+        <BodyWeightChart entries={entries} loading={loading} />
       </div>
     </div>
   );

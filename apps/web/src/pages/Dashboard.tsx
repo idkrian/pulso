@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import TrainingSplitCard from "../components/TrainingSplitCard";
 import Button from "@/components/ui/Button";
+import Skeleton from "@/components/ui/Skeleton";
 import { getTrainingSplitDays } from "@/api/training-split-day";
 import type { TrainingSplitDayMap } from "@/dtos/training-split-day.dto";
 import { useSwapSplit } from "@/hooks/useSwapSplit";
@@ -21,6 +22,7 @@ const Dashboard = () => {
   const [trainingSplitByDay, setTrainingSplitByDay] =
     useState<TrainingSplitDayMap>({});
   const [period, setPeriod] = useState<MuscleStatsPeriod>("week");
+  const [scheduleLoading, setScheduleLoading] = useState(true);
   const todayNumber = new Date().getDay();
   const navigate = useNavigate();
   const todayEntry = trainingSplitByDay[todayNumber];
@@ -28,7 +30,9 @@ const Dashboard = () => {
     todayEntry && !todayEntry.restDay ? todayEntry.trainingSplit : undefined;
 
   const refreshSchedule = () =>
-    getTrainingSplitDays().then(setTrainingSplitByDay);
+    getTrainingSplitDays()
+      .then(setTrainingSplitByDay)
+      .finally(() => setScheduleLoading(false));
 
   const { swapTarget, openSwap, closeSwap, handleAssign, handleRemove } =
     useSwapSplit(refreshSchedule);
@@ -60,7 +64,16 @@ const Dashboard = () => {
           <MuscleHeatmap period={period} />
         </div>
         <div className="order-3 flex min-w-0 flex-col gap-3 rounded-lg bg-mediumGrey p-3 lg:order-0 lg:min-h-0 lg:overflow-y-auto">
-          {todaySplit ? (
+          {scheduleLoading ? (
+            <>
+              <Skeleton className="mx-auto h-6 w-40" />
+              <Skeleton className="min-h-40 flex-1 rounded-xl" />
+              <div className="flex w-full gap-2">
+                <Skeleton className="h-10 flex-1 rounded-md" />
+                <Skeleton className="h-10 w-12 shrink-0 rounded-md" />
+              </div>
+            </>
+          ) : todaySplit ? (
             <>
               <p className="text-center text-lg font-semibold text-white">
                 {t("dashboard.todaysTraining")}
