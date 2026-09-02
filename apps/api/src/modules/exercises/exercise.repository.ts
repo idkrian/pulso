@@ -54,7 +54,12 @@ export const exerciseRepository = {
   ) {
     return await prisma.exercises.update({
       where: { id: exerciseId, userId },
-      data,
+      data: {
+        title: data.title,
+        muscleGroup: data.muscleGroup,
+        muscle: data.muscle,
+        description: data.description ?? null,
+      },
     });
   },
 

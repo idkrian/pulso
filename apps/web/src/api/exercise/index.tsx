@@ -27,7 +27,7 @@ export const createExercise = async (
 
 export const updateExercise = async (
   id: number,
-  data: Omit<CreateExerciseDto, "description">,
+  data: CreateExerciseDto,
 ): Promise<ExerciseDto> => {
   const response = await axios.put(`${BASE_URL}/${id}`, data);
   return response.data.data;

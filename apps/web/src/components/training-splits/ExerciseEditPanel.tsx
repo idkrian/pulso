@@ -69,11 +69,21 @@ const ExerciseEditPanel = ({
   const countByGroup = (group: MuscleGroupType) =>
     exercises.filter((ex) => ex.muscleGroup === group).length;
 
-  const emptyHint = (
-    <span className="text-xs text-lightGrey/40">
-      {t("exerciseEditPanel.empty")}
-    </span>
+  const selectedGroup = exercise.exercise?.muscleGroup as
+    | MuscleGroupType
+    | undefined;
+  const selectedMuscle = exercise.exercise?.muscle as MuscleType | undefined;
+
+  const visibleGroups = (Object.values(MuscleGroup) as MuscleGroupType[]).filter(
+    (mg) => countByGroup(mg) > 0 || mg === selectedGroup,
   );
+
+  const visibleMuscles = selectedGroup
+    ? (musclesByGroup[selectedGroup] ?? []).filter(
+        ({ value }) =>
+          filterByMuscle(value).length > 0 || value === selectedMuscle,
+      )
+    : [];
 
   return (
     <>
@@ -143,15 +153,11 @@ const ExerciseEditPanel = ({
               />
             </SelectTrigger>
             <SelectContent position="popper">
-              {(Object.values(MuscleGroup) as MuscleGroupType[]).map((mg) => {
-                const isEmpty = countByGroup(mg) === 0;
-                return (
-                  <SelectItem key={mg} value={mg} disabled={isEmpty}>
-                    {muscleGroupLabel(mg)}
-                    {isEmpty && emptyHint}
-                  </SelectItem>
-                );
-              })}
+              {visibleGroups.map((mg) => (
+                <SelectItem key={mg} value={mg}>
+                  {muscleGroupLabel(mg)}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </PanelField>
@@ -165,18 +171,11 @@ const ExerciseEditPanel = ({
               <SelectValue placeholder={t("exerciseEditPanel.selectMuscle")} />
             </SelectTrigger>
             <SelectContent position="popper">
-              {exercise.exercise?.muscleGroup &&
-                musclesByGroup[
-                  exercise.exercise.muscleGroup as MuscleGroupType
-                ]?.map(({ text, value }) => {
-                  const isEmpty = filterByMuscle(value).length === 0;
-                  return (
-                    <SelectItem key={value} value={value} disabled={isEmpty}>
-                      {text}
-                      {isEmpty && emptyHint}
-                    </SelectItem>
-                  );
-                })}
+              {visibleMuscles.map(({ text, value }) => (
+                <SelectItem key={value} value={value}>
+                  {text}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </PanelField>

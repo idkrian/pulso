@@ -63,7 +63,7 @@ model exercises {
   userId              Int?
   user                users?                     @relation(fields: [userId], references: [id])
 
-  @@unique([muscleGroup, muscle, title, userId])
+  @@unique([muscleGroup, title, userId])
 }
 
 model exercise_translations {
@@ -181,24 +181,15 @@ enum Muscle {
   SIDE_DELTOID
   REAR_DELTOID
   ARMS_GENERAL
-  BICEPS_LONG_HEAD
-  BICEPS_SHORT_HEAD
-  TRICEPS_LONG_HEAD
-  TRICEPS_LATERAL_HEAD
-  TRICEPS_MEDIAL_HEAD
-  FOREARMS_GENERAL
-  BRACHIORADIALIS
-  PRONATOR_TERES
-  FLEXORS
-  EXTENSORS
+  BICEPS
+  TRICEPS
+  FOREARMS
   LEGS_GENERAL
   QUADRICEPS
   HAMSTRINGS
+  ADDUCTORS
   CALVES
   GLUTES_GENERAL
-  GLUTEUS_MAXIMUS
-  GLUTEUS_MEDIUS
-  GLUTEUS_MINIMUS
   CORE_GENERAL
   ABS
   OBLIQUES

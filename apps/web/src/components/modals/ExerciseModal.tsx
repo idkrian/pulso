@@ -47,7 +47,7 @@ const ExerciseModal = ({
     exercise?.muscle ?? MusclesByGroup[baseGroup][0],
   );
   const [title, setTitle] = useState(exercise?.title ?? "");
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(exercise?.description ?? "");
   const [submitting, setSubmitting] = useState(false);
   const [feedbackStatus, setFeedbackStatus] = useState<"success" | "error">(
     "success",
@@ -60,7 +60,7 @@ const ExerciseModal = ({
     setMuscleGroup(group);
     setMuscle(exercise?.muscle ?? MusclesByGroup[group][0]);
     setTitle(exercise?.title ?? "");
-    setDescription("");
+    setDescription(exercise?.description ?? "");
   }, [initialGroup, exercise]);
 
   useEffect(() => {
@@ -83,6 +83,7 @@ const ExerciseModal = ({
           muscleGroup,
           muscle,
           title: title.trim(),
+          description,
         });
       } else {
         await createExercise({
@@ -187,26 +188,28 @@ const ExerciseModal = ({
             </div>
           </Field>
 
-          <Field label={t("exerciseModal.targetMuscle")}>
-            <Select
-              value={muscle}
-              onValueChange={(value) => setMuscle(value as typeof muscle)}
-            >
-              <SelectTrigger className="w-full bg-darkGrey border-transparent text-white focus-visible:border-indigo focus-visible:ring-0">
-                <SelectValue placeholder={t("exerciseModal.selectMuscle")} />
-              </SelectTrigger>
-              <SelectContent
-                position="popper"
-                className="bg-darkGrey border-darkGrey"
+          {musclesByGroup[muscleGroup].length > 1 && (
+            <Field label={t("exerciseModal.targetMuscle")}>
+              <Select
+                value={muscle}
+                onValueChange={(value) => setMuscle(value as typeof muscle)}
               >
-                {musclesByGroup[muscleGroup].map((m) => (
-                  <SelectItem key={m.value} value={m.value}>
-                    {m.text}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
+                <SelectTrigger className="w-full bg-darkGrey border-transparent text-white focus-visible:border-indigo focus-visible:ring-0">
+                  <SelectValue placeholder={t("exerciseModal.selectMuscle")} />
+                </SelectTrigger>
+                <SelectContent
+                  position="popper"
+                  className="bg-darkGrey border-darkGrey"
+                >
+                  {musclesByGroup[muscleGroup].map((m) => (
+                    <SelectItem key={m.value} value={m.value}>
+                      {m.text}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+          )}
 
           <Field label={t("exerciseModal.titleLabel")}>
             <input
@@ -219,16 +222,14 @@ const ExerciseModal = ({
             />
           </Field>
 
-          {!isEditing && (
-            <Field label={t("exerciseModal.descriptionLabel")} optional>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder={t("exerciseModal.descriptionPlaceholder")}
-                className="w-full bg-darkGrey rounded-lg px-3 py-2.5 text-sm outline-none border border-transparent focus:border-indigo transition-colors placeholder:text-lightGrey/40 resize-none h-24"
-              />
-            </Field>
-          )}
+          <Field label={t("exerciseModal.descriptionLabel")} optional>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder={t("exerciseModal.descriptionPlaceholder")}
+              className="w-full bg-darkGrey rounded-lg px-3 py-2.5 text-sm outline-none border border-transparent focus:border-indigo transition-colors placeholder:text-lightGrey/40 resize-none h-24"
+            />
+          </Field>
         </div>
 
         {/* Footer */}

@@ -20,27 +20,17 @@ export const muscleToHighlighter: Partial<Record<MuscleType, Muscle[]>> = {
   REAR_DELTOID: ["back-deltoids"],
 
   ARMS_GENERAL: ["biceps", "triceps"],
-  BICEPS_LONG_HEAD: ["biceps"],
-  BICEPS_SHORT_HEAD: ["biceps"],
-  TRICEPS_LONG_HEAD: ["triceps"],
-  TRICEPS_LATERAL_HEAD: ["triceps"],
-  TRICEPS_MEDIAL_HEAD: ["triceps"],
-
-  FOREARMS_GENERAL: ["forearm"],
-  BRACHIORADIALIS: ["forearm"],
-  PRONATOR_TERES: ["forearm"],
-  FLEXORS: ["forearm"],
-  EXTENSORS: ["forearm"],
+  BICEPS: ["biceps"],
+  TRICEPS: ["triceps"],
+  FOREARMS: ["forearm"],
 
   LEGS_GENERAL: ["quadriceps", "hamstring"],
   QUADRICEPS: ["quadriceps"],
   HAMSTRINGS: ["hamstring"],
+  ADDUCTORS: ["adductor"],
   CALVES: ["calves"],
 
   GLUTES_GENERAL: ["gluteal"],
-  GLUTEUS_MAXIMUS: ["gluteal"],
-  GLUTEUS_MEDIUS: ["gluteal"],
-  GLUTEUS_MINIMUS: ["gluteal"],
 
   CORE_GENERAL: ["abs"],
   ABS: ["abs"],
