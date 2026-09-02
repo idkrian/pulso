@@ -1,4 +1,10 @@
-import { LuCheck, LuMinus, LuPlus, LuTrash2 } from "react-icons/lu";
+import {
+  LuCheck,
+  LuMinus,
+  LuPlus,
+  LuRotateCcw,
+  LuTrash2,
+} from "react-icons/lu";
 import type { LoggedSet } from "@/dtos/workout.dto";
 import { rpeColor } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,6 +18,7 @@ type Props = {
   canRemove: boolean;
   onUpdate: (patch: Partial<LoggedSet>) => void;
   onLog: () => void;
+  onUnlog: () => void;
   onRemove: () => void;
 };
 
@@ -22,6 +29,7 @@ const SetRow = ({
   canRemove,
   onUpdate,
   onLog,
+  onUnlog,
   onRemove,
 }: Props) => {
   const { unit } = useAuth();
@@ -32,6 +40,8 @@ const SetRow = ({
 
   const setDisplayWeight = (value: number) =>
     onUpdate({ weight: toCanonicalWeight(Math.max(0, value), unit) });
+
+  const logLabel = set.completed ? t("workout.editSet") : t("workout.logSet");
 
   return (
     <div
@@ -107,15 +117,17 @@ const SetRow = ({
       </div>
 
       <button
-        disabled={set.completed || set.weight <= 0 || set.reps <= 0}
-        onClick={onLog}
-        className={`flex h-9 items-center justify-center rounded-md font-semibold transition-all duration-200 cursor-pointer lg:h-7 ${
+        disabled={!set.completed && (set.weight <= 0 || set.reps <= 0)}
+        onClick={set.completed ? onUnlog : onLog}
+        title={logLabel}
+        aria-label={logLabel}
+        className={`flex h-9 items-center justify-center rounded-md font-semibold transition-all duration-200 cursor-pointer hover:scale-105 lg:h-7 ${
           set.completed
-            ? "bg-emerald-500/20 text-emerald-400 cursor-default"
-            : "bg-indigo hover:bg-darkIndigo hover:scale-105 disabled:bg-mediumGrey disabled:text-lightGrey/30 disabled:cursor-not-allowed disabled:hover:scale-100"
+            ? "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
+            : "bg-indigo hover:bg-darkIndigo disabled:bg-mediumGrey disabled:text-lightGrey/30 disabled:cursor-not-allowed disabled:hover:scale-100"
         }`}
       >
-        <LuCheck size={14} />
+        {set.completed ? <LuRotateCcw size={14} /> : <LuCheck size={14} />}
       </button>
 
       <button

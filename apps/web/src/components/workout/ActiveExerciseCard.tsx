@@ -22,6 +22,7 @@ type Props = {
   onNext: () => void;
   onUpdateSet: (setIdx: number, patch: Partial<LoggedSet>) => void;
   onLogSet: (setIdx: number) => void;
+  onUnlogSet: (setIdx: number) => void;
   onRemoveSet: (setIdx: number) => void;
   onUpdateNotes: (value: string) => void;
   onSwapExercise: () => void;
@@ -36,6 +37,7 @@ const ActiveExerciseCard = ({
   onNext,
   onUpdateSet,
   onLogSet,
+  onUnlogSet,
   onRemoveSet,
   onUpdateNotes,
   onSwapExercise,
@@ -151,6 +153,7 @@ const ActiveExerciseCard = ({
             canRemove={entry.sets.length > 1}
             onUpdate={(patch) => onUpdateSet(i, patch)}
             onLog={() => onLogSet(i)}
+            onUnlog={() => onUnlogSet(i)}
             onRemove={() => onRemoveSet(i)}
           />
         ))}

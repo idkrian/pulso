@@ -194,6 +194,8 @@ export const en = {
     colRpe: "RPE",
     addSet: "Add set",
     removeSet: "Remove set",
+    logSet: "Log set",
+    editSet: "Edit set",
     notesPlaceholder: "Notes — how did this exercise feel?",
     setsLogged: "{done} / {total} sets logged",
 

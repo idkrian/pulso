@@ -330,6 +330,9 @@ const Workout = () => {
     }
   };
 
+  const unlogSet = (entryId: string, setIdx: number) =>
+    updateSet(entryId, setIdx, { completed: false });
+
   const finishWorkout = async () => {
     if (!split || totalCompletedSets === 0) return;
     setSaveError(null);
@@ -424,6 +427,7 @@ const Workout = () => {
             updateSet(activeEntry.entryId, setIdx, patch)
           }
           onLogSet={(setIdx) => logSet(activeEntry.entryId, setIdx)}
+          onUnlogSet={(setIdx) => unlogSet(activeEntry.entryId, setIdx)}
           onRemoveSet={(setIdx) => removeSet(activeEntry.entryId, setIdx)}
           onUpdateNotes={(value) => updateNotes(activeEntry.entryId, value)}
           onSwapExercise={() => setPickerMode("swap")}

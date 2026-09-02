@@ -197,6 +197,8 @@ export const pt: LocaleDictionary = {
     colRpe: "RPE",
     addSet: "Adicionar série",
     removeSet: "Remover série",
+    logSet: "Registrar série",
+    editSet: "Editar série",
     notesPlaceholder: "Anotações — como foi este exercício?",
     setsLogged: "{done} / {total} séries registradas",
 
