@@ -69,15 +69,15 @@ const MuscleGroupRadarChart = ({ period }: MuscleGroupRadarChartProps) => {
           {t("charts.muscleBalanceDescription")}
         </CardDescription>
       </CardHeader>
-      <CardContent className="min-w-0 flex-1 pb-2 -px-6">
+      <CardContent className="min-w-0 pb-2 lg:flex-1">
         {loading ? (
-          <div className="mx-auto flex aspect-square max-h-[220px] w-full items-center justify-center lg:h-full">
+          <div className="mx-auto flex h-55 w-full items-center justify-center lg:h-full">
             <Skeleton className="aspect-square h-full max-h-[180px] rounded-full" />
           </div>
         ) : (
           <ChartContainer
             config={chartConfig}
-            className="mx-auto aspect-square max-h-[220px] w-full lg:h-full"
+            className="mx-auto h-55 w-full max-h-55 lg:h-full"
           >
             <RadarChart
               data={chartData}
