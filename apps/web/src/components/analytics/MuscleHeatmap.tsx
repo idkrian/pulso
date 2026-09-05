@@ -8,7 +8,7 @@ import {
 import Skeleton from "@/components/ui/Skeleton";
 import { useT } from "@/i18n";
 
-const HEATMAP_COLORS = ["#3b82f6", "#22d3ee", "#22c55e", "#f59e0b", "#ef4444"];
+const HEATMAP_COLORS = ["#ee8b38", "#df6a1f", "#c94a17", "#ab3018", "#8c1e19"];
 
 const MODEL_BOX = {
   flex: "1 1 0",

@@ -165,7 +165,7 @@ const Profile = () => {
       </div>
 
       <div className="grid min-w-0 gap-3 lg:flex-1 lg:min-h-0 lg:grid-cols-[280px_1fr]">
-        <div className="flex min-w-0 flex-col gap-3 rounded-lg bg-mediumGrey p-4 lg:min-h-0">
+        <div className="order-2 flex min-w-0 flex-col gap-3 rounded-lg bg-mediumGrey p-4 lg:order-0 lg:min-h-0">
           <p className="text-sm font-semibold text-white">
             {t("profile.logBodyWeight")}
           </p>
