@@ -1,5 +1,6 @@
 import type { WorkoutEntry } from "@/dtos/workout.dto";
 import type { StopwatchSnapshot } from "@/hooks/useStopwatch";
+import type { CountdownSnapshot } from "@/hooks/useCountdown";
 
 const STORAGE_PREFIX = "pulso:active-workout";
 const MAX_AGE_MS = 6 * 60 * 60 * 1000;
@@ -12,6 +13,7 @@ export interface ActiveWorkout {
   entries: WorkoutEntry[];
   activeIndex: number;
   timer: StopwatchSnapshot;
+  rest?: CountdownSnapshot;
   updatedAt: number;
 }
 

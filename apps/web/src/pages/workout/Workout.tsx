@@ -13,6 +13,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { formatWeight } from "@/utils/units";
 import { useT } from "@/i18n";
 import { useStopwatch } from "@/hooks/useStopwatch";
+import { useCountdown } from "@/hooks/useCountdown";
 import { useLeaveGuard } from "@/hooks/useLeaveGuard";
 import {
   clearActiveWorkout,
@@ -63,9 +64,15 @@ const Workout = () => {
     snapshot: timerSnapshot,
   } = useStopwatch(restored?.timer);
 
-  const [restRemaining, setRestRemaining] = useState(0);
-  const [restTotal, setRestTotal] = useState(DEFAULT_REST);
-  const [restRunning, setRestRunning] = useState(false);
+  const {
+    remaining: restRemaining,
+    total: restTotal,
+    running: restRunning,
+    snapshot: restSnapshot,
+    start: startRest,
+    toggle: toggleRest,
+    reset: resetRest,
+  } = useCountdown(DEFAULT_REST, restored?.rest);
 
   const [showSummary, setShowSummary] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -125,22 +132,9 @@ const Workout = () => {
       entries,
       activeIndex,
       timer: timerSnapshot,
+      rest: restSnapshot,
     });
-  }, [split, entries, activeIndex, timerSnapshot, user?.id]);
-
-  useEffect(() => {
-    if (!restRunning) return;
-    const id = window.setInterval(() => {
-      setRestRemaining((s) => {
-        if (s <= 1) {
-          setRestRunning(false);
-          return 0;
-        }
-        return s - 1;
-      });
-    }, 1000);
-    return () => clearInterval(id);
-  }, [restRunning]);
+  }, [split, entries, activeIndex, timerSnapshot, restSnapshot, user?.id]);
 
   const activeEntry = entries[activeIndex];
 
@@ -319,8 +313,7 @@ const Workout = () => {
       );
     }
 
-    setRestRemaining(restTotal);
-    setRestRunning(true);
+    startRest(restTotal);
 
     const allDone = entry.sets.every((s, i) =>
       i === setIdx ? true : s.completed,
@@ -380,16 +373,9 @@ const Workout = () => {
       remaining={restRemaining}
       total={restTotal}
       running={restRunning}
-      onSelectPreset={(s) => {
-        setRestTotal(s);
-        setRestRemaining(s);
-        setRestRunning(true);
-      }}
-      onToggle={() => setRestRunning((r) => !r)}
-      onReset={() => {
-        setRestRunning(false);
-        setRestRemaining(0);
-      }}
+      onSelectPreset={startRest}
+      onToggle={toggleRest}
+      onReset={resetRest}
     />
   );
 
