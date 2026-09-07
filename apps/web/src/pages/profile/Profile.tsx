@@ -25,11 +25,13 @@ const Profile = () => {
   const [weightInput, setWeightInput] = useState("");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [weightError, setWeightError] = useState<"load" | "save" | null>(null);
+  const [prefsError, setPrefsError] = useState(false);
 
   useEffect(() => {
     getBodyWeights()
       .then(setEntries)
-      .catch(console.error)
+      .catch(() => setWeightError("load"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -42,6 +44,7 @@ const Profile = () => {
     if (!typed || typed <= 0 || saving) return;
 
     setSaving(true);
+    setWeightError(null);
     try {
       const created = await createBodyWeight({
         weight: toCanonicalWeight(typed, unit),
@@ -51,8 +54,8 @@ const Profile = () => {
         return [...rest, created];
       });
       setWeightInput("");
-    } catch (error) {
-      console.error(error);
+    } catch {
+      setWeightError("save");
     } finally {
       setSaving(false);
     }
@@ -60,19 +63,21 @@ const Profile = () => {
 
   const changeUnit = async (next: UnitPreference) => {
     if (next === unit) return;
+    setPrefsError(false);
     try {
       await updateProfile({ unitPreference: next });
-    } catch (error) {
-      console.error(error);
+    } catch {
+      setPrefsError(true);
     }
   };
 
   const changeLanguage = async (next: LanguagePreference) => {
     if (next === locale) return;
+    setPrefsError(false);
     try {
       await updateProfile({ languagePreference: next });
-    } catch (error) {
-      console.error(error);
+    } catch {
+      setPrefsError(true);
     }
   };
 
@@ -161,6 +166,11 @@ const Profile = () => {
                 </button>
               ))}
             </div>
+            {prefsError && (
+              <p className="text-right text-[10px] leading-tight text-red-400">
+                {t("profile.preferencesError")}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -190,7 +200,18 @@ const Profile = () => {
               fullWidth
               label={saving ? t("profile.saving") : t("profile.logWeight")}
               onClick={logWeight}
+              disabled={saving || !(Number(weightInput) > 0)}
             />
+
+            {weightError && (
+              <p className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-400">
+                {t(
+                  weightError === "load"
+                    ? "profile.loadError"
+                    : "profile.saveError",
+                )}
+              </p>
+            )}
 
             <div className="mt-2 flex max-h-56 flex-col gap-1.5 overflow-y-auto lg:max-h-none lg:min-h-0">
               {loading &&

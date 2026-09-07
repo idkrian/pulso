@@ -51,7 +51,7 @@ const ExerciseDrawer = ({ exercise, onClose, onEdit, onDelete }: Props) => {
         }`}
       />
       <aside
-        className={`fixed top-0 right-0 h-dvh w-96 max-w-full bg-darkGrey border-l border-mediumGrey z-50 transform transition-transform duration-300 flex flex-col ${
+        className={`fixed top-0 right-0 h-dvh w-96 max-w-full bg-darkGrey border-l border-mediumGrey z-50 transform transition-transform duration-300 flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >

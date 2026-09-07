@@ -9,11 +9,8 @@ import {
 import type { TrainingSplitDayEntry } from "@/dtos/training-split-day.dto";
 import type { WorkoutSessionDto } from "@/dtos/workout-session.dto";
 import { DEFAULT_ACCENT, muscleGroupAccent, summarizeSplit } from "@/utils";
-import {
-  formatVolume,
-  sessionTotalSets,
-  sessionVolume,
-} from "@/utils/workout-history";
+import { sessionTotalSets, sessionVolume } from "@/utils/workout-history";
+import { useFormatVolume } from "@/hooks/useFormatVolume";
 import { useFormatDate, useT, type TranslateFn } from "@/i18n";
 
 export type DayStatus =
@@ -70,6 +67,7 @@ const DayCard = ({
 }: DayCardProps) => {
   const t = useT();
   const formatDate = useFormatDate();
+  const formatVolume = useFormatVolume();
   const split = entry?.trainingSplit ?? session?.trainingSplit;
   const summary = split?.exercises ? summarizeSplit(split) : null;
   const accent =
@@ -164,7 +162,7 @@ const DayCard = ({
 
               {status === "completed" && session && (
                 <div className="flex items-center w-full justify-between text-[11px] text-emerald-300/80 mt-auto">
-                  <span>{formatVolume(sessionVolume(session))} kg</span>
+                  <span>{formatVolume(sessionVolume(session))}</span>
                   <span>
                     {t("calendar.setsLogged", {
                       count: sessionTotalSets(session),

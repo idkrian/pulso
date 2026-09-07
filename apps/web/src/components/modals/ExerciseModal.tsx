@@ -133,7 +133,7 @@ const ExerciseModal = ({
       />
 
       <div
-        className="flex flex-col w-md max-w-full max-h-[90vh] bg-mediumGrey rounded-2xl shadow-xl text-white overflow-hidden"
+        className="flex flex-col w-md max-w-full max-h-[90dvh] bg-mediumGrey rounded-2xl shadow-xl text-white overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

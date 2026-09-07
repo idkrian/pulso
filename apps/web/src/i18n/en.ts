@@ -10,6 +10,7 @@ export const en = {
     cancel: "Cancel",
     optional: "optional",
     close: "Close",
+    retry: "Try again",
   },
 
   exerciseEditPanel: {
@@ -110,6 +111,10 @@ export const en = {
     create: "Create training split",
     deleteTitle: "Delete training split?",
     deleteDescription: '"{title}" will be permanently removed.',
+    backToList: "Back to splits",
+    loadErrorTitle: "Couldn't load this split",
+    loadErrorDescription:
+      "Something went wrong on the way. Check your connection and try again.",
 
     muscleGroupCount: "{count} muscle group",
     muscleGroupCountPlural: "{count} muscle groups",
@@ -221,6 +226,14 @@ export const en = {
     leaveConfirm: "Leave",
     leaveCancel: "Keep training",
 
+    loadErrorTitle: "Couldn't load this workout",
+    loadErrorDescription:
+      "Something went wrong on the way. Check your connection and try again.",
+    emptyTitle: "This split has no exercises",
+    emptyDescription:
+      "Add at least one exercise to the split before starting a workout.",
+    editSplit: "Edit split",
+
     restTimer: "Rest Timer",
     upNext: "Up Next",
   },
@@ -326,6 +339,8 @@ export const en = {
     custom: "Custom",
     filterByMuscle: "Filter by muscle",
     allExercises: "All Exercises",
+    count: "{count} exercise",
+    countPlural: "{count} exercises",
     emptyTitle: "No exercises yet",
     emptyAll: "Start building your library by adding your first exercise.",
     emptyFiltered: "No {group} exercises yet. Add one to get started.",
@@ -333,6 +348,7 @@ export const en = {
     newShort: "New",
     searchPlaceholder: "Search exercises...",
     deleteTitle: "Delete exercise?",
+    deleteDescription: '"{title}" will be permanently removed.',
     moveUp: "Move up",
     moveDown: "Move down",
     deleteExercise: "Delete exercise",
@@ -373,6 +389,9 @@ export const en = {
     weighHint: "Weigh yourself at the same time of day for a consistent trend.",
     logWeight: "Log Weight",
     saving: "Saving...",
+    loadError: "Couldn't load your weight history.",
+    saveError: "Couldn't save your weight. Try again.",
+    preferencesError: "Couldn't save your preference. Try again.",
   },
 
   login: {

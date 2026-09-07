@@ -51,11 +51,6 @@ export const completedWeekdays = (
   return days;
 };
 
-export const formatVolume = (volume: number): string => {
-  if (volume >= 1000) return `${(volume / 1000).toFixed(1)}k`;
-  return `${volume}`;
-};
-
 export const computeStreak = (sessions: WorkoutSessionDto[]): number => {
   if (sessions.length === 0) return 0;
   const days = new Set(sessions.map((s) => dayKey(s.createdAt)));

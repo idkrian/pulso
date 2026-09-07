@@ -132,8 +132,11 @@ const Exercises = () => {
                 <Skeleton className="my-1 h-3 w-24 bg-mediumGrey" />
               ) : (
                 <p className="text-sm text-lightGrey/60">
-                  {visibleExercises.length}{" "}
-                  {visibleExercises.length === 1 ? "exercise" : "exercises"}
+                  {visibleExercises.length === 1
+                    ? t("exercises.count", { count: 1 })
+                    : t("exercises.countPlural", {
+                        count: visibleExercises.length,
+                      })}
                 </p>
               )}
             </div>
@@ -214,7 +217,7 @@ const Exercises = () => {
         title={t("exercises.deleteTitle")}
         description={
           deleteTarget
-            ? `"${deleteTarget.title}" will be permanently removed.`
+            ? t("exercises.deleteDescription", { title: deleteTarget.title })
             : undefined
         }
         error={deleteError}

@@ -1,11 +1,10 @@
 import { LuClock, LuDumbbell, LuLayers, LuX } from "react-icons/lu";
 import type { WorkoutSessionDto } from "@/dtos/workout-session.dto";
 import { formatTime } from "@/utils";
-import {
-  formatVolume,
-  sessionTotalSets,
-  sessionVolume,
-} from "@/utils/workout-history";
+import { sessionTotalSets, sessionVolume } from "@/utils/workout-history";
+import { useFormatVolume } from "@/hooks/useFormatVolume";
+import { useAuth } from "@/contexts/AuthContext";
+import { formatWeight } from "@/utils/units";
 import { useFormatDate, useT } from "@/i18n";
 
 interface SessionDetailModalProps {
@@ -21,6 +20,8 @@ const SessionDetailModal = ({
 }: SessionDetailModalProps) => {
   const t = useT();
   const formatDate = useFormatDate();
+  const formatVolume = useFormatVolume();
+  const { unit } = useAuth();
 
   if (!open || !session) return null;
 
@@ -104,7 +105,7 @@ const SessionDetailModal = ({
                       key={set.id}
                       className="text-[11px] px-2 py-0.5 rounded-full bg-indigo/15 text-lightIndigo border border-indigo/30 tabular-nums"
                     >
-                      {set.weight ?? 0}kg × {set.reps}
+                      {formatWeight(set.weight ?? 0, unit)} × {set.reps}
                     </span>
                   ))}
                 </div>

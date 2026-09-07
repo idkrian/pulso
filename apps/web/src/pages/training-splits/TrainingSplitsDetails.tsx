@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { LuRotateCw } from "react-icons/lu";
+import { LuRotateCw, LuTriangleAlert } from "react-icons/lu";
 import { FaPlus } from "react-icons/fa6";
 import type { TrainingSplitDto } from "@/dtos/training-splits.dto";
 import type { TrainingSplitExerciseDto } from "@/dtos/training-split-exercise.dto";
@@ -18,6 +18,8 @@ import {
 import { getAllExercises } from "@/api/exercise";
 import { summarizeSplit } from "@/utils";
 import { useT } from "@/i18n";
+import Button from "@/components/ui/Button";
+import ErrorState from "@/components/ui/ErrorState";
 import FeedbackModal from "@/components/modals/FeedbackModal";
 import TrainingSplitHeader from "@/components/training-splits/TrainingSplitHeader";
 import ExerciseListItem from "@/components/training-splits/ExerciseListItem";
@@ -38,16 +40,23 @@ const TrainingSplitsDetails = () => {
     "success",
   );
   const [openFeedback, setOpenFeedback] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (id) {
-      getTrainingSplitById(id).then((data) => {
-        setFormData(data);
-        setSavedData(data);
-      });
+      setLoadError(false);
+      getTrainingSplitById(id)
+        .then((data) => {
+          setFormData(data);
+          setSavedData(data);
+        })
+        .catch(() => setLoadError(true));
     }
-    getAllExercises().then(setExercises);
-  }, [id]);
+    getAllExercises()
+      .then(setExercises)
+      .catch(() => setExercises([]));
+  }, [id, reloadKey]);
 
   const filterByMuscle = (muscle: MuscleType) =>
     exercises.filter((ex) => ex.muscle === muscle);
@@ -190,6 +199,27 @@ const TrainingSplitsDetails = () => {
       setOpenFeedback(true);
     }
   };
+
+  if (loadError) {
+    return (
+      <ErrorState
+        icon={<LuTriangleAlert size={32} className="text-red-400" />}
+        title={t("trainingSplits.loadErrorTitle")}
+        description={t("trainingSplits.loadErrorDescription")}
+      >
+        <Button
+          label={t("common.retry")}
+          onClick={() => setReloadKey((key) => key + 1)}
+        />
+        <button
+          onClick={() => navigate("/training-splits")}
+          className="flex h-10 items-center justify-center rounded-md bg-mediumGrey px-4 text-sm font-semibold text-white transition-colors hover:bg-mediumGrey/70 cursor-pointer"
+        >
+          {t("trainingSplits.backToList")}
+        </button>
+      </ErrorState>
+    );
+  }
 
   if (!formData) {
     return (

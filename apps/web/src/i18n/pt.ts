@@ -12,6 +12,7 @@ export const pt: LocaleDictionary = {
     cancel: "Cancelar",
     optional: "opcional",
     close: "Fechar",
+    retry: "Tentar novamente",
   },
 
   exerciseEditPanel: {
@@ -113,6 +114,10 @@ export const pt: LocaleDictionary = {
     create: "Criar treino",
     deleteTitle: "Excluir treino?",
     deleteDescription: '"{title}" será removido permanentemente.',
+    backToList: "Voltar para treinos",
+    loadErrorTitle: "Não foi possível carregar este treino",
+    loadErrorDescription:
+      "Algo deu errado no caminho. Verifique sua conexão e tente novamente.",
 
     muscleGroupCount: "{count} grupo muscular",
     muscleGroupCountPlural: "{count} grupos musculares",
@@ -224,6 +229,14 @@ export const pt: LocaleDictionary = {
     leaveConfirm: "Sair",
     leaveCancel: "Continuar treinando",
 
+    loadErrorTitle: "Não foi possível carregar este treino",
+    loadErrorDescription:
+      "Algo deu errado no caminho. Verifique sua conexão e tente novamente.",
+    emptyTitle: "Este treino não tem exercícios",
+    emptyDescription:
+      "Adicione pelo menos um exercício ao treino antes de começar.",
+    editSplit: "Editar treino",
+
     restTimer: "Timer de Descanso",
     upNext: "A Seguir",
   },
@@ -329,6 +342,8 @@ export const pt: LocaleDictionary = {
     custom: "Personalizado",
     filterByMuscle: "Filtrar por músculo",
     allExercises: "Todos os Exercícios",
+    count: "{count} exercício",
+    countPlural: "{count} exercícios",
     emptyTitle: "Nenhum exercício ainda",
     emptyAll: "Comece sua biblioteca adicionando seu primeiro exercício.",
     emptyFiltered:
@@ -337,6 +352,7 @@ export const pt: LocaleDictionary = {
     newShort: "Novo",
     searchPlaceholder: "Buscar exercícios...",
     deleteTitle: "Excluir exercício?",
+    deleteDescription: '"{title}" será removido permanentemente.',
     moveUp: "Mover para cima",
     moveDown: "Mover para baixo",
     deleteExercise: "Excluir exercício",
@@ -378,6 +394,10 @@ export const pt: LocaleDictionary = {
       "Pese-se sempre no mesmo horário do dia para uma tendência consistente.",
     logWeight: "Registrar Peso",
     saving: "Salvando...",
+    loadError: "Não foi possível carregar seu histórico de peso.",
+    saveError: "Não foi possível salvar seu peso. Tente novamente.",
+    preferencesError:
+      "Não foi possível salvar sua preferência. Tente novamente.",
   },
 
   login: {

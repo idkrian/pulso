@@ -9,7 +9,8 @@ import {
 import type { TrainingSplitDayEntry } from "@/dtos/training-split-day.dto";
 import type { WorkoutSessionDto } from "@/dtos/workout-session.dto";
 import { DEFAULT_ACCENT, muscleGroupAccent, summarizeSplit } from "@/utils";
-import { formatVolume, sessionVolume } from "@/utils/workout-history";
+import { sessionVolume } from "@/utils/workout-history";
+import { useFormatVolume } from "@/hooks/useFormatVolume";
 import Skeleton from "@/components/ui/Skeleton";
 import { useFormatDate, useT } from "@/i18n";
 
@@ -36,6 +37,7 @@ const CalendarLeftPanel = ({
 }: CalendarLeftPanelProps) => {
   const t = useT();
   const formatDate = useFormatDate();
+  const formatVolume = useFormatVolume();
   const today = new Date();
   const split = todayEntry?.trainingSplit;
   const isRest = todayEntry?.restDay ?? !split;

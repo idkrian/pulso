@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { LuRotateCw } from "react-icons/lu";
+import { LuRotateCw, LuTriangleAlert, LuClipboardList } from "react-icons/lu";
 import { getTrainingSplitById } from "@/api/training-split";
 import { getExercisePerformances } from "@/api/exercise";
 import { createWorkout } from "@/api/workout";
 import type { TrainingSplitDto } from "@/dtos/training-splits.dto";
 import type { ExerciseDto, ExercisePerformanceDto } from "@/dtos/exercise.dto";
 import Button from "@/components/ui/Button";
+import ErrorState from "@/components/ui/ErrorState";
 import type { LoggedSet, WorkoutEntry } from "@/dtos/workout.dto";
 import { DEFAULT_REST } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -47,6 +48,8 @@ const Workout = () => {
   });
 
   const [split, setSplit] = useState<TrainingSplitDto | null>(null);
+  const [loadError, setLoadError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const [entries, setEntries] = useState<WorkoutEntry[]>(
     restored?.entries ?? [],
   );
@@ -88,8 +91,12 @@ const Workout = () => {
   );
 
   useEffect(() => {
-    if (splitId) getTrainingSplitById(splitId).then(setSplit);
-  }, [splitId]);
+    if (!splitId) return;
+    setLoadError(false);
+    getTrainingSplitById(splitId)
+      .then(setSplit)
+      .catch(() => setLoadError(true));
+  }, [splitId, reloadKey]);
 
   useEffect(() => {
     if (!split || restored) return;
@@ -359,6 +366,48 @@ const Workout = () => {
       setSubmitting(false);
     }
   };
+
+  if (loadError) {
+    return (
+      <ErrorState
+        icon={<LuTriangleAlert size={32} className="text-red-400" />}
+        title={t("workout.loadErrorTitle")}
+        description={t("workout.loadErrorDescription")}
+      >
+        <Button
+          label={t("common.retry")}
+          onClick={() => setReloadKey((key) => key + 1)}
+        />
+        <button
+          onClick={() => navigate("/training-splits")}
+          className="flex h-10 items-center justify-center rounded-md bg-mediumGrey px-4 text-sm font-semibold text-white transition-colors hover:bg-mediumGrey/70 cursor-pointer"
+        >
+          {t("trainingSplits.backToList")}
+        </button>
+      </ErrorState>
+    );
+  }
+
+  if (split && split.exercises.length === 0 && !restored) {
+    return (
+      <ErrorState
+        icon={<LuClipboardList size={32} className="text-lightIndigo" />}
+        title={t("workout.emptyTitle")}
+        description={t("workout.emptyDescription")}
+      >
+        <Button
+          label={t("workout.editSplit")}
+          onClick={() => navigate(`/training-splits/${split.id}`)}
+        />
+        <button
+          onClick={() => navigate("/training-splits")}
+          className="flex h-10 items-center justify-center rounded-md bg-mediumGrey px-4 text-sm font-semibold text-white transition-colors hover:bg-mediumGrey/70 cursor-pointer"
+        >
+          {t("trainingSplits.backToList")}
+        </button>
+      </ErrorState>
+    );
+  }
 
   if (!split || !activeEntry) {
     return (
