@@ -10,6 +10,10 @@ function requireEnv(name: string): string {
   return value;
 }
 
+function nullableEnv(name: string): string | undefined {
+  return process.env[name] || undefined;
+}
+
 export const env = {
   JWT_SECRET: requireEnv("JWT_SECRET"),
   FRONTEND_URL: requireEnv("FRONTEND_URL"),
@@ -17,4 +21,7 @@ export const env = {
   GMAIL_APP_PASSWORD: requireEnv("GMAIL_APP_PASSWORD"),
   EMAIL_FROM: requireEnv("EMAIL_FROM"),
   TRUST_PROXY: Number(optionalEnv("TRUST_PROXY", "0")),
+  DEMO_EMAIL: nullableEnv("DEMO_EMAIL"),
+  DEMO_PASSWORD: nullableEnv("DEMO_PASSWORD"),
+  DEMO_RESET_SECRET: nullableEnv("DEMO_RESET_SECRET"),
 };

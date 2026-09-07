@@ -55,3 +55,9 @@ export const emailDispatchLimiterByEmail = rateLimit({
   limit: 3,
   keyGenerator: byEmail,
 });
+
+export const demoResetLimiter = rateLimit({
+  ...baseOptions,
+  windowMs: 1 * HOUR,
+  limit: 10,
+});

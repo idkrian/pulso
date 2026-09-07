@@ -11,6 +11,7 @@ import {
   LuArrowLeft,
   LuKeyRound,
   LuRotateCw,
+  LuSparkles,
 } from "react-icons/lu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useT } from "@/i18n";
@@ -21,6 +22,8 @@ import Logo from "@/assets/icons/pulse-gradient.svg";
 
 const RESEND_COOLDOWN_SECONDS = 60;
 const CODE_LENGTH = 6;
+const DEMO_EMAIL = import.meta.env.VITE_DEMO_EMAIL;
+const DEMO_PASSWORD = import.meta.env.VITE_DEMO_PASSWORD;
 
 const Login = () => {
   const { isAuthenticated, login, register, verifyRegistration, resendCode } =
@@ -146,6 +149,24 @@ const Login = () => {
     }
   };
 
+  const handleDemoLogin = async () => {
+    if (!DEMO_EMAIL || !DEMO_PASSWORD) return;
+
+    setError(null);
+    setEmail(DEMO_EMAIL);
+    setPassword(DEMO_PASSWORD);
+    setLoading(true);
+
+    try {
+      await login(DEMO_EMAIL, DEMO_PASSWORD);
+      navigate(from, { replace: true });
+    } catch {
+      setError(t("login.error.demoUnavailable"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleResend = async () => {
     setError(null);
     setResendIn(RESEND_COOLDOWN_SECONDS);
@@ -254,86 +275,52 @@ const Login = () => {
                 </label>
               ) : (
                 <>
-                {isSignup && (
+                  {isSignup && (
+                    <label className="block space-y-1.5">
+                      <span className="text-xs font-medium uppercase tracking-wider text-lightGrey/50">
+                        {t("login.nameLabel")}
+                      </span>
+                      <div className="group relative">
+                        <LuUser
+                          size={18}
+                          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lightGrey/40 transition-colors group-focus-within:text-lightIndigo"
+                        />
+                        <input
+                          type="text"
+                          required
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder={t("login.namePlaceholder")}
+                          className="w-full rounded-lg border border-mediumGrey bg-mediumGrey/40 py-2.5 pl-10 pr-3 text-sm text-white placeholder:text-lightGrey/30 outline-none transition-all focus:border-indigo focus:bg-mediumGrey focus:ring-2 focus:ring-indigo/30"
+                        />
+                      </div>
+                    </label>
+                  )}
+
                   <label className="block space-y-1.5">
                     <span className="text-xs font-medium uppercase tracking-wider text-lightGrey/50">
-                      {t("login.nameLabel")}
+                      {t("login.emailLabel")}
                     </span>
                     <div className="group relative">
-                      <LuUser
+                      <LuMail
                         size={18}
                         className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lightGrey/40 transition-colors group-focus-within:text-lightIndigo"
                       />
                       <input
-                        type="text"
+                        type="email"
                         required
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder={t("login.namePlaceholder")}
+                        autoFocus
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder={t("login.emailPlaceholder")}
                         className="w-full rounded-lg border border-mediumGrey bg-mediumGrey/40 py-2.5 pl-10 pr-3 text-sm text-white placeholder:text-lightGrey/30 outline-none transition-all focus:border-indigo focus:bg-mediumGrey focus:ring-2 focus:ring-indigo/30"
                       />
                     </div>
                   </label>
-                )}
 
-                <label className="block space-y-1.5">
-                  <span className="text-xs font-medium uppercase tracking-wider text-lightGrey/50">
-                    {t("login.emailLabel")}
-                  </span>
-                  <div className="group relative">
-                    <LuMail
-                      size={18}
-                      className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lightGrey/40 transition-colors group-focus-within:text-lightIndigo"
-                    />
-                    <input
-                      type="email"
-                      required
-                      autoFocus
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder={t("login.emailPlaceholder")}
-                      className="w-full rounded-lg border border-mediumGrey bg-mediumGrey/40 py-2.5 pl-10 pr-3 text-sm text-white placeholder:text-lightGrey/30 outline-none transition-all focus:border-indigo focus:bg-mediumGrey focus:ring-2 focus:ring-indigo/30"
-                    />
-                  </div>
-                </label>
-
-                <label className="block space-y-1.5">
-                  <span className="text-xs font-medium uppercase tracking-wider text-lightGrey/50">
-                    {t("login.passwordLabel")}
-                  </span>
-                  <div className="group relative">
-                    <LuLock
-                      size={18}
-                      className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lightGrey/40 transition-colors group-focus-within:text-lightIndigo"
-                    />
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full rounded-lg border border-mediumGrey bg-mediumGrey/40 py-2.5 pl-10 pr-10 text-sm text-white placeholder:text-lightGrey/30 outline-none transition-all focus:border-indigo focus:bg-mediumGrey focus:ring-2 focus:ring-indigo/30"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((v) => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-lightGrey/40 transition-colors hover:text-lightIndigo"
-                      tabIndex={-1}
-                    >
-                      {showPassword ? (
-                        <LuEyeOff size={18} />
-                      ) : (
-                        <LuEye size={18} />
-                      )}
-                    </button>
-                  </div>
-                  {isSignup && <PasswordStrengthMeter password={password} />}
-                </label>
-
-                {isSignup && (
                   <label className="block space-y-1.5">
                     <span className="text-xs font-medium uppercase tracking-wider text-lightGrey/50">
-                      {t("login.confirmPasswordLabel")}
+                      {t("login.passwordLabel")}
                     </span>
                     <div className="group relative">
                       <LuLock
@@ -343,24 +330,58 @@ const Login = () => {
                       <input
                         type={showPassword ? "text" : "password"}
                         required
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
-                        aria-invalid={passwordsDiffer}
-                        className={`w-full rounded-lg border bg-mediumGrey/40 py-2.5 pl-10 pr-3 text-sm text-white placeholder:text-lightGrey/30 outline-none transition-all focus:bg-mediumGrey focus:ring-2 ${
-                          passwordsDiffer
-                            ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/30"
-                            : "border-mediumGrey focus:border-indigo focus:ring-indigo/30"
-                        }`}
+                        className="w-full rounded-lg border border-mediumGrey bg-mediumGrey/40 py-2.5 pl-10 pr-10 text-sm text-white placeholder:text-lightGrey/30 outline-none transition-all focus:border-indigo focus:bg-mediumGrey focus:ring-2 focus:ring-indigo/30"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((v) => !v)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-lightGrey/40 transition-colors hover:text-lightIndigo"
+                        tabIndex={-1}
+                      >
+                        {showPassword ? (
+                          <LuEyeOff size={18} />
+                        ) : (
+                          <LuEye size={18} />
+                        )}
+                      </button>
                     </div>
-                    {passwordsDiffer && (
-                      <p className="text-xs text-red-400">
-                        {t("login.error.passwordMismatch")}
-                      </p>
-                    )}
+                    {isSignup && <PasswordStrengthMeter password={password} />}
                   </label>
-                )}
+
+                  {isSignup && (
+                    <label className="block space-y-1.5">
+                      <span className="text-xs font-medium uppercase tracking-wider text-lightGrey/50">
+                        {t("login.confirmPasswordLabel")}
+                      </span>
+                      <div className="group relative">
+                        <LuLock
+                          size={18}
+                          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lightGrey/40 transition-colors group-focus-within:text-lightIndigo"
+                        />
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          required
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          placeholder="••••••••"
+                          aria-invalid={passwordsDiffer}
+                          className={`w-full rounded-lg border bg-mediumGrey/40 py-2.5 pl-10 pr-3 text-sm text-white placeholder:text-lightGrey/30 outline-none transition-all focus:bg-mediumGrey focus:ring-2 ${
+                            passwordsDiffer
+                              ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/30"
+                              : "border-mediumGrey focus:border-indigo focus:ring-indigo/30"
+                          }`}
+                        />
+                      </div>
+                      {passwordsDiffer && (
+                        <p className="text-xs text-red-400">
+                          {t("login.error.passwordMismatch")}
+                        </p>
+                      )}
+                    </label>
+                  )}
                 </>
               )}
             </div>
@@ -386,6 +407,30 @@ const Login = () => {
                 </>
               )}
             </button>
+
+            {!isSignup && !isVerify && DEMO_EMAIL && DEMO_PASSWORD && (
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <span className="h-px flex-1 bg-mediumGrey" />
+                  <span className="text-xs uppercase tracking-wider text-lightGrey/40">
+                    {t("login.demoDivider")}
+                  </span>
+                  <span className="h-px flex-1 bg-mediumGrey" />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleDemoLogin}
+                  disabled={loading}
+                  className="flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-indigo/40 bg-indigo/10 font-semibold text-lightIndigo transition-all hover:border-indigo hover:bg-indigo/20 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <LuSparkles size={18} />
+                  {t("login.demoButton")}
+                </button>
+                <p className="text-center text-xs text-lightGrey/40">
+                  {t("login.demoHint")}
+                </p>
+              </div>
+            )}
 
             {isVerify ? (
               <div className="space-y-3 text-center text-sm">

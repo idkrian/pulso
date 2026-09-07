@@ -1,9 +1,11 @@
 import "dotenv/config";
 import { prisma } from "../prisma/prisma.js";
 import { seedExercises } from "./exercises.js";
+import { seedDemo } from "./demo.js";
 
 async function main() {
   await seedExercises();
+  await seedDemo();
 }
 
 main()

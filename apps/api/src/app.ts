@@ -8,6 +8,7 @@ import workoutRouter from "./modules/workout/workout.router.js";
 import userRouter from "./modules/user/user.router.js";
 import authRouter from "./modules/auth/auth.router.js";
 import bodyWeightRouter from "./modules/body-weight/body-weight.router.js";
+import demoRouter from "./modules/demo/demo.router.js";
 import { authenticate } from "./shared/middlewares/authenticate.js";
 import { localeMiddleware } from "./shared/middlewares/locale.js";
 import { env } from "./shared/config/env.js";
@@ -33,6 +34,7 @@ app.use("/workout", authenticate, workoutRouter);
 app.use("/body-weight", authenticate, bodyWeightRouter);
 app.use("/user", userRouter);
 app.use("/auth", authRouter);
+app.use("/demo", demoRouter);
 
 app.use(requestErrorHandlerMiddleware);
 

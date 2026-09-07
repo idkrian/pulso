@@ -404,6 +404,10 @@ export const pt: LocaleDictionary = {
     switchToLogin: "Entrar",
     switchToSignup: "Cadastre-se",
 
+    demoDivider: "ou",
+    demoButton: "Explorar a conta de demonstração",
+    demoHint: "Sem cadastro — uma conta completa com 12 semanas de histórico.",
+
     verifyHeading: "Confira seu e-mail",
     verifySubheading: "Enviamos um código de 6 dígitos para {email}. Digite abaixo para concluir seu cadastro.",
     codeLabel: "Código de verificação",
@@ -431,6 +435,7 @@ export const pt: LocaleDictionary = {
       tooManyRequests: "Muitas tentativas. Aguarde um momento e tente de novo.",
       emailSendFailed: "Não conseguimos enviar o e-mail. Tente novamente.",
       verifyFailed: "Não foi possível confirmar o código. Tente novamente.",
+      demoUnavailable: "A conta de demonstração está indisponível agora. Tente novamente em instantes.",
     },
   },
 

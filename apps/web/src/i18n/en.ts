@@ -399,6 +399,10 @@ export const en = {
     switchToLogin: "Sign in",
     switchToSignup: "Sign up",
 
+    demoDivider: "or",
+    demoButton: "Explore the demo account",
+    demoHint: "No sign-up needed — a full account with 12 weeks of history.",
+
     verifyHeading: "Check your email",
     verifySubheading: "We sent a 6-digit code to {email}. Enter it below to finish creating your account.",
     codeLabel: "Verification code",
@@ -426,6 +430,7 @@ export const en = {
       tooManyRequests: "Too many attempts. Please wait a moment and try again.",
       emailSendFailed: "We couldn't send the email. Please try again.",
       verifyFailed: "Couldn't confirm the code. Please try again.",
+      demoUnavailable: "The demo account is unavailable right now. Try again in a moment.",
     },
   },
 
