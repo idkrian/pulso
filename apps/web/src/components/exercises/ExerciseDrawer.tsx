@@ -32,15 +32,30 @@ const ExerciseDrawer = ({ exercise, onClose, onEdit, onDelete }: Props) => {
   const [stats, setStats] = useState<ExerciseStatsDto | null>(null);
   const [loading, setLoading] = useState(false);
   const isCustom = exercise?.userId !== null;
+  const exerciseId = exercise?.id;
 
   useEffect(() => {
-    if (!exercise) return;
+    if (exerciseId === undefined) return;
+
+    let cancelled = false;
     setStats(null);
     setLoading(true);
-    getExerciseStats(exercise.id)
-      .then(setStats)
-      .finally(() => setLoading(false));
-  }, [exercise?.id]);
+
+    getExerciseStats(exerciseId)
+      .then((data) => {
+        if (!cancelled) setStats(data);
+      })
+      .catch(() => {
+        if (!cancelled) setStats(null);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [exerciseId]);
 
   return (
     <>

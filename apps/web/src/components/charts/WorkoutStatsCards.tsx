@@ -15,6 +15,7 @@ const WorkoutStatsCards = () => {
   useEffect(() => {
     getWorkoutSummaryStats()
       .then(setStats)
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 

@@ -65,6 +65,7 @@ const WorkoutFrequencyChart = () => {
   useEffect(() => {
     getAllWorkouts()
       .then(setSessions)
+      .catch(() => setSessions([]))
       .finally(() => setLoading(false));
   }, []);
 

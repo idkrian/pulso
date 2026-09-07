@@ -20,12 +20,18 @@ if (env.TRUST_PROXY > 0) {
 }
 app.use(
   cors({
-    origin: env.FRONTEND_URL,
+    origin: env.FRONTEND_URL.split(",")
+      .map((url) => url.trim())
+      .filter(Boolean),
     allowedHeaders: ["Content-Type", "Authorization", "Accept-Language"],
   }),
 );
 app.use(express.json());
 app.use(localeMiddleware);
+
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok" });
+});
 
 app.use("/exercise", authenticate, exerciseRouter);
 app.use("/training-split", authenticate, trainingSplitRouter);

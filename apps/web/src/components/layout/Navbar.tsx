@@ -7,6 +7,7 @@ import type { TrainingSplitDayMap } from "@/dtos/training-split-day.dto";
 import { useAuth } from "@/contexts/AuthContext";
 import { useT, useWeekdayInitials } from "@/i18n";
 import { completedWeekdays } from "@/utils/workout-history";
+import { useToday } from "@/hooks/useToday";
 import Logo from "@/assets/icons/pulse-gradient.svg";
 import { navItems } from "./nav-items";
 
@@ -93,12 +94,16 @@ const Navbar = () => {
     let cancelled = false;
 
     const load = () => {
-      getTrainingSplitDays().then((days) => {
-        if (!cancelled) setByDay(days);
-      });
-      getAllWorkouts().then((sessions) => {
-        if (!cancelled) setCompletedDays(completedWeekdays(sessions));
-      });
+      getTrainingSplitDays()
+        .then((days) => {
+          if (!cancelled) setByDay(days);
+        })
+        .catch(() => {});
+      getAllWorkouts()
+        .then((sessions) => {
+          if (!cancelled) setCompletedDays(completedWeekdays(sessions));
+        })
+        .catch(() => {});
     };
 
     load();
@@ -109,7 +114,7 @@ const Navbar = () => {
     };
   }, [pathname]);
 
-  const today = new Date().getDay();
+  const today = useToday().getDay();
   const todayEntry = byDay[today];
   const todaySplit =
     todayEntry && !todayEntry.restDay ? todayEntry.trainingSplit : undefined;

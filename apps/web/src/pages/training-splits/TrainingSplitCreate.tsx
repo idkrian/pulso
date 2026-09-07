@@ -18,7 +18,9 @@ import {
 } from "@/dtos/muscle.dto";
 import { getAllExercises } from "@/api/exercise";
 import { createTrainingSplit } from "@/api/training-split";
+import ConfirmModal from "@/components/modals/ConfirmModal";
 import FeedbackModal from "@/components/modals/FeedbackModal";
+import { useLeaveGuard } from "@/hooks/useLeaveGuard";
 import ExerciseListItem from "@/components/training-splits/ExerciseListItem";
 import ExerciseEditPanel from "@/components/training-splits/ExerciseEditPanel";
 import { useT } from "@/i18n";
@@ -40,8 +42,12 @@ const TrainingSplitCreate = () => {
   const [openFeedbackModal, setOpenFeedbackModal] = useState(false);
 
   useEffect(() => {
-    getAllExercises().then(setExercises);
+    getAllExercises()
+      .then(setExercises)
+      .catch(() => setExercises([]));
   }, []);
+
+  const leaveGuard = useLeaveGuard(rows.length > 0);
 
   const filterByMuscle = (muscle: MuscleType) =>
     exercises.filter((ex) => ex.muscle === muscle);
@@ -178,8 +184,7 @@ const TrainingSplitCreate = () => {
     try {
       await createTrainingSplit(payload);
       setFeedbackStatus("success");
-    } catch (error) {
-      console.log(error);
+    } catch {
       setFeedbackStatus("error");
     } finally {
       setSaving(false);
@@ -199,8 +204,21 @@ const TrainingSplitCreate = () => {
         }
         onClose={() => {
           setOpenFeedbackModal(false);
-          if (feedbackStatus === "success") navigate("/training-splits");
+          if (feedbackStatus === "success") {
+            leaveGuard.release();
+            navigate("/training-splits");
+          }
         }}
+      />
+
+      <ConfirmModal
+        open={leaveGuard.blocked}
+        title={t("trainingSplits.leaveConfirmTitle")}
+        description={t("trainingSplits.leaveConfirmDescription")}
+        confirmLabel={t("trainingSplits.leaveConfirm")}
+        cancelLabel={t("trainingSplits.leaveCancel")}
+        onConfirm={leaveGuard.confirmLeave}
+        onCancel={leaveGuard.cancelLeave}
       />
 
       <header className="flex shrink-0 items-center gap-2 border-b border-darkGrey px-3 py-3 lg:gap-4 lg:px-6 lg:py-4">

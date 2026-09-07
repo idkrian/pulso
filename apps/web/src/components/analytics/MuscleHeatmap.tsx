@@ -29,11 +29,22 @@ const MuscleHeatmap = ({ period }: MuscleHeatmapProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
+
     getWorkoutMuscleStats(period)
       .then((stats) => {
-        setData(buildHighlighterData(stats, period));
+        if (!cancelled) setData(buildHighlighterData(stats, period));
       })
-      .finally(() => setLoading(false));
+      .catch(() => {
+        if (!cancelled) setData([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [period]);
 
   return (

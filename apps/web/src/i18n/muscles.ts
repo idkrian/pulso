@@ -4,7 +4,7 @@ import {
   type MuscleGroupType,
   type MuscleType,
 } from "@/dtos/muscle.dto";
-import { useT } from "./index";
+import { useT } from "./translator";
 
 export type MuscleOption = { text: string; value: MuscleType };
 

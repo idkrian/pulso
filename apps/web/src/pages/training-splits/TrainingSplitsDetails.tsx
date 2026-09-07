@@ -20,7 +20,9 @@ import { summarizeSplit } from "@/utils";
 import { useT } from "@/i18n";
 import Button from "@/components/ui/Button";
 import ErrorState from "@/components/ui/ErrorState";
+import ConfirmModal from "@/components/modals/ConfirmModal";
 import FeedbackModal from "@/components/modals/FeedbackModal";
+import { useLeaveGuard } from "@/hooks/useLeaveGuard";
 import TrainingSplitHeader from "@/components/training-splits/TrainingSplitHeader";
 import ExerciseListItem from "@/components/training-splits/ExerciseListItem";
 import ExerciseEditPanel from "@/components/training-splits/ExerciseEditPanel";
@@ -65,6 +67,8 @@ const TrainingSplitsDetails = () => {
     if (!formData || !savedData) return false;
     return JSON.stringify(formData) !== JSON.stringify(savedData);
   }, [formData, savedData]);
+
+  const leaveGuard = useLeaveGuard(hasChanges);
 
   const summary = useMemo(
     () => (formData ? summarizeSplit(formData) : null),
@@ -240,6 +244,16 @@ const TrainingSplitsDetails = () => {
             : t("trainingSplits.updateError")
         }
         onClose={() => setOpenFeedback(false)}
+      />
+
+      <ConfirmModal
+        open={leaveGuard.blocked}
+        title={t("trainingSplits.leaveConfirmTitle")}
+        description={t("trainingSplits.leaveConfirmDescription")}
+        confirmLabel={t("trainingSplits.leaveConfirm")}
+        cancelLabel={t("trainingSplits.leaveCancel")}
+        onConfirm={leaveGuard.confirmLeave}
+        onCancel={leaveGuard.cancelLeave}
       />
 
       <TrainingSplitHeader

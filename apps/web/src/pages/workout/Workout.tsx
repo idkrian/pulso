@@ -83,6 +83,7 @@ const Workout = () => {
   const [recentPR, setRecentPR] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const prTimeout = useRef<number | null>(null);
+  const timeoutsRef = useRef(new Set<number>());
 
   const [pickerMode, setPickerMode] = useState<"swap" | "add" | null>(null);
   const [pendingSwap, setPendingSwap] = useState<ExerciseDto | null>(null);
@@ -142,6 +143,23 @@ const Workout = () => {
       rest: restSnapshot,
     });
   }, [split, entries, activeIndex, timerSnapshot, restSnapshot, user?.id]);
+
+  useEffect(() => {
+    const timeouts = timeoutsRef.current;
+    return () => {
+      timeouts.forEach((id) => window.clearTimeout(id));
+      timeouts.clear();
+    };
+  }, []);
+
+  const later = (fn: () => void, ms: number) => {
+    const id = window.setTimeout(() => {
+      timeoutsRef.current.delete(id);
+      fn();
+    }, ms);
+    timeoutsRef.current.add(id);
+    return id;
+  };
 
   const activeEntry = entries[activeIndex];
 
@@ -282,19 +300,22 @@ const Workout = () => {
 
   const triggerPR = (label: string) => {
     setRecentPR(label);
-    if (prTimeout.current) clearTimeout(prTimeout.current);
-    prTimeout.current = window.setTimeout(() => setRecentPR(null), 2500);
+    if (prTimeout.current) {
+      window.clearTimeout(prTimeout.current);
+      timeoutsRef.current.delete(prTimeout.current);
+    }
+    prTimeout.current = later(() => setRecentPR(null), 2500);
   };
 
   const logSet = (entryId: string, setIdx: number) => {
     const entry = entries.find((e) => e.entryId === entryId);
     const target = entry?.sets[setIdx];
     if (!entry || !target || target.completed) return;
-    if (target.weight <= 0 || target.reps <= 0) return;
+    if (target.reps <= 0) return;
 
     updateSet(entryId, setIdx, { completed: true });
     setPulseVolume(true);
-    setTimeout(() => setPulseVolume(false), 600);
+    later(() => setPulseVolume(false), 600);
 
     // The record comes from the server (all-time across every session), so beating
     // it here is a real PR — not just the heaviest set of today.
@@ -326,7 +347,7 @@ const Workout = () => {
       i === setIdx ? true : s.completed,
     );
     if (allDone && activeIndex < entries.length - 1) {
-      setTimeout(() => setActiveIndex((i) => i + 1), 800);
+      later(() => setActiveIndex((i) => i + 1), 800);
     }
   };
 

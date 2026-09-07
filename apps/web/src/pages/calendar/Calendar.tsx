@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { getTrainingSplitDays } from "@/api/training-split-day";
 import { getAllWorkouts } from "@/api/workout";
 import { useSwapSplit } from "@/hooks/useSwapSplit";
+import { useToday } from "@/hooks/useToday";
 import type {
   TrainingSplitDayEntry,
   TrainingSplitDayMap,
@@ -36,8 +37,14 @@ const Calendar = () => {
     null,
   );
 
-  const refreshSchedule = () => getTrainingSplitDays().then(setSplitsByDay);
-  const refreshSessions = () => getAllWorkouts().then(setSessions);
+  const refreshSchedule = () =>
+    getTrainingSplitDays()
+      .then(setSplitsByDay)
+      .catch(() => {});
+  const refreshSessions = () =>
+    getAllWorkouts()
+      .then(setSessions)
+      .catch(() => {});
 
   const { swapTarget, openSwap, closeSwap, handleAssign, handleRemove } =
     useSwapSplit(refreshSchedule);
@@ -51,12 +58,13 @@ const Calendar = () => {
     return () => window.removeEventListener("focus", onFocus);
   }, []);
 
+  const now = useToday();
   const week = useMemo(
-    () => getWeekDays(weekOffset, dateLocale),
-    [weekOffset, dateLocale],
+    () => getWeekDays(weekOffset, dateLocale, now),
+    [weekOffset, dateLocale, now],
   );
-  const today = useMemo(() => startOfDay(new Date()), []);
-  const todayDayNumber = new Date().getDay();
+  const today = useMemo(() => startOfDay(now), [now]);
+  const todayDayNumber = now.getDay();
   const todayEntry = splitsByDay[todayDayNumber];
   const todaySession = useMemo(
     () => findSessionOnDate(sessions, today),

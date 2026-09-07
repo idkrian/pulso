@@ -5,9 +5,13 @@ import { formatDate } from "./date";
 // Re-exported so existing `@/utils` imports keep working; defined in ./date.
 export { APP_TZ, dayKey, formatDate, isSameDay, todayKey } from "./date";
 
-export const getWeekDays = (weekOffset: number = 0, locale?: string) => {
+export const getWeekDays = (
+  weekOffset: number = 0,
+  locale?: string,
+  reference: Date = new Date(),
+) => {
   const days = [];
-  const today = new Date();
+  const today = new Date(reference);
   const dayOfWeek = today.getDay();
 
   const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;

@@ -115,6 +115,11 @@ export const en = {
     loadErrorTitle: "Couldn't load this split",
     loadErrorDescription:
       "Something went wrong on the way. Check your connection and try again.",
+    leaveConfirmTitle: "Discard unsaved changes?",
+    leaveConfirmDescription:
+      "The changes you made to this split will be lost.",
+    leaveConfirm: "Discard",
+    leaveCancel: "Keep editing",
 
     muscleGroupCount: "{count} muscle group",
     muscleGroupCountPlural: "{count} muscle groups",

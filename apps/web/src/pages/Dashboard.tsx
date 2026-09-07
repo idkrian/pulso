@@ -6,6 +6,7 @@ import Skeleton from "@/components/ui/Skeleton";
 import { getTrainingSplitDays } from "@/api/training-split-day";
 import type { TrainingSplitDayMap } from "@/dtos/training-split-day.dto";
 import { useSwapSplit } from "@/hooks/useSwapSplit";
+import { useToday } from "@/hooks/useToday";
 import MuscleHeatmap from "@/components/analytics/MuscleHeatmap";
 import PeriodSelector from "@/components/analytics/PeriodSelector";
 import WorkoutStatsCards from "@/components/charts/WorkoutStatsCards";
@@ -23,7 +24,7 @@ const Dashboard = () => {
     useState<TrainingSplitDayMap>({});
   const [period, setPeriod] = useState<MuscleStatsPeriod>("week");
   const [scheduleLoading, setScheduleLoading] = useState(true);
-  const todayNumber = new Date().getDay();
+  const todayNumber = useToday().getDay();
   const navigate = useNavigate();
   const todayEntry = trainingSplitByDay[todayNumber];
   const todaySplit =
@@ -32,6 +33,7 @@ const Dashboard = () => {
   const refreshSchedule = () =>
     getTrainingSplitDays()
       .then(setTrainingSplitByDay)
+      .catch(() => {})
       .finally(() => setScheduleLoading(false));
 
   const { swapTarget, openSwap, closeSwap, handleAssign, handleRemove } =

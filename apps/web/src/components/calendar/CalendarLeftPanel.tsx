@@ -12,6 +12,7 @@ import { DEFAULT_ACCENT, muscleGroupAccent, summarizeSplit } from "@/utils";
 import { sessionVolume } from "@/utils/workout-history";
 import { useFormatVolume } from "@/hooks/useFormatVolume";
 import Skeleton from "@/components/ui/Skeleton";
+import { useToday } from "@/hooks/useToday";
 import { useFormatDate, useT } from "@/i18n";
 
 interface CalendarLeftPanelProps {
@@ -38,7 +39,7 @@ const CalendarLeftPanel = ({
   const t = useT();
   const formatDate = useFormatDate();
   const formatVolume = useFormatVolume();
-  const today = new Date();
+  const today = useToday();
   const split = todayEntry?.trainingSplit;
   const isRest = todayEntry?.restDay ?? !split;
   const summary = split ? summarizeSplit(split) : null;

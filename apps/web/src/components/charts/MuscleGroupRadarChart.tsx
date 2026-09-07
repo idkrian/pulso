@@ -33,9 +33,22 @@ const MuscleGroupRadarChart = ({ period }: MuscleGroupRadarChartProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
+
     getWorkoutMuscleGroupsStats(period)
-      .then(setData)
-      .finally(() => setLoading(false));
+      .then((stats) => {
+        if (!cancelled) setData(stats);
+      })
+      .catch(() => {
+        if (!cancelled) setData([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [period]);
 
   const chartConfig = useMemo(

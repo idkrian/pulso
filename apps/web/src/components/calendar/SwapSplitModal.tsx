@@ -35,6 +35,7 @@ const SwapSplitModal = ({
     setLoading(true);
     getAllUserTrainingSplits()
       .then(setSplits)
+      .catch(() => setSplits([]))
       .finally(() => setLoading(false));
   }, [open]);
 

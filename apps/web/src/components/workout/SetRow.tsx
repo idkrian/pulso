@@ -74,7 +74,7 @@ const SetRow = ({
           value={displayWeight || ""}
           placeholder="0"
           onChange={(e) => setDisplayWeight(Number(e.target.value))}
-          className="w-full text-center bg-transparent font-semibold text-sm outline-none focus:bg-mediumGrey rounded-md py-0.5 transition-colors"
+          className="w-full min-w-0 text-center bg-transparent font-semibold text-sm outline-none focus:bg-mediumGrey rounded-md py-0.5 transition-colors"
         />
         <button
           disabled={set.completed}
@@ -91,7 +91,7 @@ const SetRow = ({
         value={set.reps || ""}
         placeholder={targetReps}
         onChange={(e) => onUpdate({ reps: Number(e.target.value) })}
-        className="w-full text-center bg-mediumGrey/60 font-semibold text-sm outline-none rounded-md py-1 focus:bg-mediumGrey transition-colors disabled:bg-transparent"
+        className="w-full min-w-0 text-center bg-mediumGrey/60 font-semibold text-sm outline-none rounded-md py-1 focus:bg-mediumGrey transition-colors disabled:bg-transparent"
       />
 
       <div className="order-last col-span-5 flex items-center gap-1.5 lg:order-0 lg:col-span-1">
@@ -117,7 +117,7 @@ const SetRow = ({
       </div>
 
       <button
-        disabled={!set.completed && (set.weight <= 0 || set.reps <= 0)}
+        disabled={!set.completed && set.reps <= 0}
         onClick={set.completed ? onUnlog : onLog}
         title={logLabel}
         aria-label={logLabel}

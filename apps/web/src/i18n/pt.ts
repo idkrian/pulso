@@ -118,6 +118,11 @@ export const pt: LocaleDictionary = {
     loadErrorTitle: "Não foi possível carregar este treino",
     loadErrorDescription:
       "Algo deu errado no caminho. Verifique sua conexão e tente novamente.",
+    leaveConfirmTitle: "Descartar alterações não salvas?",
+    leaveConfirmDescription:
+      "As alterações feitas neste treino serão perdidas.",
+    leaveConfirm: "Descartar",
+    leaveCancel: "Continuar editando",
 
     muscleGroupCount: "{count} grupo muscular",
     muscleGroupCountPlural: "{count} grupos musculares",

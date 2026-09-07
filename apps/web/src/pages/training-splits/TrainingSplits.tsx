@@ -31,6 +31,8 @@ const TrainingSplits = () => {
       try {
         const data = await getAllUserTrainingSplits();
         setTrainingSplits(data);
+      } catch {
+        setTrainingSplits([]);
       } finally {
         setLoading(false);
       }
