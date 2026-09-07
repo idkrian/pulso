@@ -428,4 +428,37 @@ export const en = {
       verifyFailed: "Couldn't confirm the code. Please try again.",
     },
   },
+
+  pwa: {
+    banner: {
+      title: "Install Pulso",
+      description: "Opens full screen from your home screen, even offline.",
+      install: "Install",
+      later: "Not now",
+      dismiss: "Dismiss",
+    },
+
+    card: {
+      title: "App",
+      description: "Install Pulso to open it from your home screen.",
+      install: "Install app",
+      installed: "App installed",
+    },
+
+    howTo: {
+      title: "How to install",
+      ios: {
+        intro: "On iPhone and iPad, install from the Safari share menu:",
+        step1: "Tap the Share button in the browser bar.",
+        step2: 'Choose "Add to Home Screen".',
+        step3: 'Confirm on "Add".',
+      },
+      done: "Got it",
+    },
+
+    update: {
+      message: "New version available",
+      action: "Update",
+    },
+  },
 };

@@ -433,4 +433,38 @@ export const pt: LocaleDictionary = {
       verifyFailed: "Não foi possível confirmar o código. Tente novamente.",
     },
   },
+
+  pwa: {
+    banner: {
+      title: "Instalar o Pulso",
+      description: "Abre em tela cheia pela sua tela inicial, mesmo offline.",
+      install: "Instalar",
+      later: "Agora não",
+      dismiss: "Dispensar",
+    },
+
+    card: {
+      title: "Aplicativo",
+      description: "Instale o Pulso para abrir pela sua tela inicial.",
+      install: "Instalar app",
+      installed: "App instalado",
+    },
+
+    howTo: {
+      title: "Como instalar",
+      ios: {
+        intro:
+          "No iPhone e no iPad, a instalação é pelo menu de compartilhar do Safari:",
+        step1: "Toque no botão Compartilhar na barra do navegador.",
+        step2: 'Escolha "Adicionar à Tela de Início".',
+        step3: 'Confirme em "Adicionar".',
+      },
+      done: "Entendi",
+    },
+
+    update: {
+      message: "Nova versão disponível",
+      action: "Atualizar",
+    },
+  },
 };

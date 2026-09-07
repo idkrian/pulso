@@ -43,7 +43,10 @@
       "Bash(echo \"lint exit: $?\")",
       "Bash(grep -oE '\\\\.max-w-7\\\\{[^}]*\\\\}|\\\\.lg\\\\\\\\:flex-none\\\\{[^}]*\\\\}' dist/assets/*.css)",
       "Bash(grep -oE '.{40}lg\\\\\\\\:flex-none.{30}' dist/assets/*.css)",
-      "Bash(grep -oE '.{30}lg\\\\\\\\:justify-start.{30}' dist/assets/*.css)"
+      "Bash(grep -oE '.{30}lg\\\\\\\\:justify-start.{30}' dist/assets/*.css)",
+      "PowerShell(Copy-Item \"apps\\\\web\\\\src\\\\assets\\\\icons\\\\icon-gradient.svg\" \"apps\\\\web\\\\public\\\\app-icon.svg\")",
+      "PowerShell(npm run generate-pwa-assets -w apps/web)",
+      "Bash(node ../../node_modules/@vite-pwa/assets-generator/bin/pwa-assets-generator.mjs --help)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Rian\\Documents\\projects\\throb",

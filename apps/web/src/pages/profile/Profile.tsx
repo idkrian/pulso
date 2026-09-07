@@ -3,6 +3,7 @@ import { LuScale, LuTrendingDown, LuTrendingUp } from "react-icons/lu";
 import { createBodyWeight, getBodyWeights } from "@/api/body-weight";
 import BodyWeightChart from "@/components/charts/BodyWeightChart";
 import Button from "@/components/ui/Button";
+import InstallAppCard from "@/components/pwa/InstallAppCard";
 import Skeleton from "@/components/ui/Skeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import type { BodyWeightDto } from "@/dtos/body-weight.dto";
@@ -165,60 +166,64 @@ const Profile = () => {
       </div>
 
       <div className="grid min-w-0 gap-3 lg:flex-1 lg:min-h-0 lg:grid-cols-[280px_1fr]">
-        <div className="order-2 flex min-w-0 flex-col gap-3 rounded-lg bg-mediumGrey p-4 lg:order-0 lg:min-h-0">
-          <p className="text-sm font-semibold text-white">
-            {t("profile.logBodyWeight")}
-          </p>
-          <p className="text-xs text-lightGrey/60">{t("profile.weighHint")}</p>
-          <div className="flex items-center gap-2">
-            <input
-              type="number"
-              step={0.1}
-              value={weightInput}
-              placeholder="0"
-              onChange={(e) => setWeightInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && logWeight()}
-              className="w-full bg-darkGrey/60 rounded-md px-3 py-2 text-sm font-semibold text-white outline-none focus:bg-darkGrey transition-colors"
+        <div className="order-2 flex min-w-0 flex-col gap-3 lg:order-0 lg:min-h-0">
+          <div className="flex min-w-0 flex-1 flex-col gap-3 rounded-lg bg-mediumGrey p-4 lg:min-h-0">
+            <p className="text-sm font-semibold text-white">
+              {t("profile.logBodyWeight")}
+            </p>
+            <p className="text-xs text-lightGrey/60">{t("profile.weighHint")}</p>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                step={0.1}
+                value={weightInput}
+                placeholder="0"
+                onChange={(e) => setWeightInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && logWeight()}
+                className="w-full bg-darkGrey/60 rounded-md px-3 py-2 text-sm font-semibold text-white outline-none focus:bg-darkGrey transition-colors"
+              />
+              <span className="text-xs font-semibold uppercase text-lightGrey/60 shrink-0">
+                {unitLabel(unit)}
+              </span>
+            </div>
+            <Button
+              fullWidth
+              label={saving ? t("profile.saving") : t("profile.logWeight")}
+              onClick={logWeight}
             />
-            <span className="text-xs font-semibold uppercase text-lightGrey/60 shrink-0">
-              {unitLabel(unit)}
-            </span>
-          </div>
-          <Button
-            fullWidth
-            label={saving ? t("profile.saving") : t("profile.logWeight")}
-            onClick={logWeight}
-          />
 
-          <div className="mt-2 flex max-h-56 flex-col gap-1.5 overflow-y-auto lg:max-h-none lg:min-h-0">
-            {loading &&
-              Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton
-                  key={i}
-                  className="h-7 shrink-0 rounded-md bg-darkGrey/60"
-                />
-              ))}
-            {!loading &&
-              [...entries]
-                .reverse()
-                .slice(0, 10)
-                .map((entry) => (
-                  <div
-                    key={entry.id}
-                    className="flex items-center justify-between text-xs px-2 py-1.5 rounded-md bg-darkGrey/40"
-                  >
-                    <span className="text-lightGrey/60">
-                      {formatDate(entry.createdAt, {
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </span>
-                    <span className="font-semibold text-white">
-                      {formatWeight(entry.weight, unit)}
-                    </span>
-                  </div>
+            <div className="mt-2 flex max-h-56 flex-col gap-1.5 overflow-y-auto lg:max-h-none lg:min-h-0">
+              {loading &&
+                Array.from({ length: 5 }).map((_, i) => (
+                  <Skeleton
+                    key={i}
+                    className="h-7 shrink-0 rounded-md bg-darkGrey/60"
+                  />
                 ))}
+              {!loading &&
+                [...entries]
+                  .reverse()
+                  .slice(0, 10)
+                  .map((entry) => (
+                    <div
+                      key={entry.id}
+                      className="flex items-center justify-between text-xs px-2 py-1.5 rounded-md bg-darkGrey/40"
+                    >
+                      <span className="text-lightGrey/60">
+                        {formatDate(entry.createdAt, {
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </span>
+                      <span className="font-semibold text-white">
+                        {formatWeight(entry.weight, unit)}
+                      </span>
+                    </div>
+                  ))}
+            </div>
           </div>
+
+          <InstallAppCard />
         </div>
 
         <BodyWeightChart entries={entries} loading={loading} />
