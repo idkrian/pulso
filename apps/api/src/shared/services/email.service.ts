@@ -1,4 +1,3 @@
-import nodemailer from "nodemailer";
 import { env } from "../config/env.js";
 import { AppError } from "../middlewares/request-error-handler.js";
 import { HttpStatus } from "../constants/http-status.js";
@@ -8,13 +7,8 @@ import {
   verificationCodeEmail,
 } from "./email-templates.js";
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: env.GMAIL_USER,
-    pass: env.GMAIL_APP_PASSWORD.replace(/\s/g, ""),
-  },
-});
+const RESEND_ENDPOINT = "https://api.resend.com/emails";
+const REQUEST_TIMEOUT_MS = 10_000;
 
 interface SendParams {
   to: string;
@@ -24,16 +18,35 @@ interface SendParams {
 }
 
 const send = async ({ to, subject, html, text }: SendParams) => {
+  let response: Response;
+
   try {
-    await transporter.sendMail({
-      from: env.EMAIL_FROM,
-      to,
-      subject,
-      html,
-      text,
+    response = await fetch(RESEND_ENDPOINT, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: env.EMAIL_FROM,
+        to,
+        subject,
+        html,
+        text,
+      }),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
   } catch (error) {
-    console.error("Email delivery failed:", error);
+    console.error("Email delivery failed: could not reach Resend.", error);
+    throw new AppError("Could not send email", HttpStatus.BAD_GATEWAY);
+  }
+
+  if (!response.ok) {
+    const details = await response.text().catch(() => "<unreadable response>");
+    console.error(
+      `Email delivery failed: Resend responded ${response.status}.`,
+      details,
+    );
     throw new AppError("Could not send email", HttpStatus.BAD_GATEWAY);
   }
 };

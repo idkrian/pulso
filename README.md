@@ -160,7 +160,7 @@ Two details worth calling out:
 
 ## Getting started
 
-**Requirements:** Node ≥ 22, a PostgreSQL database, and an SMTP account for verification emails (Gmail app password works out of the box).
+**Requirements:** Node ≥ 22, a PostgreSQL database, and a [Resend](https://resend.com) account with a verified domain for the verification emails (the free tier covers it).
 
 ```bash
 git clone https://github.com/idkrian/fit.git pulso
@@ -175,7 +175,7 @@ npm install
 | `DATABASE_URL` | PostgreSQL connection string |
 | `JWT_SECRET` | Secret used to sign auth tokens |
 | `FRONTEND_URL` | Web app origin, used for CORS |
-| `GMAIL_USER` / `GMAIL_APP_PASSWORD` | SMTP credentials for verification emails |
+| `RESEND_API_KEY` | Resend API key with sending access, used to deliver verification emails |
 | `EMAIL_FROM` | Sender address shown to users |
 | `PORT` | API port (defaults to `3000`) |
 | `TRUST_PROXY` | Proxy hops to trust — set to `1` behind a reverse proxy so rate limiting sees real IPs |

@@ -17,8 +17,7 @@ function nullableEnv(name: string): string | undefined {
 export const env = {
   JWT_SECRET: requireEnv("JWT_SECRET"),
   FRONTEND_URL: requireEnv("FRONTEND_URL"),
-  GMAIL_USER: requireEnv("GMAIL_USER"),
-  GMAIL_APP_PASSWORD: requireEnv("GMAIL_APP_PASSWORD"),
+  RESEND_API_KEY: requireEnv("RESEND_API_KEY"),
   EMAIL_FROM: requireEnv("EMAIL_FROM"),
   TRUST_PROXY: Number(optionalEnv("TRUST_PROXY", "0")),
   DEMO_EMAIL: nullableEnv("DEMO_EMAIL"),
