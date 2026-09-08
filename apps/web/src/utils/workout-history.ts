@@ -1,4 +1,7 @@
-import type { WorkoutSessionDto } from "@/dtos/workout-session.dto";
+import type {
+  WorkoutSessionDto,
+  WorkoutSetDto,
+} from "@/dtos/workout-session.dto";
 import { dayKey, isSameDay } from "./date";
 
 export const sessionVolume = (session: WorkoutSessionDto): number =>
@@ -65,4 +68,102 @@ export const computeStreak = (sessions: WorkoutSessionDto[]): number => {
     cursor.setDate(cursor.getDate() - 1);
   }
   return streak;
+};
+
+export interface ExercisePerformance {
+  date: string;
+  sets: WorkoutSetDto[];
+}
+
+export const bestSet = (sets: WorkoutSetDto[]): WorkoutSetDto | null =>
+  sets.reduce<WorkoutSetDto | null>((best, set) => {
+    if (!best) return set;
+    const weight = set.weight ?? 0;
+    const bestWeight = best.weight ?? 0;
+    if (weight > bestWeight) return set;
+    if (weight === bestWeight && set.reps > best.reps) return set;
+    return best;
+  }, null);
+
+export const previousExercisePerformance = (
+  sessions: WorkoutSessionDto[],
+  session: WorkoutSessionDto,
+  exerciseId: number,
+): ExercisePerformance | null => {
+  const reference = new Date(session.createdAt).getTime();
+  let previous: ExercisePerformance | null = null;
+  let previousTime = -Infinity;
+
+  for (const candidate of sessions) {
+    if (candidate.id === session.id) continue;
+
+    const time = new Date(candidate.createdAt).getTime();
+    if (time >= reference || time <= previousTime) continue;
+
+    const log = candidate.workoutExerciseLogs.find(
+      (entry) => entry.exerciseId === exerciseId,
+    );
+    if (!log) continue;
+
+    previous = { date: candidate.createdAt, sets: log.workoutSets };
+    previousTime = time;
+  }
+
+  return previous;
+};
+
+export const personalRecordSetIds = (
+  sessions: WorkoutSessionDto[],
+  session: WorkoutSessionDto,
+): Set<number> => {
+  const reference = new Date(session.createdAt).getTime();
+  const ids = new Set<number>();
+
+  for (const log of session.workoutExerciseLogs) {
+    let record: number | null = null;
+
+    for (const candidate of sessions) {
+      if (candidate.id === session.id) continue;
+      if (new Date(candidate.createdAt).getTime() >= reference) continue;
+
+      for (const earlier of candidate.workoutExerciseLogs) {
+        if (earlier.exerciseId !== log.exerciseId) continue;
+        for (const set of earlier.workoutSets) {
+          const weight = set.weight ?? 0;
+          if (record === null || weight > record) record = weight;
+        }
+      }
+    }
+
+    if (record === null) continue;
+
+    const ordered = [...log.workoutSets].sort(
+      (a, b) => a.setNumber - b.setNumber,
+    );
+
+    for (const set of ordered) {
+      const weight = set.weight ?? 0;
+      if (weight > record) {
+        ids.add(set.id);
+        record = weight;
+      }
+    }
+  }
+
+  return ids;
+};
+
+export const sessionAverageRpe = (
+  session: WorkoutSessionDto,
+): number | null => {
+  const values = session.workoutExerciseLogs.flatMap((log) =>
+    log.workoutSets
+      .map((set) => set.rpe)
+      .filter((rpe): rpe is number => rpe !== null),
+  );
+
+  if (values.length === 0) return null;
+
+  const total = values.reduce((sum, rpe) => sum + rpe, 0);
+  return Math.round((total / values.length) * 10) / 10;
 };

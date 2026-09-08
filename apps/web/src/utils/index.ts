@@ -69,6 +69,47 @@ export const weekRangeParts = (
   };
 };
 
+export interface MonthDay {
+  date: Date;
+  dayNumber: number;
+  day: string;
+  inMonth: boolean;
+}
+
+export const getMonthAnchor = (
+  monthOffset: number = 0,
+  reference: Date = new Date(),
+) => new Date(reference.getFullYear(), reference.getMonth() + monthOffset, 1);
+
+export const getMonthGrid = (
+  monthOffset: number = 0,
+  locale?: string,
+  reference: Date = new Date(),
+): MonthDay[] => {
+  const anchor = getMonthAnchor(monthOffset, reference);
+  const year = anchor.getFullYear();
+  const month = anchor.getMonth();
+
+  const firstDayOfWeek = anchor.getDay();
+  const leading = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const total = Math.ceil((leading + daysInMonth) / 7) * 7;
+
+  const days: MonthDay[] = [];
+
+  for (let i = 0; i < total; i++) {
+    const date = new Date(year, month, 1 - leading + i);
+    days.push({
+      date,
+      dayNumber: date.getDay(),
+      day: formatDate(date, { day: "numeric" }, locale),
+      inMonth: date.getMonth() === month,
+    });
+  }
+
+  return days;
+};
+
 export const getExercisesByMuscleGroup = (
   muscleGroupExercises: MuscleGroupItemsDto[],
   group: MuscleGroupType,

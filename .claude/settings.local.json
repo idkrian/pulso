@@ -49,7 +49,8 @@
       "Bash(node ../../node_modules/@vite-pwa/assets-generator/bin/pwa-assets-generator.mjs --help)",
       "Bash(grep -Ei 'docker|compose|\\\\.ya?ml$|\\\\.env|deploy|coolify|render|fly|railway|nginx|caprover|dokku|Caddy')",
       "PowerShell(npm run build -w apps/web 2>&1)",
-      "PowerShell(npm run lint -w apps/web 2>&1)"
+      "PowerShell(npm run lint -w apps/web 2>&1)",
+      "PowerShell(npx tsc --noEmit -p apps/api/tsconfig.json)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Rian\\Documents\\projects\\throb",

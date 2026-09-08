@@ -6,12 +6,14 @@ export interface WorkoutSetDto {
   setNumber: number;
   reps: number;
   weight: number | null;
+  rpe: number | null;
 }
 
 export interface WorkoutExerciseLogDto {
   id: number;
   exerciseId: number;
   exercise: ExerciseDto;
+  notes: string | null;
   workoutSets: WorkoutSetDto[];
 }
 

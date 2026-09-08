@@ -161,6 +161,11 @@ export const en = {
     weekRangeCrossMonth: "{start} – {end}",
     prevWeek: "Previous week",
     nextWeek: "Next week",
+    prevMonth: "Previous month",
+    nextMonth: "Next month",
+    today: "Today",
+    viewWeek: "Week",
+    viewMonth: "Month",
 
     todaysWorkout: "Today's Workout",
     workoutDone: "Workout Done!",
@@ -170,6 +175,7 @@ export const en = {
     startWorkout: "Start Workout",
 
     thisWeek: "This Week",
+    thisMonth: "This Month",
     sessions: "sessions",
     volume: "volume",
     streak: "streak",
@@ -277,6 +283,12 @@ export const en = {
     sets: "sets",
     volume: "volume",
     exercises: "Exercises",
+    avgRpe: "avg RPE",
+    rpe: "RPE {rpe}",
+    previousBest: "Previous: {weight} × {reps}",
+    firstTime: "First time doing this exercise",
+    personalRecord: "Personal record",
+    sessionNotes: "Session notes",
   },
 
   exerciseDrawer: {

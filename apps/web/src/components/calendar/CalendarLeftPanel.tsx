@@ -19,7 +19,8 @@ interface CalendarLeftPanelProps {
   loading?: boolean;
   todayEntry?: TrainingSplitDayEntry;
   todaySession?: WorkoutSessionDto;
-  weekVolume: number;
+  periodLabel: string;
+  periodVolume: number;
   sessionsCompleted: number;
   sessionsPlanned: number;
   streak: number;
@@ -30,7 +31,8 @@ const CalendarLeftPanel = ({
   loading = false,
   todayEntry,
   todaySession,
-  weekVolume,
+  periodLabel,
+  periodVolume,
   sessionsCompleted,
   sessionsPlanned,
   streak,
@@ -149,7 +151,7 @@ const CalendarLeftPanel = ({
 
       <div className="flex flex-col gap-2 w-full">
         <p className="text-white/70 font-semibold text-xs uppercase tracking-wider text-center">
-          {t("calendar.thisWeek")}
+          {periodLabel}
         </p>
         <div className="grid grid-cols-3 gap-2 w-full">
           <div className="flex flex-col items-center rounded-md bg-black/25 py-2">
@@ -169,7 +171,7 @@ const CalendarLeftPanel = ({
               {loading ? (
                 <Skeleton className="inline-block h-[0.8em] w-10 align-middle bg-white/15" />
               ) : (
-                formatVolume(weekVolume)
+                formatVolume(periodVolume)
               )}
             </span>
             <span className="text-white/60 text-[10px] uppercase tracking-wide mt-1">

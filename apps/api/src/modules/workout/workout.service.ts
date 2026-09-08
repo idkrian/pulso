@@ -7,10 +7,22 @@ import type {
 import type { Locale } from "../../shared/constants/locales.js";
 import { withExerciseTranslation } from "../../shared/utils/exercise-translation.js";
 
+type RawWorkoutSet = {
+  weight: { toString(): string };
+  rpe: { toString(): string } | null;
+};
+
+const toSetDto = <S extends RawWorkoutSet>(set: S) => ({
+  ...set,
+  weight: Number(set.weight),
+  rpe: set.rpe === null ? null : Number(set.rpe),
+});
+
 const withTranslatedLogs = <
   W extends {
     workoutExerciseLogs: {
       exercise: Parameters<typeof withExerciseTranslation>[0];
+      workoutSets: RawWorkoutSet[];
     }[];
   },
 >(
@@ -20,6 +32,7 @@ const withTranslatedLogs = <
   workoutExerciseLogs: workout.workoutExerciseLogs.map((log) => ({
     ...log,
     exercise: withExerciseTranslation(log.exercise),
+    workoutSets: log.workoutSets.map(toSetDto),
   })),
 });
 

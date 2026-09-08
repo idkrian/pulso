@@ -164,6 +164,11 @@ export const pt: LocaleDictionary = {
     weekRangeCrossMonth: "{start} – {end}",
     prevWeek: "Semana anterior",
     nextWeek: "Próxima semana",
+    prevMonth: "Mês anterior",
+    nextMonth: "Próximo mês",
+    today: "Hoje",
+    viewWeek: "Semana",
+    viewMonth: "Mês",
 
     todaysWorkout: "Treino de Hoje",
     workoutDone: "Treino Concluído!",
@@ -173,6 +178,7 @@ export const pt: LocaleDictionary = {
     startWorkout: "Iniciar Treino",
 
     thisWeek: "Esta Semana",
+    thisMonth: "Este Mês",
     sessions: "sessões",
     volume: "volume",
     streak: "sequência",
@@ -280,6 +286,12 @@ export const pt: LocaleDictionary = {
     sets: "séries",
     volume: "volume",
     exercises: "Exercícios",
+    avgRpe: "RPE médio",
+    rpe: "RPE {rpe}",
+    previousBest: "Anterior: {weight} × {reps}",
+    firstTime: "Primeira vez neste exercício",
+    personalRecord: "Recorde",
+    sessionNotes: "Notas da sessão",
   },
 
   exerciseDrawer: {
