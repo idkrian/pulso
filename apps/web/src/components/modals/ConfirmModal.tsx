@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { LuTriangleAlert } from "react-icons/lu";
 import { useT } from "@/i18n";
 
@@ -9,6 +10,8 @@ type Props = {
   confirmLabel?: string;
   cancelLabel?: string;
   loading?: boolean;
+  tone?: "danger" | "primary";
+  icon?: ReactNode;
   onConfirm: () => void;
   onCancel: () => void;
 };
@@ -21,12 +24,16 @@ const ConfirmModal = ({
   confirmLabel,
   cancelLabel,
   loading = false,
+  tone = "danger",
+  icon,
   onConfirm,
   onCancel,
 }: Props) => {
   const t = useT();
 
   if (!open) return null;
+
+  const isDanger = tone === "danger";
 
   return (
     <div
@@ -38,8 +45,14 @@ const ConfirmModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-red-500/15 flex items-center justify-center">
-            <LuTriangleAlert size={32} className="text-red-400" />
+          <div
+            className={`w-14 h-14 rounded-full flex items-center justify-center ${
+              isDanger
+                ? "bg-red-500/15 text-red-400"
+                : "bg-indigo/15 text-lightIndigo"
+            }`}
+          >
+            {icon ?? <LuTriangleAlert size={32} />}
           </div>
           <h2 className="text-2xl font-bold text-center">{title}</h2>
           {description && (
@@ -63,7 +76,11 @@ const ConfirmModal = ({
             <button
               onClick={onConfirm}
               disabled={loading}
-              className="flex-1 rounded-md px-3 py-2 text-sm font-semibold bg-red-500 hover:bg-red-600 cursor-pointer transition disabled:opacity-50"
+              className={`flex-1 rounded-md px-3 py-2 text-sm font-semibold cursor-pointer transition disabled:opacity-50 ${
+                isDanger
+                  ? "bg-red-500 hover:bg-red-600"
+                  : "bg-indigo hover:bg-darkIndigo"
+              }`}
             >
               {loading ? "..." : (confirmLabel ?? t("common.delete"))}
             </button>

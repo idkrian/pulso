@@ -311,7 +311,7 @@ const Workout = () => {
     const entry = entries.find((e) => e.entryId === entryId);
     const target = entry?.sets[setIdx];
     if (!entry || !target || target.completed) return;
-    if (target.reps <= 0) return;
+    if (target.weight <= 0 || target.reps <= 0) return;
 
     updateSet(entryId, setIdx, { completed: true });
     setPulseVolume(true);
@@ -454,6 +454,8 @@ const Workout = () => {
       <PRToast message={recentPR} />
 
       <WorkoutHeader
+        splitTitle={split.title}
+        onExit={() => navigate("/training-splits")}
         workoutSeconds={workoutSeconds}
         workoutRunning={workoutRunning}
         onToggleRunning={toggleWorkoutTimer}

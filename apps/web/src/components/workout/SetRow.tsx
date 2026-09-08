@@ -8,7 +8,12 @@ import {
 import type { LoggedSet } from "@/dtos/workout.dto";
 import { rpeColor } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
-import { toCanonicalWeight, toDisplayWeight, weightStep } from "@/utils/units";
+import {
+  toCanonicalWeight,
+  toDisplayWeight,
+  unitLabel,
+  weightStep,
+} from "@/utils/units";
 import { useT } from "@/i18n";
 
 type Props = {
@@ -45,7 +50,7 @@ const SetRow = ({
 
   return (
     <div
-      className={`grid min-h-11 grid-cols-[28px_1fr_64px_44px_28px] items-center gap-2 rounded-lg px-3 py-2.5 transition-all duration-300 lg:flex-1 lg:grid-cols-[28px_1fr_70px_1.2fr_56px_28px] ${
+      className={`grid min-h-11 grid-cols-[18px_1fr_56px_44px_28px] items-center gap-1.5 rounded-lg px-2 py-2.5 transition-all duration-300 lg:flex-1 lg:grid-cols-[28px_1fr_70px_1.2fr_56px_28px] lg:gap-2 lg:px-3 ${
         set.completed
           ? "bg-emerald-500/10 border border-emerald-500/30"
           : "bg-darkGrey/60 border border-transparent"
@@ -73,8 +78,9 @@ const SetRow = ({
           disabled={set.completed}
           value={displayWeight || ""}
           placeholder="0"
+          aria-label={t("workout.colWeight", { unit: unitLabel(unit) })}
           onChange={(e) => setDisplayWeight(Number(e.target.value))}
-          className="w-full min-w-0 text-center bg-transparent font-semibold text-sm outline-none focus:bg-mediumGrey rounded-md py-0.5 transition-colors"
+          className="w-full min-w-0 text-center bg-mediumGrey/60 font-semibold text-sm outline-none focus:bg-mediumGrey rounded-md py-1 transition-colors placeholder:text-lightGrey/20 disabled:bg-transparent"
         />
         <button
           disabled={set.completed}
@@ -90,8 +96,9 @@ const SetRow = ({
         disabled={set.completed}
         value={set.reps || ""}
         placeholder={targetReps}
+        aria-label={t("workout.colReps")}
         onChange={(e) => onUpdate({ reps: Number(e.target.value) })}
-        className="w-full min-w-0 text-center bg-mediumGrey/60 font-semibold text-sm outline-none rounded-md py-1 focus:bg-mediumGrey transition-colors disabled:bg-transparent"
+        className="w-full min-w-0 text-center bg-mediumGrey/60 font-semibold text-sm outline-none rounded-md py-1 focus:bg-mediumGrey transition-colors placeholder:text-lightGrey/20 disabled:bg-transparent"
       />
 
       <div className="order-last col-span-5 flex items-center gap-1.5 lg:order-0 lg:col-span-1">
@@ -117,7 +124,7 @@ const SetRow = ({
       </div>
 
       <button
-        disabled={!set.completed && set.reps <= 0}
+        disabled={!set.completed && (set.weight <= 0 || set.reps <= 0)}
         onClick={set.completed ? onUnlog : onLog}
         title={logLabel}
         aria-label={logLabel}

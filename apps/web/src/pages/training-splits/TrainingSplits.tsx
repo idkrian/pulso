@@ -8,7 +8,7 @@ import {
   getAllUserTrainingSplits,
 } from "@/api/training-split";
 import { FaPlus } from "react-icons/fa";
-import { LuClipboardList } from "react-icons/lu";
+import { LuClipboardList, LuPlay } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { getApiErrorMessage } from "@/utils/error";
 import { useT } from "@/i18n";
@@ -21,6 +21,9 @@ const TrainingSplits = () => {
   const [trainingSplits, setTrainingSplits] = useState<TrainingSplitDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [pendingDelete, setPendingDelete] = useState<TrainingSplitDto | null>(
+    null,
+  );
+  const [pendingStart, setPendingStart] = useState<TrainingSplitDto | null>(
     null,
   );
   const [deleting, setDeleting] = useState(false);
@@ -88,6 +91,25 @@ const TrainingSplits = () => {
         onCancel={closeDelete}
       />
 
+      <ConfirmModal
+        open={pendingStart !== null}
+        tone="primary"
+        icon={<LuPlay size={28} />}
+        title={t("trainingSplits.startConfirmTitle")}
+        description={
+          pendingStart
+            ? t("trainingSplits.startConfirmDescription", {
+                title: pendingStart.title,
+              })
+            : undefined
+        }
+        confirmLabel={t("trainingSplits.startConfirm")}
+        onConfirm={() => {
+          if (pendingStart) navigate(`/workout/${pendingStart.id}`);
+        }}
+        onCancel={() => setPendingStart(null)}
+      />
+
       {loading && (
         <div className="flex w-full flex-wrap justify-center gap-4">
           {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
@@ -126,6 +148,7 @@ const TrainingSplits = () => {
               split={split}
               width={300}
               key={split.id}
+              onStart={setPendingStart}
               onDelete={openDelete}
             />
           ))}

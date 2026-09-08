@@ -135,11 +135,16 @@ const ActiveExerciseCard = ({
       </div>
 
       <div className="flex flex-col gap-2 pr-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
-        <div className="hidden shrink-0 grid-cols-[28px_1fr_70px_1.2fr_56px_28px] gap-2 px-2 text-[10px] uppercase tracking-wider text-lightGrey/50 lg:grid">
-          <span>{t("workout.colSet")}</span>
-          <span>{t("workout.colWeight", { unit: unitLabel(unit) })}</span>
+        <div className="grid shrink-0 grid-cols-[18px_1fr_56px_44px_28px] gap-1.5 px-2 text-[10px] uppercase tracking-wider text-lightGrey/50 lg:grid-cols-[28px_1fr_70px_1.2fr_56px_28px] lg:gap-2">
+          <span>
+            <span className="lg:hidden">{t("workout.colSetShort")}</span>
+            <span className="hidden lg:inline">{t("workout.colSet")}</span>
+          </span>
+          <span className="text-center lg:text-left">
+            {t("workout.colWeight", { unit: unitLabel(unit) })}
+          </span>
           <span className="text-center">{t("workout.colReps")}</span>
-          <span>{t("workout.colRpe")}</span>
+          <span className="hidden lg:block">{t("workout.colRpe")}</span>
           <span></span>
           <span></span>
         </div>

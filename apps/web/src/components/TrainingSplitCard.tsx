@@ -15,6 +15,7 @@ import { useMuscleGroupLabel, useT } from "@/i18n";
 interface TrainingSplitCardProps {
   split: TrainingSplitDto;
   width?: number;
+  onStart?: (split: TrainingSplitDto) => void;
   onDelete?: (split: TrainingSplitDto) => void;
   hideActions?: boolean;
   fullHeight?: boolean;
@@ -24,6 +25,7 @@ interface TrainingSplitCardProps {
 const TrainingSplitCard = ({
   split,
   width,
+  onStart,
   onDelete,
   hideActions = false,
   fullHeight = false,
@@ -42,6 +44,9 @@ const TrainingSplitCard = ({
   const hiddenCount = split.exercises.length - visibleExercises.length;
 
   const handleCardClick = () => navigate(`/training-splits/${split.id}`);
+
+  const handleStart = () =>
+    onStart ? onStart(split) : navigate(`/workout/${split.id}`);
 
   const stopAnd = (fn: () => void) => (e: MouseEvent) => {
     e.stopPropagation();
@@ -155,18 +160,20 @@ const TrainingSplitCard = ({
         {!hideActions && (
           <div className="flex items-center gap-2 mt-1">
             <button
-              onClick={stopAnd(() => navigate(`/workout/${split.id}`))}
-              className="flex-1 flex items-center justify-center gap-1.5 h-9 rounded-md bg-indigo hover:bg-darkIndigo text-white text-sm font-semibold cursor-pointer transition"
+              onClick={stopAnd(handleStart)}
+              aria-label={t("trainingSplits.startWorkout")}
+              className="flex-1 flex items-center justify-center gap-1.5 h-9 rounded-md bg-darkGrey hover:bg-darkGrey/70 text-white text-sm font-semibold cursor-pointer transition"
             >
-              <LuPlay size={14} />
-              {t("trainingSplits.startWorkout")}
+              <LuPlay size={14} className="text-lightIndigo" />
+              {t("trainingSplits.start")}
             </button>
             <button
               onClick={stopAnd(() => navigate(`/training-splits/${split.id}`))}
               aria-label={t("trainingSplits.editSplit")}
-              className="flex items-center justify-center w-9 h-9 rounded-md bg-darkGrey hover:bg-darkGrey/70 text-white cursor-pointer transition"
+              className="flex-1 flex items-center justify-center gap-1.5 h-9 rounded-md bg-darkGrey hover:bg-darkGrey/70 text-white text-sm font-semibold cursor-pointer transition"
             >
-              <LuPencil size={16} className="text-amber-400" />
+              <LuPencil size={14} className="text-amber-400" />
+              {t("trainingSplits.edit")}
             </button>
             {onDelete && (
               <button

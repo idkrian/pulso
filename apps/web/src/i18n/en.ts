@@ -128,8 +128,13 @@ export const en = {
     duration: "duration",
     moreExercises: "+{count} more",
     startWorkout: "Start Workout",
+    edit: "Edit",
     editSplit: "Edit split",
     deleteSplit: "Delete split",
+    startConfirmTitle: "Start this workout?",
+    startConfirmDescription:
+      "You are about to start a live session of {title}. To change its exercises, choose Edit instead.",
+    startConfirm: "Start now",
 
     summaryExercises: "{count} exercises",
     summarySets: "{count} sets",
@@ -198,7 +203,9 @@ export const en = {
     target: "Target: {sets} × {reps} reps",
     lastTimeMax: "Last time max:",
     personalRecord: "PR:",
+    exit: "Exit workout",
     colSet: "Set",
+    colSetShort: "#",
     colWeight: "Weight ({unit})",
     colReps: "Reps",
     colRpe: "RPE",

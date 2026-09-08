@@ -131,8 +131,13 @@ export const pt: LocaleDictionary = {
     duration: "duração",
     moreExercises: "+{count} a mais",
     startWorkout: "Iniciar Treino",
+    edit: "Editar",
     editSplit: "Editar treino",
     deleteSplit: "Excluir treino",
+    startConfirmTitle: "Iniciar este treino?",
+    startConfirmDescription:
+      "Você vai começar uma sessão de {title} agora. Para mudar os exercícios, escolha Editar.",
+    startConfirm: "Iniciar agora",
 
     summaryExercises: "{count} exercícios",
     summarySets: "{count} séries",
@@ -201,7 +206,9 @@ export const pt: LocaleDictionary = {
     target: "Meta: {sets} × {reps} reps",
     lastTimeMax: "Máx. da última vez:",
     personalRecord: "Recorde:",
+    exit: "Sair do treino",
     colSet: "Série",
+    colSetShort: "#",
     colWeight: "Carga ({unit})",
     colReps: "Reps",
     colRpe: "RPE",
