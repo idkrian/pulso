@@ -16,6 +16,11 @@ import { useFormatDate, useT, type TranslateFn } from "@/i18n";
 export type DayStatus =
   "today" | "completed" | "missed" | "upcoming" | "rest" | "empty";
 
+export interface DayInfo {
+  session?: WorkoutSessionDto;
+  status: DayStatus;
+}
+
 interface DayCardProps {
   date: Date;
   dayName: string;

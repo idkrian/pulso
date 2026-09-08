@@ -1,7 +1,22 @@
 export const APP_TZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+const formatters = new Map<string, Intl.DateTimeFormat>();
+
+const getFormatter = (
+  locale: string,
+  opts: Intl.DateTimeFormatOptions,
+): Intl.DateTimeFormat => {
+  const key = `${locale}|${JSON.stringify(opts)}`;
+  const cached = formatters.get(key);
+  if (cached) return cached;
+
+  const formatter = new Intl.DateTimeFormat(locale, opts);
+  formatters.set(key, formatter);
+  return formatter;
+};
+
 export const dayKey = (d: Date | string, tz: string = APP_TZ): string =>
-  new Intl.DateTimeFormat("en-CA", {
+  getFormatter("en-CA", {
     timeZone: tz,
     year: "numeric",
     month: "2-digit",
@@ -18,6 +33,4 @@ export const formatDate = (
   opts: Intl.DateTimeFormatOptions,
   locale = "en-US",
 ): string =>
-  new Intl.DateTimeFormat(locale, { timeZone: APP_TZ, ...opts }).format(
-    new Date(d),
-  );
+  getFormatter(locale, { timeZone: APP_TZ, ...opts }).format(new Date(d));

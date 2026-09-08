@@ -6,15 +6,13 @@ import type {
 import type { WorkoutSessionDto } from "@/dtos/workout-session.dto";
 import type { MonthDay } from "@/utils";
 import { DEFAULT_ACCENT, muscleGroupAccent, summarizeSplit } from "@/utils";
-import { findSessionOnDate } from "@/utils/workout-history";
 import { useFormatDate } from "@/i18n";
-import type { DayStatus } from "./DayCard";
+import type { DayInfo, DayStatus } from "./DayCard";
 
 interface MonthGridProps {
   days: MonthDay[];
   splitsByDay: TrainingSplitDayMap;
-  sessions: WorkoutSessionDto[];
-  statusOf: (date: Date, entry?: TrainingSplitDayEntry) => DayStatus;
+  describeDay: (date: Date, entry?: TrainingSplitDayEntry) => DayInfo;
   onSelect: (
     date: Date,
     dayName: string,
@@ -43,8 +41,7 @@ const dotStyles: Partial<Record<DayStatus, string>> = {
 const MonthGrid = ({
   days,
   splitsByDay,
-  sessions,
-  statusOf,
+  describeDay,
   onSelect,
 }: MonthGridProps) => {
   const formatDate = useFormatDate();
@@ -70,8 +67,7 @@ const MonthGrid = ({
       <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {days.map((day) => {
           const entry = splitsByDay[day.dayNumber];
-          const session = findSessionOnDate(sessions, day.date);
-          const status = statusOf(day.date, entry);
+          const { session, status } = describeDay(day.date, entry);
           const split = entry?.trainingSplit ?? session?.trainingSplit;
           const summary = split?.exercises ? summarizeSplit(split) : null;
           const accent =

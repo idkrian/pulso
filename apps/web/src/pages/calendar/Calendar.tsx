@@ -10,25 +10,28 @@ import type {
 } from "@/dtos/training-split-day.dto";
 import type { WorkoutSessionDto } from "@/dtos/workout-session.dto";
 import {
+  dayKey,
   getMonthAnchor,
   getMonthGrid,
   getWeekDays,
-  isSameDay,
   startOfDay,
   weekRangeParts,
 } from "@/utils";
 import { useDateLocale, useFormatDate, useT } from "@/i18n";
 import {
   computeStreak,
-  findSessionOnDate,
   sessionVolume,
+  sessionsByDay,
   sessionsInRange,
 } from "@/utils/workout-history";
 import CalendarLeftPanel from "@/components/calendar/CalendarLeftPanel";
 import CalendarNavigator, {
   type CalendarView,
 } from "@/components/calendar/CalendarNavigator";
-import DayCard, { type DayStatus } from "@/components/calendar/DayCard";
+import DayCard, {
+  type DayInfo,
+  type DayStatus,
+} from "@/components/calendar/DayCard";
 import DayCardSkeleton from "@/components/calendar/DayCardSkeleton";
 import MonthGrid from "@/components/calendar/MonthGrid";
 import MonthGridSkeleton from "@/components/calendar/MonthGridSkeleton";
@@ -104,10 +107,10 @@ const Calendar = () => {
   const today = useMemo(() => startOfDay(now), [now]);
   const todayDayNumber = now.getDay();
   const todayEntry = splitsByDay[todayDayNumber];
-  const todaySession = useMemo(
-    () => findSessionOnDate(sessions, today),
-    [sessions, today],
-  );
+
+  const sessionByDay = useMemo(() => sessionsByDay(sessions), [sessions]);
+  const todayKey = useMemo(() => dayKey(today), [today]);
+  const todaySession = sessionByDay.get(todayKey);
 
   const weekRangeLabel = useMemo(() => {
     const parts = weekRangeParts(week, dateLocale);
@@ -159,18 +162,25 @@ const Calendar = () => {
   const sessionsCompleted = rangeSessions.length;
   const streak = useMemo(() => computeStreak(sessions), [sessions]);
 
-  const dayStatus = (date: Date, entry?: TrainingSplitDayEntry): DayStatus => {
-    const dayStart = startOfDay(date);
-    const isToday = isSameDay(dayStart, today);
-    const isPast = dayStart.getTime() < today.getTime();
-    const session = findSessionOnDate(sessions, dayStart);
+  const describeDay = (
+    date: Date,
+    entry?: TrainingSplitDayEntry,
+  ): DayInfo => {
+    const key = dayKey(date);
+    const session = sessionByDay.get(key);
+    const isToday = key === todayKey;
+    const isPast = startOfDay(date).getTime() < today.getTime();
 
-    if (session) return "completed";
-    if (entry?.restDay) return "rest";
-    if (!entry) return isToday ? "today" : "empty";
-    if (isToday) return "today";
-    if (isPast) return "missed";
-    return "upcoming";
+    const resolveStatus = (): DayStatus => {
+      if (session) return "completed";
+      if (entry?.restDay) return "rest";
+      if (!entry) return isToday ? "today" : "empty";
+      if (isToday) return "today";
+      if (isPast) return "missed";
+      return "upcoming";
+    };
+
+    return { session, status: resolveStatus() };
   };
 
   const handleDayClick = (
@@ -251,8 +261,7 @@ const Calendar = () => {
               <MonthGrid
                 days={monthDays}
                 splitsByDay={splitsByDay}
-                sessions={sessions}
-                statusOf={dayStatus}
+                describeDay={describeDay}
                 onSelect={handleDayClick}
               />
             )
@@ -265,8 +274,7 @@ const Calendar = () => {
               {!loading &&
                 week.map((day) => {
                   const entry = splitsByDay[day.dayNumber];
-                  const session = findSessionOnDate(sessions, day.date);
-                  const status = dayStatus(day.date, entry);
+                  const { session, status } = describeDay(day.date, entry);
                   return (
                     <DayCard
                       key={day.date.toISOString()}

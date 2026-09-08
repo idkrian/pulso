@@ -2,7 +2,7 @@ import type {
   WorkoutSessionDto,
   WorkoutSetDto,
 } from "@/dtos/workout-session.dto";
-import { dayKey, isSameDay } from "./date";
+import { dayKey } from "./date";
 
 export const sessionVolume = (session: WorkoutSessionDto): number =>
   session.workoutExerciseLogs.reduce(
@@ -17,12 +17,6 @@ export const sessionTotalSets = (session: WorkoutSessionDto): number =>
     (sum, log) => sum + log.workoutSets.length,
     0,
   );
-
-export const findSessionOnDate = (
-  sessions: WorkoutSessionDto[],
-  date: Date,
-): WorkoutSessionDto | undefined =>
-  sessions.find((s) => isSameDay(s.createdAt, date));
 
 export const sessionsInRange = (
   sessions: WorkoutSessionDto[],
@@ -166,4 +160,17 @@ export const sessionAverageRpe = (
 
   const total = values.reduce((sum, rpe) => sum + rpe, 0);
   return Math.round((total / values.length) * 10) / 10;
+};
+
+export const sessionsByDay = (
+  sessions: WorkoutSessionDto[],
+): Map<string, WorkoutSessionDto> => {
+  const byDay = new Map<string, WorkoutSessionDto>();
+
+  for (const session of sessions) {
+    const key = dayKey(session.createdAt);
+    if (!byDay.has(key)) byDay.set(key, session);
+  }
+
+  return byDay;
 };
