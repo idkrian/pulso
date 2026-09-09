@@ -62,6 +62,8 @@ const MuscleGroupRadarChart = ({ period }: MuscleGroupRadarChartProps) => {
     [t],
   );
 
+  const isEmpty = data.length === 0;
+
   const totals: Record<string, number> = {};
   for (const item of data) {
     totals[item.muscleGroup] = item.totalSets;
@@ -82,7 +84,7 @@ const MuscleGroupRadarChart = ({ period }: MuscleGroupRadarChartProps) => {
           {t("charts.muscleBalanceDescription")}
         </CardDescription>
       </CardHeader>
-      <CardContent className="min-w-0 pb-2 lg:flex-1">
+      <CardContent className="flex min-w-0 flex-col gap-3 pb-2 lg:flex-1">
         {loading ? (
           <div className="mx-auto flex h-55 w-full items-center justify-center lg:h-full">
             <Skeleton className="aspect-square h-full max-h-[180px] rounded-full" />
@@ -90,7 +92,9 @@ const MuscleGroupRadarChart = ({ period }: MuscleGroupRadarChartProps) => {
         ) : (
           <ChartContainer
             config={chartConfig}
-            className="mx-auto h-55 w-full max-h-55 lg:h-full"
+            className={`mx-auto h-55 w-full max-h-55 lg:h-full ${
+              isEmpty ? "opacity-50" : ""
+            }`}
           >
             <RadarChart
               data={chartData}
@@ -102,7 +106,7 @@ const MuscleGroupRadarChart = ({ period }: MuscleGroupRadarChartProps) => {
                 dataKey="muscle"
                 tick={{ fill: "#e5e5f0", fontSize: 11 }}
               />
-              <ChartTooltip content={<ChartTooltipContent />} />
+              {!isEmpty && <ChartTooltip content={<ChartTooltipContent />} />}
               <Radar
                 dataKey="sets"
                 fill="#7c3aed"
@@ -112,6 +116,15 @@ const MuscleGroupRadarChart = ({ period }: MuscleGroupRadarChartProps) => {
               />
             </RadarChart>
           </ChartContainer>
+        )}
+
+        {!loading && isEmpty && (
+          <div className="flex flex-col items-center gap-1">
+            <p className="text-3xl opacity-60">🫥</p>
+            <p className="text-lightGrey text-sm">
+              {t("charts.muscleBalanceEmpty")}
+            </p>
+          </div>
         )}
       </CardContent>
     </Card>

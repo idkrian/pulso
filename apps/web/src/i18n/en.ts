@@ -89,6 +89,7 @@ export const en = {
 
     muscleBalance: "Muscle Balance",
     muscleBalanceDescription: "Sets per muscle group",
+    muscleBalanceEmpty: "No workout data for this period",
     setsSeries: "Sets",
 
     muscleActivity: "Muscle Activity",

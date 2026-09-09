@@ -92,6 +92,7 @@ export const pt: LocaleDictionary = {
 
     muscleBalance: "Equilíbrio Muscular",
     muscleBalanceDescription: "Séries por grupo muscular",
+    muscleBalanceEmpty: "Sem dados de treino neste período",
     setsSeries: "Séries",
 
     muscleActivity: "Atividade Muscular",

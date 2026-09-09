@@ -15,9 +15,13 @@ import {
 } from "@/components/ui/chart";
 import { getAllWorkouts } from "@/api/workout";
 import type { WorkoutSessionDto } from "@/dtos/workout-session.dto";
-import { dayKey, formatDate } from "@/utils/date";
+import { dayKey, formatDate, todayKey } from "@/utils/date";
 import Skeleton from "@/components/ui/Skeleton";
 import { useDateLocale, useT } from "@/i18n";
+
+const WEEKS_SHOWN = 12;
+
+const EMPTY_Y_DOMAIN: [number, number] = [0, 4];
 
 function getWeekStart(dateStr: string): string {
   const d = new Date(dateStr);
@@ -28,6 +32,14 @@ function getWeekStart(dateStr: string): string {
   return dayKey(d);
 }
 
+function formatWeek(weekKey: string, locale: string) {
+  return formatDate(
+    weekKey + "T12:00:00",
+    { month: "short", day: "numeric" },
+    locale,
+  );
+}
+
 function buildWeeklyData(workouts: WorkoutSessionDto[], locale: string) {
   const counts: Record<string, number> = {};
   for (const w of workouts) {
@@ -36,15 +48,26 @@ function buildWeeklyData(workouts: WorkoutSessionDto[], locale: string) {
   }
   return Object.entries(counts)
     .sort(([a], [b]) => a.localeCompare(b))
-    .slice(-12)
+    .slice(-WEEKS_SHOWN)
     .map(([week, workouts]) => ({
-      week: formatDate(
-        week + "T12:00:00",
-        { month: "short", day: "numeric" },
-        locale,
-      ),
+      week: formatWeek(week, locale),
       workouts,
     }));
+}
+
+function buildEmptyWeeks(locale: string) {
+  const currentWeek = new Date(
+    getWeekStart(todayKey() + "T12:00:00") + "T12:00:00",
+  );
+
+  return Array.from({ length: WEEKS_SHOWN }, (_, index) => {
+    const week = new Date(currentWeek);
+    week.setDate(week.getDate() - (WEEKS_SHOWN - 1 - index) * 7);
+    return {
+      week: formatWeek(dayKey(week), locale),
+      workouts: 0,
+    };
+  });
 }
 
 const FREQUENCY_SKELETON_BARS = [
@@ -72,6 +95,13 @@ const WorkoutFrequencyChart = () => {
   const data = useMemo(
     () => buildWeeklyData(sessions, dateLocale),
     [sessions, dateLocale],
+  );
+
+  const isEmpty = data.length === 0;
+
+  const chartData = useMemo(
+    () => (isEmpty ? buildEmptyWeeks(dateLocale) : data),
+    [isEmpty, data, dateLocale],
   );
 
   const chartConfig = useMemo(
@@ -107,23 +137,6 @@ const WorkoutFrequencyChart = () => {
     );
   }
 
-  if (data.length === 0) {
-    return (
-      <Card className="bg-mediumGrey border-none flex-1">
-        <CardHeader>
-          <CardTitle className="text-white">
-            {t("charts.workoutFrequency")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-lightGrey/60 text-sm">
-            {t("charts.workoutFrequencyEmpty")}
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <Card className="bg-mediumGrey border-none flex min-w-0 flex-col lg:flex-1 lg:min-h-0">
       <CardHeader className="pb-0">
@@ -134,9 +147,14 @@ const WorkoutFrequencyChart = () => {
           {t("charts.workoutFrequencyDescription")}
         </CardDescription>
       </CardHeader>
-      <CardContent className="min-w-0 pb-2 lg:flex-1 lg:min-h-0">
-        <ChartContainer config={chartConfig} className="h-56 w-full lg:h-full">
-          <AreaChart data={data}>
+      <CardContent className="flex min-w-0 flex-col gap-3 pb-2 lg:flex-1 lg:min-h-0">
+        <ChartContainer
+          config={chartConfig}
+          className={`h-56 w-full lg:h-auto lg:min-h-0 lg:flex-1 ${
+            isEmpty ? "opacity-50" : ""
+          }`}
+        >
+          <AreaChart data={chartData}>
             <defs>
               <linearGradient id="workoutsGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#7c3aed" stopOpacity={0.4} />
@@ -156,12 +174,13 @@ const WorkoutFrequencyChart = () => {
             />
             <YAxis
               allowDecimals={false}
+              domain={isEmpty ? EMPTY_Y_DOMAIN : undefined}
               tick={{ fill: "#e5e5f0", fontSize: 11 }}
               axisLine={false}
               tickLine={false}
               width={24}
             />
-            <ChartTooltip content={<ChartTooltipContent />} />
+            {!isEmpty && <ChartTooltip content={<ChartTooltipContent />} />}
             <Area
               type="monotone"
               dataKey="workouts"
@@ -171,6 +190,15 @@ const WorkoutFrequencyChart = () => {
             />
           </AreaChart>
         </ChartContainer>
+
+        {isEmpty && (
+          <div className="flex flex-col items-center gap-1">
+            <p className="text-3xl opacity-60">🫥</p>
+            <p className="text-lightGrey text-sm">
+              {t("charts.workoutFrequencyEmpty")}
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
