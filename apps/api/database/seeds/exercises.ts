@@ -92,7 +92,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Set the pulleys high and take a handle in each hand. Step forward with a slight forward lean and bring your hands together in front of you, then return slowly.",
     pt: {
-      title: "Crossover na Polia",
+      title: "Crossover na Polia (Crucifixo na Polia)",
       description:
         "Deixe as polias altas e pegue uma manopla em cada mão. Dê um passo à frente levemente inclinado, junte as mãos à frente do corpo e volte devagar.",
     },
@@ -104,7 +104,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Sit with your back flat against the pad and grab the handles with your elbows at chest height. Squeeze your arms together in front of you, then return under control.",
     pt: {
-      title: "Voador (Peck Deck)",
+      title: "Crucifixo na Máquina (Voador / Peck Deck)",
       description:
         "Sente com as costas apoiadas e segure as manoplas com os cotovelos na altura do peito. Junte os braços à frente e volte controlado.",
     },
@@ -116,7 +116,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "On parallel bars, lean your torso forward and lower your body until your shoulders drop just below your elbows, then press back up.",
     pt: {
-      title: "Mergulho nas Paralelas",
+      title: "Mergulho nas Paralelas (Dips)",
       description:
         "Nas barras paralelas, incline o tronco à frente e desça até os ombros ficarem logo abaixo dos cotovelos, depois empurre para subir.",
     },
@@ -140,7 +140,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Sit with your back against the pad and grip the handles at chest level. Push forward until your arms are straight, then return slowly.",
     pt: {
-      title: "Supino na Máquina",
+      title: "Supino Reto na Máquina (Articulado)",
       description:
         "Sente com as costas no apoio e segure as manoplas na altura do peito. Empurre até estender os braços e volte devagar.",
     },
@@ -152,7 +152,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Sit in the machine with the seat set so the handles line up with your upper chest. Push forward and up until your arms are straight, then return under control.",
     pt: {
-      title: "Supino Articulado Inclinado",
+      title: "Supino Inclinado na Máquina (Articulado)",
       description:
         "Sente na máquina com o banco ajustado para as manoplas ficarem na altura da parte alta do peito. Empurre para frente e para cima até estender os braços e volte controlando.",
     },
@@ -219,6 +219,30 @@ const CATALOG: SeedExercise[] = [
   },
 
   {
+    muscleGroup: "CHEST",
+    muscle: "LOWER_CHEST",
+    title: "Decline Dumbbell Press",
+    description:
+      "On a declined bench with your legs secured, hold a dumbbell in each hand at chest level. Press them up until they nearly meet, then lower under control.",
+    pt: {
+      title: "Supino Declinado com Halteres",
+      description:
+        "No banco declinado com as pernas presas, segure um halter em cada mão na altura do peito. Empurre para cima até quase se encontrarem e desça controlando.",
+    },
+  },
+  {
+    muscleGroup: "CHEST",
+    muscle: "LOWER_CHEST",
+    title: "Decline Chest Press Machine",
+    description:
+      "Sit in the declined chest press machine with the handles at lower-chest height. Push forward until your arms are straight, then return slowly.",
+    pt: {
+      title: "Supino Declinado na Máquina",
+      description:
+        "Sente na máquina de supino declinado com as pegadas na altura da parte baixa do peito. Empurre até estender os braços e volte devagar.",
+    },
+  },
+  {
     muscleGroup: "BACK",
     muscle: "BACK_GENERAL",
     title: "Deadlift",
@@ -261,7 +285,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Sit and grip the bar wider than your shoulders. Pull it down to your upper chest while keeping your chest up, then let it rise under control.",
     pt: {
-      title: "Puxada Alta",
+      title: "Puxada Alta (Pulley Frente)",
       description:
         "Sentado, segure a barra mais aberto que os ombros. Puxe até a parte alta do peito com o peito aberto e solte controlando.",
     },
@@ -285,7 +309,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Sit with your feet braced and grab the handle. Pull it to your belly while keeping your back straight, then extend your arms forward slowly.",
     pt: {
-      title: "Remada Sentada na Polia",
+      title: "Remada Sentada na Polia (Remada Baixa)",
       description:
         "Sentado com os pés apoiados, pegue o triângulo. Puxe até a barriga mantendo a coluna reta e estenda os braços à frente devagar.",
     },
@@ -297,7 +321,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Straddle the bar and hinge forward with a flat back. Pull the handle up to your chest, then lower under control.",
     pt: {
-      title: "Remada Cavalinho",
+      title: "Remada Cavalinho (T-Bar)",
       description:
         "Fique sobre a barra e incline o tronco com a coluna reta. Puxe a pegada até o peito e desça controlando.",
     },
@@ -333,7 +357,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Stand facing a high pulley and hold the bar with straight arms. Pull it down to your thighs in an arc without bending your elbows, then return.",
     pt: {
-      title: "Pullover na Polia",
+      title: "Pullover na Polia (Puxada com Braços Estendidos)",
       description:
         "Em pé de frente para a polia alta, segure a barra com os braços estendidos. Puxe em arco até as coxas sem dobrar os cotovelos e volte.",
     },
@@ -345,7 +369,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Position your hips on the pad with your feet anchored. Lower your torso toward the floor, then raise it until your body is straight.",
     pt: {
-      title: "Hiperextensão Lombar",
+      title: "Hiperextensão Lombar (Banco Romano)",
       description:
         "Apoie o quadril no banco com os pés presos. Desça o tronco em direção ao chão e suba até alinhar o corpo.",
     },
@@ -357,7 +381,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Hold a resistance band in front of you at chest height with straight arms. Pull the band apart by squeezing your shoulder blades together, then return slowly.",
     pt: {
-      title: "Abertura com Elástico",
+      title: "Abertura com Elástico (Band Pull-Apart)",
       description:
         "Segure um elástico à frente do corpo na altura do peito com os braços estendidos. Abra os braços juntando as escápulas e volte devagar.",
     },
@@ -405,7 +429,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Attach a triangle handle to the high pulley and grip it with your palms facing each other. Pull it down to your chest, then let it rise under control.",
     pt: {
-      title: "Puxada com Triângulo",
+      title: "Puxada com Triângulo (Pegada Fechada)",
       description:
         "Prenda o triângulo na polia alta e segure com as palmas voltadas uma para a outra. Puxe até o peito e solte controlando.",
     },
@@ -417,7 +441,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Sit in the machine with the pads over your thighs and grip the handles overhead. Pull them down to shoulder level, then return under control.",
     pt: {
-      title: "Puxada Articulada",
+      title: "Puxada na Máquina (Articulada)",
       description:
         "Sente na máquina com os apoios sobre as coxas e segure as manoplas acima. Puxe até a altura dos ombros e volte controlando.",
     },
@@ -441,7 +465,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Sit with your chest against the pad and grip the handles. Pull them toward your torso squeezing your shoulder blades together, then return under control.",
     pt: {
-      title: "Remada Articulada",
+      title: "Remada na Máquina (Articulada)",
       description:
         "Sente com o peito no apoio e segure as manoplas. Puxe em direção ao tronco juntando as escápulas e volte controlando.",
     },
@@ -453,7 +477,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Lie chest-down on the angled pad and grip the handles. Pull the weight up toward your chest, then lower it under control. The pad takes the lower back out of the movement.",
     pt: {
-      title: "Remada Cavalo com Apoio no Peito",
+      title: "Remada Cavalinho com Apoio no Peito",
       description:
         "Apoie o peito no suporte inclinado e segure as manoplas. Puxe o peso em direção ao peito e desça controlando. O apoio tira a lombar do movimento.",
     },
@@ -472,13 +496,97 @@ const CATALOG: SeedExercise[] = [
   },
 
   {
+    muscleGroup: "BACK",
+    muscle: "LATS",
+    title: "Dumbbell Pullover",
+    description:
+      "Lie across or along a bench holding one dumbbell over your chest with both hands. Lower it back behind your head until you feel a stretch, then pull it back over your chest.",
+    pt: {
+      title: "Pullover com Halter",
+      description:
+        "Deite no banco (atravessado ou ao comprido) segurando um halter acima do peito com as duas mãos. Leve-o para trás da cabeça até sentir o alongamento e traga de volta sobre o peito.",
+    },
+  },
+  {
+    muscleGroup: "BACK",
+    muscle: "LATS",
+    title: "Bent-Over Dumbbell Row",
+    description:
+      "Hinge forward with a dumbbell in each hand and your back flat. Row both dumbbells toward your waist, squeeze your shoulder blades, then lower under control.",
+    pt: {
+      title: "Remada Curvada com Halteres",
+      description:
+        "Incline o tronco à frente com um halter em cada mão e a coluna reta. Puxe os dois halteres em direção à cintura, junte as escápulas e desça controlando.",
+    },
+  },
+  {
+    muscleGroup: "BACK",
+    muscle: "LATS",
+    title: "Neutral-Grip Pull-Up",
+    description:
+      "Hang from parallel handles with your palms facing each other. Pull yourself up until your chin clears the handles, then lower under control.",
+    pt: {
+      title: "Barra Fixa Pegada Neutra",
+      description:
+        "Pendure-se nas pegadas paralelas com as palmas viradas uma para a outra. Puxe até o queixo passar da barra e desça controlando.",
+    },
+  },
+  {
+    muscleGroup: "BACK",
+    muscle: "LATS",
+    title: "Single-Arm Cable Row",
+    description:
+      "Sit at a low pulley and take the handle with one hand. Pull it toward your waist, keeping your torso still, then return slowly and repeat on the other side.",
+    pt: {
+      title: "Remada Unilateral na Polia",
+      description:
+        "Sente na polia baixa e pegue a manopla com uma mão. Puxe até a cintura mantendo o tronco parado, volte devagar e repita do outro lado.",
+    },
+  },
+  {
+    muscleGroup: "BACK",
+    muscle: "BACK_GENERAL",
+    title: "Dumbbell Deadlift",
+    description:
+      "Stand with a dumbbell in each hand beside your legs. Hinge at the hips with a flat back to lower them along your shins, then drive your hips forward to stand tall.",
+    pt: {
+      title: "Levantamento Terra com Halteres",
+      description:
+        "Fique em pé com um halter em cada mão ao lado das pernas. Empurre o quadril para trás com a coluna reta descendo os halteres rente às canelas e volte estendendo o quadril.",
+    },
+  },
+  {
+    muscleGroup: "BACK",
+    muscle: "TRAPS",
+    title: "Machine Shrug",
+    description:
+      "Hold the machine handles with your arms straight. Lift your shoulders straight up toward your ears, pause, then lower under control.",
+    pt: {
+      title: "Encolhimento na Máquina",
+      description:
+        "Segure as pegadas da máquina com os braços estendidos. Eleve os ombros em direção às orelhas, segure um instante e desça controlando.",
+    },
+  },
+  {
+    muscleGroup: "BACK",
+    muscle: "TRAPS",
+    title: "Smith Machine Shrug",
+    description:
+      "Stand holding the smith machine bar in front of your thighs. Shrug your shoulders straight up, hold briefly, then lower slowly.",
+    pt: {
+      title: "Encolhimento no Smith",
+      description:
+        "Em pé, segure a barra do smith à frente das coxas. Eleve os ombros para cima, segure um instante e desça devagar.",
+    },
+  },
+  {
     muscleGroup: "SHOULDERS",
     muscle: "SHOULDERS_GENERAL",
     title: "Overhead Press",
     description:
       "Stand holding a barbell at shoulder height. Press it straight overhead until your arms lock out, then lower it back to your shoulders.",
     pt: {
-      title: "Desenvolvimento Militar",
+      title: "Desenvolvimento Militar (Barra em Pé)",
       description:
         "Em pé com a barra na altura dos ombros, empurre para cima até estender os braços e desça de volta aos ombros.",
     },
@@ -502,7 +610,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Hold a dumbbell in each hand at your sides. Raise your arms out to shoulder height with a slight elbow bend, then lower slowly.",
     pt: {
-      title: "Elevação Lateral",
+      title: "Elevação Lateral com Halteres",
       description:
         "Com um halter em cada mão ao lado do corpo, eleve os braços até a altura dos ombros com leve flexão de cotovelo e desça devagar.",
     },
@@ -514,7 +622,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Hold a weight in front of your thighs. Raise it forward to shoulder height with straight arms, then lower under control.",
     pt: {
-      title: "Elevação Frontal",
+      title: "Elevação Frontal com Halteres",
       description:
         "Segure o peso à frente das coxas. Eleve para frente até a altura dos ombros com os braços estendidos e desça controlando.",
     },
@@ -526,7 +634,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Hinge forward holding dumbbells with a slight elbow bend. Open your arms out to the sides until they're level with your shoulders, then lower.",
     pt: {
-      title: "Crucifixo Invertido",
+      title: "Crucifixo Invertido com Halteres",
       description:
         "Incline o tronco com halteres e leve flexão de cotovelo. Abra os braços para os lados até a altura dos ombros e desça.",
     },
@@ -538,7 +646,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Set a rope at head height. Pull it toward your face with your elbows high and your hands finishing beside your ears, then return.",
     pt: {
-      title: "Face Pull",
+      title: "Face Pull (Puxada para o Rosto)",
       description:
         "Deixe a corda na altura da cabeça. Puxe em direção ao rosto com os cotovelos altos e as mãos terminando ao lado das orelhas, depois volte.",
     },
@@ -550,7 +658,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Hold a barbell in front of your thighs. Pull it straight up to chest height leading with your elbows, then lower.",
     pt: {
-      title: "Remada Alta",
+      title: "Remada Alta com Barra",
       description:
         "Segure a barra à frente das coxas. Puxe para cima até a altura do peito conduzindo com os cotovelos e desça.",
     },
@@ -574,7 +682,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Sit with your back against the pad and grip the handles at shoulder height. Press up until your arms are straight, then lower under control.",
     pt: {
-      title: "Desenvolvimento Articulado",
+      title: "Desenvolvimento na Máquina (Articulado)",
       description:
         "Sente com as costas no apoio e segure as manoplas na altura dos ombros. Empurre até estender os braços e desça controlando.",
     },
@@ -610,12 +718,84 @@ const CATALOG: SeedExercise[] = [
     description:
       "Sit facing the pec deck pad and grip the handles in front of you. Open your arms out to the sides squeezing your shoulder blades, then return under control.",
     pt: {
-      title: "Voador Invertido (Peck Deck)",
+      title: "Crucifixo Invertido na Máquina (Voador Invertido)",
       description:
         "Sente de frente para o apoio do voador e segure as manoplas à sua frente. Abra os braços para os lados juntando as escápulas e volte controlando.",
     },
   },
 
+  {
+    muscleGroup: "SHOULDERS",
+    muscle: "SHOULDERS_GENERAL",
+    title: "Smith Machine Shoulder Press",
+    description:
+      "Sit under the smith machine bar at shoulder height. Press it overhead until your arms are straight, then lower to ear level under control.",
+    pt: {
+      title: "Desenvolvimento no Smith",
+      description:
+        "Sente sob a barra do smith na altura dos ombros. Empurre acima da cabeça até estender os braços e desça até a altura das orelhas controlando.",
+    },
+  },
+  {
+    muscleGroup: "SHOULDERS",
+    muscle: "FRONT_DELTOID",
+    title: "Barbell Front Raise",
+    description:
+      "Hold a barbell in front of your thighs with an overhand grip. Raise it straight out in front of you to shoulder height, then lower slowly.",
+    pt: {
+      title: "Elevação Frontal com Barra",
+      description:
+        "Segure a barra à frente das coxas com pegada pronada. Eleve à frente do corpo até a altura dos ombros e desça devagar.",
+    },
+  },
+  {
+    muscleGroup: "SHOULDERS",
+    muscle: "FRONT_DELTOID",
+    title: "Cable Front Raise",
+    description:
+      "Stand facing away from a low pulley with the handle in one hand. Raise your arm straight in front of you to shoulder height, then lower under control.",
+    pt: {
+      title: "Elevação Frontal na Polia",
+      description:
+        "Fique de costas para a polia baixa com a manopla em uma mão. Eleve o braço à frente até a altura do ombro e desça controlando.",
+    },
+  },
+  {
+    muscleGroup: "SHOULDERS",
+    muscle: "FRONT_DELTOID",
+    title: "Plate Front Raise",
+    description:
+      "Hold a weight plate at both sides in front of your hips. Raise it to shoulder height with straight arms, then lower slowly.",
+    pt: {
+      title: "Elevação Frontal com Anilha",
+      description:
+        "Segure uma anilha pelas laterais à frente do quadril. Eleve até a altura dos ombros com os braços estendidos e desça devagar.",
+    },
+  },
+  {
+    muscleGroup: "SHOULDERS",
+    muscle: "REAR_DELTOID",
+    title: "Cable Reverse Fly",
+    description:
+      "Set two pulleys at shoulder height and take the opposite handle in each hand so the cables cross. Open your arms out and back, then return slowly.",
+    pt: {
+      title: "Crucifixo Invertido na Polia (Cross Invertido)",
+      description:
+        "Deixe as duas polias na altura dos ombros e pegue a manopla oposta com cada mão, cruzando os cabos. Abra os braços para trás e volte devagar.",
+    },
+  },
+  {
+    muscleGroup: "SHOULDERS",
+    muscle: "SIDE_DELTOID",
+    title: "Cable Upright Row",
+    description:
+      "Stand facing a low pulley holding a straight bar attachment. Pull it up along your body to chest height with your elbows leading, then lower slowly.",
+    pt: {
+      title: "Remada Alta na Polia",
+      description:
+        "Fique de frente para a polia baixa segurando a barra reta. Puxe rente ao corpo até a altura do peito com os cotovelos subindo primeiro e desça devagar.",
+    },
+  },
   {
     muscleGroup: "ARMS",
     muscle: "BICEPS",
@@ -623,7 +803,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Stand holding a barbell with an underhand shoulder-width grip. Curl it up toward your chest keeping your elbows pinned to your sides, then lower slowly. Emphasizes the short head of the biceps.",
     pt: {
-      title: "Rosca Direta",
+      title: "Rosca Direta com Barra",
       description:
         "Em pé com a barra em pegada supinada na largura dos ombros, flexione em direção ao peito mantendo os cotovelos junto ao corpo e desça devagar. Enfatiza a cabeça curta do bíceps.",
     },
@@ -695,7 +875,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Face a high pulley and grip the bar with your elbows at your sides. Push it down until your arms are straight, then let it rise back. Emphasizes the lateral head of the triceps.",
     pt: {
-      title: "Tríceps na Polia",
+      title: "Tríceps na Polia (Pulley Barra)",
       description:
         "De frente para a polia alta, segure a barra com os cotovelos junto ao corpo. Empurre até estender os braços e deixe voltar. Enfatiza a cabeça lateral do tríceps.",
     },
@@ -707,7 +887,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Grip a rope on a high pulley. Push down and spread the ends apart at the bottom until your arms are straight, then return slowly. Emphasizes the lateral head of the triceps.",
     pt: {
-      title: "Tríceps Corda",
+      title: "Tríceps Corda (Pulley Corda)",
       description:
         "Segure a corda na polia alta. Empurre para baixo afastando as pontas no final até estender os braços e volte devagar. Enfatiza a cabeça lateral do tríceps.",
     },
@@ -719,7 +899,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Hold a weight overhead with both hands. Lower it behind your head by bending only your elbows, then extend back up. With the arms overhead it emphasizes the long head of the triceps.",
     pt: {
-      title: "Tríceps Francês",
+      title: "Tríceps Francês (Extensão Acima da Cabeça)",
       description:
         "Segure o peso acima da cabeça com as duas mãos. Desça atrás da cabeça flexionando só os cotovelos e estenda de volta. Com os braços acima da cabeça, enfatiza a cabeça longa do tríceps.",
     },
@@ -731,7 +911,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Lie on a bench holding an EZ-bar over your chest. Lower it toward your forehead by bending only your elbows, then extend back up. Emphasizes the long head of the triceps.",
     pt: {
-      title: "Tríceps Testa",
+      title: "Tríceps Testa (Skull Crusher)",
       description:
         "Deite no banco com a barra W sobre o peito. Desça em direção à testa flexionando só os cotovelos e estenda de volta. Enfatiza a cabeça longa do tríceps.",
     },
@@ -755,7 +935,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "On parallel bars keep your torso upright. Lower yourself until your elbows reach about 90°, then press back up. Emphasizes the lateral head of the triceps.",
     pt: {
-      title: "Mergulho para Tríceps",
+      title: "Mergulho para Tríceps nas Paralelas (Dips)",
       description:
         "Nas paralelas mantenha o tronco ereto. Desça até os cotovelos formarem cerca de 90° e empurre para subir. Enfatiza a cabeça lateral do tríceps.",
     },
@@ -803,7 +983,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Face a high pulley and grip the bar with your palms facing up and elbows at your sides. Push down until your arms are straight, then return under control. The underhand grip emphasizes the medial head of the triceps.",
     pt: {
-      title: "Tríceps Pulley Supinado",
+      title: "Tríceps Pulley Supinado (Pegada Invertida)",
       description:
         "De frente para a polia alta, segure a barra com as palmas para cima e os cotovelos junto ao corpo. Empurre até estender os braços e volte controlando. A pegada supinada enfatiza a cabeça medial do tríceps.",
     },
@@ -815,7 +995,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Hold a heavy dumbbell in each hand at your sides. Stand tall and walk in a straight line for the set distance without letting your grip slip.",
     pt: {
-      title: "Caminhada do Fazendeiro",
+      title: "Caminhada do Fazendeiro (Farmer's Walk)",
       description:
         "Segure um halter pesado em cada mão ao lado do corpo. Fique ereto e caminhe em linha reta pela distância combinada sem soltar a pegada.",
     },
@@ -851,7 +1031,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Stand holding an EZ-bar on the angled part of the grip. Curl it up toward your chest with your elbows at your sides, then lower slowly. The angled grip is easier on the wrists than a straight bar.",
     pt: {
-      title: "Rosca Direta com Barra W",
+      title: "Rosca Direta com Barra W (Barra EZ)",
       description:
         "Em pé segurando a barra W na parte angulada. Flexione em direção ao peito com os cotovelos junto ao corpo e desça devagar. A pegada angulada pesa menos nos punhos que a barra reta.",
     },
@@ -942,6 +1122,78 @@ const CATALOG: SeedExercise[] = [
   },
 
   {
+    muscleGroup: "ARMS",
+    muscle: "TRICEPS",
+    title: "Dumbbell Triceps Kickback",
+    description:
+      "Hinge forward with a dumbbell in one hand and your upper arm tucked against your side. Straighten your elbow until your arm is fully extended behind you, then return slowly.",
+    pt: {
+      title: "Tríceps Coice com Halter",
+      description:
+        "Incline o tronco com um halter em uma mão e o braço colado ao corpo. Estenda o cotovelo até o braço ficar reto para trás e volte devagar.",
+    },
+  },
+  {
+    muscleGroup: "ARMS",
+    muscle: "TRICEPS",
+    title: "Cable Triceps Kickback",
+    description:
+      "Face a low pulley, hinge forward and keep your upper arm against your side. Extend your elbow back until your arm is straight, then return under control.",
+    pt: {
+      title: "Tríceps Coice na Polia",
+      description:
+        "De frente para a polia baixa, incline o tronco e mantenha o braço colado ao corpo. Estenda o cotovelo para trás até o braço ficar reto e volte controlando.",
+    },
+  },
+  {
+    muscleGroup: "ARMS",
+    muscle: "TRICEPS",
+    title: "Single-Arm Cable Pushdown",
+    description:
+      "Take a high pulley handle with one hand, palm facing down. Push straight down until your arm is fully extended, then return slowly and switch sides.",
+    pt: {
+      title: "Tríceps Unilateral na Polia",
+      description:
+        "Pegue a manopla da polia alta com uma mão, palma para baixo. Empurre para baixo até estender o braço, volte devagar e troque de lado.",
+    },
+  },
+  {
+    muscleGroup: "ARMS",
+    muscle: "BICEPS",
+    title: "Rope Hammer Curl",
+    description:
+      "Attach a rope to a low pulley and hold it with a neutral grip. Curl it up toward your shoulders keeping your elbows fixed, then lower slowly.",
+    pt: {
+      title: "Rosca Martelo na Polia (Corda)",
+      description:
+        "Prenda a corda na polia baixa e segure com pegada neutra. Flexione os cotovelos levando a corda até os ombros e desça devagar.",
+    },
+  },
+  {
+    muscleGroup: "ARMS",
+    muscle: "BICEPS",
+    title: "Spider Curl",
+    description:
+      "Lie chest-down on an incline bench with your arms hanging straight down holding dumbbells or an EZ bar. Curl up to the top, squeeze, then lower under control.",
+    pt: {
+      title: "Rosca Spider",
+      description:
+        "Deite de bruços no banco inclinado com os braços pendendo na vertical segurando halteres ou barra W. Flexione até o topo, contraia e desça controlando.",
+    },
+  },
+  {
+    muscleGroup: "ARMS",
+    muscle: "FOREARMS",
+    title: "Reverse Cable Curl",
+    description:
+      "Hold a straight bar on a low pulley with an overhand grip. Curl it up toward your shoulders keeping your wrists firm, then lower slowly.",
+    pt: {
+      title: "Rosca Inversa na Polia",
+      description:
+        "Segure a barra reta na polia baixa com pegada pronada. Flexione os cotovelos até os ombros mantendo os punhos firmes e desça devagar.",
+    },
+  },
+  {
     muscleGroup: "LEGS",
     muscle: "QUADRICEPS",
     title: "Barbell Back Squat",
@@ -972,7 +1224,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Sit in the machine with your feet on the platform. Lower it by bending your knees toward your chest, then press back until your legs are nearly straight.",
     pt: {
-      title: "Leg Press",
+      title: "Leg Press 45°",
       description:
         "Sente na máquina com os pés na plataforma. Desça flexionando os joelhos em direção ao peito e empurre até quase estender as pernas.",
     },
@@ -984,7 +1236,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Stand on the hack machine with your shoulders under the pads. Lower into a squat, then push through your feet to stand back up.",
     pt: {
-      title: "Agachamento Hack",
+      title: "Agachamento Hack (Hack Machine)",
       description:
         "Fique na máquina hack com os ombros sob os apoios. Desça agachando e empurre com os pés para subir.",
     },
@@ -1008,7 +1260,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Hold a barbell and push your hips back with a slight knee bend. Lower the bar along your legs until you feel a stretch in the back of your thighs, then stand up.",
     pt: {
-      title: "Levantamento Terra Romeno",
+      title: "Levantamento Terra Romeno (RDL)",
       description:
         "Segure a barra e jogue o quadril para trás com leve flexão de joelho. Desça a barra rente às pernas até sentir alongar a parte de trás das coxas e suba.",
     },
@@ -1020,7 +1272,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Lie face down with the pad on the back of your ankles. Curl your heels toward your glutes, then lower slowly.",
     pt: {
-      title: "Mesa Flexora",
+      title: "Mesa Flexora (Flexora Deitado)",
       description:
         "Deite de bruços com o apoio atrás dos tornozelos. Flexione os calcanhares em direção aos glúteos e desça devagar.",
     },
@@ -1032,7 +1284,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Sit with the pad on your lower legs. Bend your knees to pull your heels under the seat, then return under control.",
     pt: {
-      title: "Cadeira Flexora",
+      title: "Cadeira Flexora (Flexora Sentado)",
       description:
         "Sente com o apoio sobre as pernas. Flexione os joelhos puxando os calcanhares para baixo e volte controlando.",
     },
@@ -1056,7 +1308,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Step forward into a lunge until both knees reach about 90°. Push off the front foot and step through into the next lunge.",
     pt: {
-      title: "Afundo (Avanço)",
+      title: "Afundo (Avanço / Passada)",
       description:
         "Dê um passo à frente em afundo até os dois joelhos formarem cerca de 90°. Empurre com o pé da frente e avance para o próximo passo.",
     },
@@ -1104,7 +1356,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Place one foot on a box or bench at knee height. Drive through that leg to stand up on top, then lower yourself back down under control.",
     pt: {
-      title: "Subida no Banco",
+      title: "Subida no Banco (Step-Up)",
       description:
         "Apoie um pé em um banco na altura do joelho. Empurre com essa perna para subir e desça controlando.",
     },
@@ -1207,13 +1459,85 @@ const CATALOG: SeedExercise[] = [
   },
 
   {
+    muscleGroup: "LEGS",
+    muscle: "HAMSTRINGS",
+    title: "Standing Leg Curl",
+    description:
+      "Stand in the machine with one leg against the pad. Curl your heel up toward your glutes, pause, then lower under control and switch legs.",
+    pt: {
+      title: "Flexora em Pé (Unilateral)",
+      description:
+        "Fique em pé na máquina com uma perna apoiada no rolo. Flexione o joelho levando o calcanhar em direção ao glúteo, segure e desça controlando. Troque de perna.",
+    },
+  },
+  {
+    muscleGroup: "LEGS",
+    muscle: "QUADRICEPS",
+    title: "Single-Leg Leg Press",
+    description:
+      "Place one foot on the leg press platform with the other resting off to the side. Press until your leg is nearly straight, then lower under control and switch.",
+    pt: {
+      title: "Leg Press Unilateral",
+      description:
+        "Apoie um pé na plataforma do leg press e deixe o outro de fora. Empurre até quase estender a perna, desça controlando e troque de lado.",
+    },
+  },
+  {
+    muscleGroup: "LEGS",
+    muscle: "QUADRICEPS",
+    title: "Smith Machine Lunge",
+    description:
+      "Stand under the smith bar with one foot forward. Lower your back knee toward the floor, then drive up through the front foot and repeat before switching legs.",
+    pt: {
+      title: "Afundo no Smith",
+      description:
+        "Fique sob a barra do smith com um pé à frente. Desça o joelho de trás em direção ao chão e suba empurrando o pé da frente. Repita e troque de perna.",
+    },
+  },
+  {
+    muscleGroup: "LEGS",
+    muscle: "LEGS_GENERAL",
+    title: "Dumbbell Sumo Squat",
+    description:
+      "Stand with a wide stance and toes turned out, holding one dumbbell between your legs. Squat down until your thighs are parallel, then stand back up.",
+    pt: {
+      title: "Agachamento Sumô com Halter",
+      description:
+        "Fique com as pernas bem abertas e as pontas dos pés para fora, segurando um halter entre as pernas. Agache até as coxas ficarem paralelas ao chão e suba.",
+    },
+  },
+  {
+    muscleGroup: "LEGS",
+    muscle: "CALVES",
+    title: "Smith Machine Calf Raise",
+    description:
+      "Stand with the balls of your feet on a step under the smith bar. Rise onto your toes as high as you can, then lower your heels below the step.",
+    pt: {
+      title: "Panturrilha no Smith",
+      description:
+        "Apoie a ponta dos pés em um step sob a barra do smith. Suba nas pontas o máximo que conseguir e desça os calcanhares abaixo do step.",
+    },
+  },
+  {
+    muscleGroup: "LEGS",
+    muscle: "CALVES",
+    title: "Single-Leg Dumbbell Calf Raise",
+    description:
+      "Stand on one foot on a step holding a dumbbell in the same-side hand. Rise onto your toes, pause at the top, then lower your heel under control.",
+    pt: {
+      title: "Panturrilha Unilateral com Halter",
+      description:
+        "Fique com um pé no step segurando um halter na mão do mesmo lado. Suba na ponta do pé, segure no topo e desça o calcanhar controlando.",
+    },
+  },
+  {
     muscleGroup: "GLUTES",
     muscle: "GLUTES_GENERAL",
     title: "Hip Thrust",
     description:
       "Rest your upper back on a bench with a barbell over your hips. Drive your hips up until your body is level, squeeze, then lower. Emphasizes the gluteus maximus.",
     pt: {
-      title: "Elevação Pélvica",
+      title: "Elevação Pélvica (Hip Thrust / Ponte com Barra)",
       description:
         "Apoie a parte de cima das costas no banco com a barra sobre o quadril. Eleve o quadril até alinhar o corpo, contraia e desça. Enfatiza o glúteo máximo.",
     },
@@ -1225,7 +1549,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Lie on your back with knees bent and feet flat. Raise your hips until your body is straight, squeeze, then lower. Emphasizes the gluteus maximus.",
     pt: {
-      title: "Ponte de Glúteo",
+      title: "Ponte de Glúteo (Glute Bridge)",
       description:
         "Deite de costas com os joelhos flexionados e os pés no chão. Eleve o quadril até alinhar o corpo, contraia e desça. Enfatiza o glúteo máximo.",
     },
@@ -1249,7 +1573,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Attach a strap to your ankle and hold on for balance. Push your leg straight back, squeeze the glute, then return under control. Emphasizes the gluteus maximus.",
     pt: {
-      title: "Coice na Polia",
+      title: "Coice na Polia (Glúteo na Polia)",
       description:
         "Prenda a caneleira no tornozelo e segure para se equilibrar. Empurre a perna para trás, contraia o glúteo e volte controlando. Enfatiza o glúteo máximo.",
     },
@@ -1285,7 +1609,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Sit in the machine with the pad across your hips and your back against the support. Drive your hips up until your body is level, squeeze, then lower.",
     pt: {
-      title: "Elevação Pélvica na Máquina",
+      title: "Elevação Pélvica na Máquina (Hip Thrust Machine)",
       description:
         "Sente na máquina com o apoio sobre o quadril e as costas no encosto. Eleve o quadril até alinhar o corpo, contraia e desça.",
     },
@@ -1297,12 +1621,36 @@ const CATALOG: SeedExercise[] = [
     description:
       "Stand in the machine with one foot on the pad and hold the supports. Push your leg back until your hip is extended, squeeze the glute, then return under control.",
     pt: {
-      title: "Glúteo na Máquina",
+      title: "Coice na Máquina (Glúteo na Máquina)",
       description:
         "Fique na máquina com um pé no apoio e segure nas barras. Empurre a perna para trás até estender o quadril, contraia o glúteo e volte controlando.",
     },
   },
 
+  {
+    muscleGroup: "GLUTES",
+    muscle: "GLUTES_GENERAL",
+    title: "Cable Hip Abduction",
+    description:
+      "Attach an ankle strap to a low pulley and stand side-on to the machine. Lift your outside leg out to the side against the resistance, then return slowly.",
+    pt: {
+      title: "Abdução de Quadril na Polia",
+      description:
+        "Prenda a tornozeleira na polia baixa e fique de lado para o aparelho. Eleve a perna de fora para o lado contra a resistência e volte devagar.",
+    },
+  },
+  {
+    muscleGroup: "GLUTES",
+    muscle: "GLUTES_GENERAL",
+    title: "Single-Leg Hip Thrust",
+    description:
+      "Set your upper back on a bench with one foot planted and the other leg lifted. Drive your hips up until your body is level, squeeze, then lower under control.",
+    pt: {
+      title: "Elevação Pélvica Unilateral",
+      description:
+        "Apoie a parte alta das costas no banco com um pé no chão e a outra perna elevada. Suba o quadril até alinhar o corpo, contraia e desça controlando.",
+    },
+  },
   {
     muscleGroup: "CORE",
     muscle: "CORE_GENERAL",
@@ -1334,7 +1682,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Hang from a bar and raise your legs until they're at least parallel to the floor, then lower them under control without swinging.",
     pt: {
-      title: "Elevação de Pernas Suspenso",
+      title: "Elevação de Pernas Suspenso (Infra na Barra)",
       description:
         "Pendure na barra e eleve as pernas até ficarem ao menos paralelas ao chão, depois desça controlando sem balançar.",
     },
@@ -1382,7 +1730,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Kneel holding the wheel under your shoulders. Roll it forward as far as you can control with a tight core, then pull yourself back.",
     pt: {
-      title: "Roda Abdominal",
+      title: "Roda Abdominal (Ab Wheel)",
       description:
         "Ajoelhe segurando a roda sob os ombros. Role para frente o máximo que conseguir controlar com o abdômen firme e puxe de volta.",
     },
@@ -1418,7 +1766,7 @@ const CATALOG: SeedExercise[] = [
     description:
       "Support yourself on the parallel pads with your back against the rest. Raise your knees toward your chest, then lower them slowly.",
     pt: {
-      title: "Elevação de Joelhos na Paralela",
+      title: "Elevação de Joelhos na Paralela (Cadeira Romana)",
       description:
         "Apoie-se nas paralelas com as costas no encosto. Eleve os joelhos em direção ao peito e desça devagar.",
     },
@@ -1430,9 +1778,57 @@ const CATALOG: SeedExercise[] = [
     description:
       "Start in a push-up position with your body in a straight line. Drive one knee toward your chest, then switch legs, alternating quickly while keeping your hips level.",
     pt: {
-      title: "Escalador",
+      title: "Escalador (Mountain Climber)",
       description:
         "Comece na posição de flexão com o corpo alinhado. Leve um joelho em direção ao peito e troque de perna, alternando rápido e mantendo o quadril estável.",
+    },
+  },
+  {
+    muscleGroup: "CORE",
+    muscle: "OBLIQUES",
+    title: "Bicycle Crunch",
+    description:
+      "Lie on your back with your hands by your head. Bring one elbow toward the opposite knee while extending the other leg, then alternate in a pedalling motion.",
+    pt: {
+      title: "Abdominal Bicicleta",
+      description:
+        "Deite de costas com as mãos ao lado da cabeça. Leve um cotovelo em direção ao joelho oposto enquanto estende a outra perna e alterne em movimento de pedalada.",
+    },
+  },
+  {
+    muscleGroup: "CORE",
+    muscle: "OBLIQUES",
+    title: "Cable Woodchopper",
+    description:
+      "Set a pulley high and take the handle with both hands. Pull it diagonally across your body down to the opposite hip, rotating your torso, then return slowly.",
+    pt: {
+      title: "Lenhador na Polia",
+      description:
+        "Deixe a polia alta e pegue a manopla com as duas mãos. Puxe na diagonal atravessando o corpo até o quadril oposto girando o tronco e volte devagar.",
+    },
+  },
+  {
+    muscleGroup: "CORE",
+    muscle: "ABS",
+    title: "Decline Bench Sit-Up",
+    description:
+      "Hook your legs on a decline bench and lie back. Curl your torso up toward your knees, then lower under control without dropping back.",
+    pt: {
+      title: "Abdominal no Banco Declinado",
+      description:
+        "Prenda as pernas no banco declinado e deite. Suba o tronco em direção aos joelhos e desça controlando, sem se jogar para trás.",
+    },
+  },
+  {
+    muscleGroup: "CORE",
+    muscle: "CORE_GENERAL",
+    title: "Dead Bug",
+    description:
+      "Lie on your back with your arms up and knees bent at 90°. Lower one arm and the opposite leg toward the floor while keeping your lower back flat, then switch sides.",
+    pt: {
+      title: "Dead Bug (Inseto Morto)",
+      description:
+        "Deite de costas com os braços para cima e os joelhos a 90°. Desça um braço e a perna oposta em direção ao chão mantendo a lombar colada e troque de lado.",
     },
   },
 ];
