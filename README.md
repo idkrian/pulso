@@ -7,9 +7,9 @@
 **A workout tracker for people who follow a plan.**
 Build your training splits, run the session set by set, and watch the numbers move.
 
-[**Live app →**](https://trypulso.vercel.app/)
+[**Live app →**](https://pulsoapp.pro/)
 
-**No sign-up required.** Hit *Explore the demo account* on the login screen — or use `demo@pulso.app` / `pulsodemo`.
+**No sign-up required.** Hit _Explore the demo account_ on the login screen — or use `demo@pulso.app` / `pulsodemo`.
 It's a real account carrying 12 weeks of training history, rebuilt from scratch every day.
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)
@@ -42,7 +42,15 @@ It's a **full-stack TypeScript monorepo** (React + Express + PostgreSQL), instal
 ## Features
 
 ### Training splits & schedule
-Create reusable splits (`Push A · Chest`, `Legs B · Glutes`), fill each one with exercises, sets and rep ranges, then assign them to weekdays — including rest days. The dashboard and calendar always surface **today's training** with a one-tap start.
+
+Create reusable splits (`Push A · Chest`, `Legs B · Glutes`), fill each one with exercises, sets and rep ranges, then assign them to weekdays — including rest days. The dashboard always surfaces **today's training** with a one-tap start.
+
+### Calendar
+
+- **Week view** — one card per day with the split, exercise and set counts, and the volume you actually logged
+- **Month view** — the whole month as a grid, each day colored by its split and marked done, missed, rest or upcoming
+- The view you pick is **remembered** for the next visit, and the side panel stats (sessions done / planned, volume, streak) follow the period you're looking at
+- Tap a day to **open a finished session**, start today's workout, or swap the split assigned to that weekday
 
 ### Live workout session
 
@@ -66,6 +74,7 @@ The session **survives a refresh, a closed tab or a locked phone**: it's checkpo
 </table>
 
 ### Analytics
+
 - **Muscle activity heatmap** rendered on a body model, from undertrained to overtrained
 - **Muscle balance radar** — sets per muscle group, so you can see what you keep skipping
 - **Workout frequency** over the last 12 weeks, **volume** and **streaks**
@@ -73,21 +82,25 @@ The session **survives a refresh, a closed tab or a locked phone**: it's checkpo
 - Every view filterable by week / month / 3 months / 6 months
 
 ### Platform
+
 Installable **PWA** with an install prompt and an update toast when a new version ships · **English & Portuguese** UI, dates, numbers and exercise names · **kg / lb** unit preference · sign-up with **email verification code** · JWT auth · a seeded catalog of 118 exercises you can extend with your own.
 
 <div align="center">
 
-| Splits | Calendar |
-|:--:|:--:|
-| ![Training splits](docs/screenshots/splits.png) | ![Calendar](docs/screenshots/calendar.png) |
-| **Exercise library** | **Profile & body weight** |
-| ![Exercises](docs/screenshots/exercises.png) | ![Profile](docs/screenshots/profile.png) |
+|                      Calendar · week                      |                      Calendar · month                       |
+| :-------------------------------------------------------: | :---------------------------------------------------------: |
+| ![Calendar week view](docs/screenshots/calendar-week.png) | ![Calendar month view](docs/screenshots/calendar-month.png) |
+|                    **Training splits**                    |                    **Exercise library**                     |
+|      ![Training splits](docs/screenshots/splits.png)      |        ![Exercises](docs/screenshots/exercises.png)         |
+|                 **Profile & body weight**                 |                  **Live workout session**                   |
+|         ![Profile](docs/screenshots/profile.png)          |    ![Live workout session](docs/screenshots/workout.png)    |
 
 **Mobile**
 
-<img src="docs/screenshots/mobile/dashboard.png" width="240" alt="Mobile dashboard" />
-<img src="docs/screenshots/mobile/calendar.png" width="240" alt="Mobile calendar" />
-<img src="docs/screenshots/mobile/splits.png" width="240" alt="Mobile splits" />
+<img src="docs/screenshots/mobile/dashboard.png" width="210" alt="Mobile dashboard" />
+<img src="docs/screenshots/mobile/calendar-week.png" width="210" alt="Mobile calendar week view" />
+<img src="docs/screenshots/mobile/calendar-month.png" width="210" alt="Mobile calendar month view" />
+<img src="docs/screenshots/mobile/splits.png" width="210" alt="Mobile splits" />
 
 </div>
 
@@ -95,11 +108,11 @@ Installable **PWA** with an install prompt and an update toast when a new versio
 
 ## Tech stack
 
-| Layer | Stack |
-|---|---|
+| Layer        | Stack                                                                                                               |
+| ------------ | ------------------------------------------------------------------------------------------------------------------- |
 | **Frontend** | React 19, TypeScript, Vite 7, Tailwind CSS 4, Radix UI / shadcn, React Router 7, Recharts, Axios, `vite-plugin-pwa` |
-| **Backend** | Node 22, Express 5, TypeScript (ESM), Prisma 7, PostgreSQL, Zod, JWT, bcrypt, Nodemailer, `express-rate-limit` |
-| **Tooling** | npm workspaces, ESLint 9, `tsx`, Prisma Migrate + seeds, `concurrently` |
+| **Backend**  | Node 22, Express 5, TypeScript (ESM), Prisma 7, PostgreSQL, Zod, JWT, bcrypt, Nodemailer, `express-rate-limit`      |
+| **Tooling**  | npm workspaces, ESLint 9, `tsx`, Prisma Migrate + seeds, `concurrently`                                             |
 
 ---
 
@@ -153,7 +166,7 @@ pending_registrations   (unverified sign-ups: hashed code, TTL, attempt counter)
 
 Two details worth calling out:
 
-- **Exercises are classified twice** — by `muscleGroup` (7 values, used for the radar and filters) and by a finer `muscle` enum (26 values, used for the heatmap). One lift can be *Chest* for balance purposes and *Upper Chest* for the heatmap.
+- **Exercises are classified twice** — by `muscleGroup` (7 values, used for the radar and filters) and by a finer `muscle` enum (26 values, used for the heatmap). One lift can be _Chest_ for balance purposes and _Upper Chest_ for the heatmap.
 - **Sessions outlive their split.** `workout_sessions.trainingSplitId` is `SET NULL` on delete, so deleting a split you no longer run never erases the history you built with it.
 
 ---
@@ -170,23 +183,23 @@ npm install
 
 **`apps/api/.env`**
 
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `JWT_SECRET` | Secret used to sign auth tokens |
-| `FRONTEND_URL` | Web app origin, used for CORS |
-| `RESEND_API_KEY` | Resend API key with sending access, used to deliver verification emails |
-| `EMAIL_FROM` | Sender address shown to users |
-| `PORT` | API port (defaults to `3000`) |
-| `TRUST_PROXY` | Proxy hops to trust — set to `1` behind a reverse proxy so rate limiting sees real IPs |
-| `DEMO_EMAIL` / `DEMO_PASSWORD` | Optional. Credentials for the seeded demo account — leave empty to skip it entirely |
-| `DEMO_RESET_SECRET` | Optional. Shared secret for `POST /demo/reset`; without it the route returns 404 |
+| Variable                       | Description                                                                            |
+| ------------------------------ | -------------------------------------------------------------------------------------- |
+| `DATABASE_URL`                 | PostgreSQL connection string                                                           |
+| `JWT_SECRET`                   | Secret used to sign auth tokens                                                        |
+| `FRONTEND_URL`                 | Web app origin, used for CORS                                                          |
+| `RESEND_API_KEY`               | Resend API key with sending access, used to deliver verification emails                |
+| `EMAIL_FROM`                   | Sender address shown to users                                                          |
+| `PORT`                         | API port (defaults to `3000`)                                                          |
+| `TRUST_PROXY`                  | Proxy hops to trust — set to `1` behind a reverse proxy so rate limiting sees real IPs |
+| `DEMO_EMAIL` / `DEMO_PASSWORD` | Optional. Credentials for the seeded demo account — leave empty to skip it entirely    |
+| `DEMO_RESET_SECRET`            | Optional. Shared secret for `POST /demo/reset`; without it the route returns 404       |
 
 **`apps/web/.env`**
 
-| Variable | Description |
-|---|---|
-| `VITE_API_BASE` | Base URL of the API, e.g. `http://localhost:3000` |
+| Variable                                 | Description                                                   |
+| ---------------------------------------- | ------------------------------------------------------------- |
+| `VITE_API_BASE`                          | Base URL of the API, e.g. `http://localhost:3000`             |
 | `VITE_DEMO_EMAIL` / `VITE_DEMO_PASSWORD` | Optional. Shows the one-click demo button on the login screen |
 
 Both apps ship a `.env.example` you can copy.
@@ -205,13 +218,13 @@ The web app runs on `http://localhost:5173`.
 
 ## Scripts
 
-| Command | What it does |
-|---|---|
-| `npm run dev` | Runs API and web together with colour-coded logs |
-| `npm run dev:api` / `npm run dev:web` | Runs one side only |
-| `npm run build` | Builds both apps for production |
-| `npm run start:api` | Applies migrations, seeds the exercise catalog, starts the API |
-| `npm run lint` | Lints the web app |
+| Command                               | What it does                                                   |
+| ------------------------------------- | -------------------------------------------------------------- |
+| `npm run dev`                         | Runs API and web together with colour-coded logs               |
+| `npm run dev:api` / `npm run dev:web` | Runs one side only                                             |
+| `npm run build`                       | Builds both apps for production                                |
+| `npm run start:api`                   | Applies migrations, seeds the exercise catalog, starts the API |
+| `npm run lint`                        | Lints the web app                                              |
 
 ---
 
