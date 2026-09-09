@@ -397,6 +397,9 @@ export const pt: LocaleDictionary = {
     start: "Iniciar",
     logout: "Sair",
     logoutAs: "Sair ({name})",
+    logoutConfirmTitle: "Sair da conta durante o treino?",
+    logoutConfirmDescription:
+      "Seu treino fica salvo e volta de onde parou quando você entrar de novo.",
     dayToday: "{status} · Hoje",
     day: {
       rest: "Descanso",

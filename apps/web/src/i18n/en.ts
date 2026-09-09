@@ -393,6 +393,9 @@ export const en = {
     start: "Start",
     logout: "Log out",
     logoutAs: "Log out ({name})",
+    logoutConfirmTitle: "Log out during your workout?",
+    logoutConfirmDescription:
+      "Your workout stays saved and picks up where you left off when you log back in.",
     dayToday: "{status} · Today",
     day: {
       rest: "Rest",

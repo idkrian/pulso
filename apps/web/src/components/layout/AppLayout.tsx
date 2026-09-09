@@ -1,16 +1,24 @@
 import { Suspense } from "react";
-import { Outlet } from "react-router";
+import { Outlet, useMatch } from "react-router";
 import InstallBanner from "@/components/pwa/InstallBanner";
 import Spinner from "@/components/ui/Spinner";
 import Navbar from "./Navbar";
 import MobileTabBar from "./MobileTabBar";
 
 const AppLayout = () => {
+  const inWorkout = Boolean(useMatch("/workout/:splitId"));
+
   return (
     <div className="min-h-dvh bg-backgroundBlack lg:h-dvh lg:px-8 lg:py-8 xl:px-12 2xl:px-24">
       <div className="flex min-h-dvh w-full flex-col gap-4 bg-darkGrey p-4 pt-[calc(1rem+env(safe-area-inset-top))] lg:h-full lg:min-h-0 lg:overflow-hidden lg:rounded-xl lg:p-8 lg:shadow-xl">
         <Navbar />
-        <main className="flex-1 pb-[calc(3.5rem+1rem+env(safe-area-inset-bottom))] lg:-mr-2 lg:min-h-0 lg:overflow-y-auto lg:pb-0 lg:pr-2">
+        <main
+          className={`flex-1 lg:-mr-2 lg:min-h-0 lg:overflow-y-auto lg:pb-0 lg:pr-2 ${
+            inWorkout
+              ? "pb-[env(safe-area-inset-bottom)]"
+              : "pb-[calc(3.5rem+1rem+env(safe-area-inset-bottom))]"
+          }`}
+        >
           <Suspense
             fallback={
               <div className="flex h-full w-full items-center justify-center py-20">
@@ -22,7 +30,7 @@ const AppLayout = () => {
           </Suspense>
         </main>
       </div>
-      <MobileTabBar />
+      {inWorkout ? null : <MobileTabBar />}
       <InstallBanner />
     </div>
   );

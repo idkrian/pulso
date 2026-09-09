@@ -177,7 +177,7 @@ const Workout = () => {
   );
   const overallPct = totalSets ? (totalCompletedSets / totalSets) * 100 : 0;
 
-  const leaveGuard = useLeaveGuard(totalCompletedSets > 0 && isAuthenticated);
+  const leaveGuard = useLeaveGuard(entries.length > 0 && isAuthenticated);
 
   const totalVolume = useMemo(
     () =>

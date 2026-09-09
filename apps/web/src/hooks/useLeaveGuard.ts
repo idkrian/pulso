@@ -10,6 +10,7 @@ export const useLeaveGuard = (enabled: boolean) => {
     const handler = (event: BeforeUnloadEvent) => {
       if (bypass.current) return;
       event.preventDefault();
+      event.returnValue = "";
     };
 
     window.addEventListener("beforeunload", handler);

@@ -9,6 +9,7 @@ import { useT, useWeekdayInitials } from "@/i18n";
 import { completedWeekdays } from "@/utils/workout-history";
 import { useToday } from "@/hooks/useToday";
 import Logo from "@/assets/icons/pulse-gradient.svg";
+import ConfirmModal from "@/components/modals/ConfirmModal";
 import { navItems } from "./nav-items";
 
 type WeekCell = {
@@ -87,6 +88,7 @@ const Navbar = () => {
   const dayLetters = useWeekdayInitials();
   const [byDay, setByDay] = useState<TrainingSplitDayMap>({});
   const [completedDays, setCompletedDays] = useState<Set<number>>(new Set());
+  const [confirmLogout, setConfirmLogout] = useState(false);
 
   const { pathname } = useLocation();
 
@@ -141,6 +143,14 @@ const Navbar = () => {
     : t("navbar.logout");
   const isWorkoutInProgress = Boolean(useMatch("/workout/:splitId"));
 
+  const requestLogout = () => {
+    if (isWorkoutInProgress) {
+      setConfirmLogout(true);
+      return;
+    }
+    logout();
+  };
+
   return (
     <>
       <header className="flex shrink-0 flex-col gap-3 border-b border-mediumGrey pb-3 lg:hidden">
@@ -153,7 +163,7 @@ const Navbar = () => {
           <WeekStrip cells={weekCells} />
 
           <button
-            onClick={logout}
+            onClick={requestLogout}
             title={logoutTitle}
             aria-label={logoutTitle}
             className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-mediumGrey text-lightGrey/50 transition-colors active:border-red-500/40 active:text-red-400"
@@ -254,7 +264,7 @@ const Navbar = () => {
           </div>
 
           <button
-            onClick={logout}
+            onClick={requestLogout}
             title={logoutTitle}
             aria-label={logoutTitle}
             className="group flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-mediumGrey text-lightGrey/50 transition-colors hover:border-red-500/40 hover:text-red-400"
@@ -266,6 +276,20 @@ const Navbar = () => {
           </button>
         </div>
       </header>
+
+      <ConfirmModal
+        open={confirmLogout}
+        icon={<LuLogOut size={28} />}
+        title={t("navbar.logoutConfirmTitle")}
+        description={t("navbar.logoutConfirmDescription")}
+        confirmLabel={t("navbar.logout")}
+        cancelLabel={t("workout.leaveCancel")}
+        onConfirm={() => {
+          setConfirmLogout(false);
+          logout();
+        }}
+        onCancel={() => setConfirmLogout(false)}
+      />
     </>
   );
 };
