@@ -155,6 +155,8 @@ export const en = {
     createError: "There was an error creating the training split.",
     updatedSuccess: "Training split updated successfully.",
     updateError: "There was an error updating the training split.",
+    duplicateError:
+      "This split has repeated exercises. Each exercise can only appear once.",
   },
 
   calendar: {

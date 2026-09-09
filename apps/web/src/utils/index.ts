@@ -240,3 +240,6 @@ export const DEFAULT_ACCENT: MuscleGroupAccent = {
   chip: "bg-indigo/15 text-lightIndigo border-indigo/30",
   text: "text-lightIndigo",
 };
+
+export const hasDuplicateExercises = (rows: { exerciseId: number }[]) =>
+  new Set(rows.map((row) => row.exerciseId)).size !== rows.length;

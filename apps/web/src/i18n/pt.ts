@@ -158,6 +158,8 @@ export const pt: LocaleDictionary = {
     createError: "Ocorreu um erro ao criar o treino.",
     updatedSuccess: "Treino atualizado com sucesso.",
     updateError: "Ocorreu um erro ao atualizar o treino.",
+    duplicateError:
+      "Este treino tem exercícios repetidos. Cada exercício só pode aparecer uma vez.",
   },
 
   calendar: {

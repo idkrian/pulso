@@ -18,6 +18,7 @@ import {
 } from "@/dtos/muscle.dto";
 import { getAllExercises } from "@/api/exercise";
 import { createTrainingSplit } from "@/api/training-split";
+import { hasDuplicateExercises } from "@/utils";
 import ConfirmModal from "@/components/modals/ConfirmModal";
 import FeedbackModal from "@/components/modals/FeedbackModal";
 import { useLeaveGuard } from "@/hooks/useLeaveGuard";
@@ -40,6 +41,7 @@ const TrainingSplitCreate = () => {
     "error",
   );
   const [openFeedbackModal, setOpenFeedbackModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     getAllExercises()
@@ -169,7 +171,18 @@ const TrainingSplitCreate = () => {
     updateExercise(orderedIndex, { exercise: ex, exerciseId: ex.id });
   };
 
+  const showError = (message: string) => {
+    setErrorMessage(message);
+    setFeedbackStatus("error");
+    setOpenFeedbackModal(true);
+  };
+
   const submitTrainingSplit = async () => {
+    if (hasDuplicateExercises(rows)) {
+      showError(t("trainingSplits.duplicateError"));
+      return;
+    }
+
     const payload: CreateTrainingSplitRequestDto = {
       title,
       exercises: orderedRows.map(({ exerciseId, sets, reps, order }) => ({
@@ -184,11 +197,11 @@ const TrainingSplitCreate = () => {
     try {
       await createTrainingSplit(payload);
       setFeedbackStatus("success");
+      setOpenFeedbackModal(true);
     } catch {
-      setFeedbackStatus("error");
+      showError(t("trainingSplits.createError"));
     } finally {
       setSaving(false);
-      setOpenFeedbackModal(true);
     }
   };
 
@@ -200,7 +213,7 @@ const TrainingSplitCreate = () => {
         description={
           feedbackStatus === "success"
             ? t("trainingSplits.createdSuccess")
-            : t("trainingSplits.createError")
+            : errorMessage
         }
         onClose={() => {
           setOpenFeedbackModal(false);

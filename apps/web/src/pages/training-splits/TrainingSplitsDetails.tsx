@@ -16,7 +16,7 @@ import {
   updateTrainingSplit,
 } from "@/api/training-split";
 import { getAllExercises } from "@/api/exercise";
-import { summarizeSplit } from "@/utils";
+import { hasDuplicateExercises, summarizeSplit } from "@/utils";
 import { useT } from "@/i18n";
 import Button from "@/components/ui/Button";
 import ErrorState from "@/components/ui/ErrorState";
@@ -42,6 +42,7 @@ const TrainingSplitsDetails = () => {
     "success",
   );
   const [openFeedback, setOpenFeedback] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [loadError, setLoadError] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -189,18 +190,29 @@ const TrainingSplitsDetails = () => {
     updateExercise(orderedIndex, { exercise: ex, exerciseId: ex.id });
   };
 
+  const showError = (message: string) => {
+    setErrorMessage(message);
+    setFeedbackStatus("error");
+    setOpenFeedback(true);
+  };
+
   const handleSave = async () => {
     if (!formData || !id) return;
+    if (hasDuplicateExercises(formData.exercises)) {
+      showError(t("trainingSplits.duplicateError"));
+      return;
+    }
+
     setSaving(true);
     try {
       await updateTrainingSplit(Number(id), formData);
       setSavedData(formData);
       setFeedbackStatus("success");
+      setOpenFeedback(true);
     } catch {
-      setFeedbackStatus("error");
+      showError(t("trainingSplits.updateError"));
     } finally {
       setSaving(false);
-      setOpenFeedback(true);
     }
   };
 
@@ -241,7 +253,7 @@ const TrainingSplitsDetails = () => {
         description={
           feedbackStatus === "success"
             ? t("trainingSplits.updatedSuccess")
-            : t("trainingSplits.updateError")
+            : errorMessage
         }
         onClose={() => setOpenFeedback(false)}
       />
