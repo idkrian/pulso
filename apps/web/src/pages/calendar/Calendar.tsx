@@ -266,7 +266,7 @@ const Calendar = () => {
               />
             )
           ) : (
-            <div className="grid min-w-0 grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-7 xl:gap-3">
+            <div className="grid min-w-0 grid-cols-1 gap-2 md:grid-cols-2 xl:h-full xl:grid-cols-7 xl:gap-3">
               {loading &&
                 week.map((day) => (
                   <DayCardSkeleton key={day.date.toISOString()} />

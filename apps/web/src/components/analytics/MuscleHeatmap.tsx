@@ -47,6 +47,8 @@ const MuscleHeatmap = ({ period }: MuscleHeatmapProps) => {
     };
   }, [period]);
 
+  const isEmpty = data.length === 0;
+
   return (
     <div className="flex flex-col items-center gap-3 lg:h-full">
       <p className="text-white text-base font-semibold">
@@ -61,16 +63,13 @@ const MuscleHeatmap = ({ period }: MuscleHeatmapProps) => {
           </div>
           <Skeleton className="h-4 w-48" />
         </div>
-      ) : data.length === 0 ? (
-        <div className="flex min-h-40 flex-1 flex-col items-center justify-center gap-2 lg:min-h-0">
-          <p className="text-3xl opacity-60">🫥</p>
-          <p className="text-lightGrey text-sm">
-            {t("charts.muscleActivityEmpty")}
-          </p>
-        </div>
       ) : (
         <>
-          <div className="flex aspect-10/9 w-full min-w-0 items-center justify-center gap-3 lg:aspect-auto lg:w-auto lg:min-h-0 lg:flex-1">
+          <div
+            className={`flex aspect-10/9 w-full min-w-0 items-center justify-center gap-3 lg:aspect-auto lg:w-auto lg:min-h-0 lg:flex-1 ${
+              isEmpty ? "opacity-50" : ""
+            }`}
+          >
             <Model
               data={data}
               highlightedColors={HEATMAP_COLORS}
@@ -87,27 +86,37 @@ const MuscleHeatmap = ({ period }: MuscleHeatmapProps) => {
               svgStyle={MODEL_SVG}
             />
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-lightGrey">
-              {t("charts.undertrained")}
-            </span>
-            {HEATMAP_COLORS.map((color, index) => (
-              <div key={color} className="flex flex-col items-center gap-1">
-                <div
-                  className="w-3 h-3 rounded-sm"
-                  style={{ backgroundColor: color }}
-                />
-                {index === 2 && (
-                  <span className="text-[10px] text-lightGrey">
-                    {t("charts.optimal")}
-                  </span>
-                )}
-              </div>
-            ))}
-            <span className="text-xs text-lightGrey">
-              {t("charts.overtrained")}
-            </span>
-          </div>
+
+          {isEmpty ? (
+            <div className="flex flex-col items-center gap-1">
+              <p className="text-3xl opacity-60">🫥</p>
+              <p className="text-lightGrey text-sm">
+                {t("charts.muscleActivityEmpty")}
+              </p>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-lightGrey">
+                {t("charts.undertrained")}
+              </span>
+              {HEATMAP_COLORS.map((color, index) => (
+                <div key={color} className="flex flex-col items-center gap-1">
+                  <div
+                    className="w-3 h-3 rounded-sm"
+                    style={{ backgroundColor: color }}
+                  />
+                  {index === 2 && (
+                    <span className="text-[10px] text-lightGrey">
+                      {t("charts.optimal")}
+                    </span>
+                  )}
+                </div>
+              ))}
+              <span className="text-xs text-lightGrey">
+                {t("charts.overtrained")}
+              </span>
+            </div>
+          )}
         </>
       )}
     </div>

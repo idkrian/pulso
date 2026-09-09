@@ -47,7 +47,7 @@ const MonthGrid = ({
   const formatDate = useFormatDate();
 
   return (
-    <div className="flex min-w-0 flex-col gap-1.5">
+    <div className="flex min-w-0 flex-col gap-1.5 xl:h-full">
       <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {days.slice(0, 7).map((day) => (
           <span
@@ -64,7 +64,7 @@ const MonthGrid = ({
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-1 sm:gap-2">
+      <div className="grid grid-cols-7 gap-1 sm:gap-2 xl:min-h-0 xl:flex-1 xl:auto-rows-fr">
         {days.map((day) => {
           const entry = splitsByDay[day.dayNumber];
           const { session, status } = describeDay(day.date, entry);
